@@ -71,11 +71,11 @@ private: // メンバ変数
 	Sprite* spriteBG = nullptr;
 	ParticleManager* particleMan = nullptr;
 
-	FbxModel* model1 = nullptr;
-	FbxObject3d* object1 = nullptr;
+	std::unique_ptr<FbxModel> model1 = nullptr;
+	std::unique_ptr<FbxObject3d> object1 = nullptr;
 
-	FbxModel* model2 = nullptr;
-	FbxObject3d* object2 = nullptr;
+	std::unique_ptr<FbxModel> model2 = nullptr;
+	std::unique_ptr<FbxObject3d> object2 = nullptr;
 
 	float object2Pos[3] = { 0,0,0 };
 };

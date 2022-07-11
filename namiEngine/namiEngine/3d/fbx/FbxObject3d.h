@@ -74,7 +74,7 @@ public: // メンバ関数
 	/// </summary>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
-	void SetModel(FbxModel* fbxmodel) { this->fbxmodel = fbxmodel; }
+	void SetModel(std::unique_ptr<FbxModel> fbxmodel) { this->fbxmodel = std::move(fbxmodel); }
 
 	/// <summary>
 	/// アニメーション開始
@@ -113,7 +113,7 @@ protected: // メンバ変数
 	// ローカルワールド変換行列
 	XMMATRIX matWorld;
 	// モデル
-	FbxModel* fbxmodel = nullptr;
+	std::unique_ptr<FbxModel> fbxmodel = nullptr;
 	//1フレームの時間
 	FbxTime frameTime;
 	//アニメーション開始時間

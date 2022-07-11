@@ -12,8 +12,6 @@ GameScene::GameScene() {
 }
 
 GameScene::~GameScene() {
-	safe_delete(object1);
-	safe_delete(model1);
 	safe_delete(spriteBG);
 }
 
@@ -55,7 +53,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	cameraObject->SetDistance(50.0f);
 
 	// モデル名を指定してファイル読み込み
-	model1 = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
+
+	model1 = std::make_unique<FbxModel>(FbxLoader::GetInstance()->LoadModelFromFile("boneTest"));
 	model2 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
 
 	// デバイスをセット
@@ -65,19 +64,19 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	// グラフィックスパイプライン生成
 	FbxObject3d::CreateGraphicsPipeline();
 
-	object1 = new FbxObject3d;
+	//object1 = new FbxObject3d;
 	object1->Initialize();
-	object1->SetModel(model1);
+	object1->SetModel(std::move(model1));
+	XMFLOAT3 obj1Rotation = { 0.0f,90.0f,0.0f };
+	object1->SetRotation(obj1Rotation);
 
-	object2 = new FbxObject3d;
 	object2->Initialize();
-	object2->SetModel(model2);
+	object2->SetModel(std::move(model2));
 }
 
 void GameScene::Update() {
 	cameraObject->Update();
 	particleMan->Update();
-	//object1->PlayAnimation();
 	if (input->PushPad(ButtonA) || input->TriggerKey(DIK_P)) {
 		object1->PlayAnimation();
 	}
