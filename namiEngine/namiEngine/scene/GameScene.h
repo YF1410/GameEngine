@@ -11,6 +11,7 @@
 #include "DebugCamera.h"
 #include "Object3d.h"
 #include "FbxObject3d.h"
+#include "CollisionPrimitive.h"
 
 #include <vector>
 
@@ -67,7 +68,7 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	DebugCamera* cameraObject = nullptr;
+	Camera* cameraObject = nullptr;
 	Sprite* spriteBG = nullptr;
 	ParticleManager* particleMan = nullptr;
 
@@ -77,5 +78,16 @@ private: // メンバ変数
 	FbxModel* model2 = nullptr;
 	FbxObject3d* object2 = nullptr;
 
-	float object2Pos[3] = { 0,0,0 };
+	FbxModel* model3 = nullptr;
+	FbxObject3d* object3 = nullptr;
+
+	float object2Pos[3] = { 0,0,50.0f };
+	XMFLOAT3 object1Pos = { 0.0f,0.0f,0.0f };
+	float cameraEye[3] = { 0.0f,50.0f,-20.0f };
+	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
+	float xMoveAmount = 0.0f;
+	float zMoveAmount = 0.0f;
+
+	Sphere object1Collision;
+	Sphere object2Collision;
 };

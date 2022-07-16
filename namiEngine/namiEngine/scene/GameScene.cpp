@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iomanip>
 #include "imgui.h"
+#include "Collision.h"
 
 using namespace DirectX;
 
@@ -28,7 +29,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	this->audio = audio;
 
 	// カメラ生成
-	cameraObject = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
+	cameraObject = new Camera(WinApp::window_width, WinApp::window_height);
 
 	// デバッグテキスト用テクスチャ読み込み
 	if (!Sprite::LoadTexture(debugTextTexNumber, L"Resources/debugfont.png")) {
@@ -51,12 +52,13 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	particleMan->SetCamera(cameraObject);
 
 	// カメラ注視点をセット
-	cameraObject->SetTarget({ 0, 0, 0 });
-	cameraObject->SetDistance(50.0f);
+	cameraObject->SetTarget(cameraTarget);
+	cameraObject->SetEye({ cameraEye[0],cameraEye[1],cameraEye[2] });
 
 	// モデル名を指定してファイル読み込み
 	model1 = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
-	model2 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	model2 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+	model3 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
 
 	// デバイスをセット
 	FbxObject3d::SetDevice(dxCommon->GetDevice());
@@ -72,11 +74,13 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	object2 = new FbxObject3d;
 	object2->Initialize();
 	object2->SetModel(model2);
+
+	object3 = new FbxObject3d;
+	object3->Initialize();
+	object3->SetModel(model3);
 }
 
 void GameScene::Update() {
-	cameraObject->Update();
-	particleMan->Update();
 	//object1->PlayAnimation();
 	if (input->PushPad(ButtonA) || input->TriggerKey(DIK_P)) {
 		object1->PlayAnimation();
@@ -85,10 +89,65 @@ void GameScene::Update() {
 		object1->StopAnimation();
 	}
 
+	if (input->PushKey(DIK_W)) {
+		zMoveAmount += 1.0f;
+		object1->SetRotation({0.0f,0.0f,0.0f});
+		if (input->PushKey(DIK_A)) {
+			xMoveAmount -= 1.0f;
+			object1->SetRotation({ 0.0f,315.0f,0.0f });
+		}
+		else if (input->PushKey(DIK_D)) {
+			xMoveAmount += 1.0f;
+			object1->SetRotation({ 0.0f,45.0f,0.0f });
+		}
+	}
+	else if (input->PushKey(DIK_S)) {
+		zMoveAmount -= 1.0f;
+		object1->SetRotation({ 0.0f,180.0f,0.0f });
+		if (input->PushKey(DIK_A)) {
+			xMoveAmount -= 1.0f;
+			object1->SetRotation({ 0.0f,235.0f,0.0f });
+		}
+		else if (input->PushKey(DIK_D)) {
+			xMoveAmount += 1.0f;
+			object1->SetRotation({ 0.0f,135.0f,0.0f });
+		}
+	}
+	else if (input->PushKey(DIK_A)) {
+		xMoveAmount -= 1.0f;
+		object1->SetRotation({ 0.0f,270.0f,0.0f });
+	}
+	else if (input->PushKey(DIK_D)) {
+		xMoveAmount += 1.0f;
+		object1->SetRotation({ 0.0f,90.0f,0.0f });
+	}
+
+
+
+	cameraObject->SetEye({ cameraEye[0] + xMoveAmount, cameraEye[1],cameraEye[2] + zMoveAmount });
+	cameraObject->SetTarget({cameraTarget.x + xMoveAmount, cameraTarget.y,cameraTarget.z + zMoveAmount});
+
+	object1->SetPosition({ object1Pos.x + xMoveAmount, object1Pos.y,object1Pos.z + zMoveAmount });
 	object2->SetPosition({ object2Pos[0], object2Pos[1], object2Pos[2] });
 
+	object1Collision.center = XMLoadFloat3(&object1->GetPosition());
+	object1Collision.radius = 1.0f;
+
+	object2Collision.center = XMLoadFloat3(&object2->GetPosition());
+	object2Collision.radius = 1.0f;
+
+	if (Collision::CheckSphere2Sphere(object1Collision, object2Collision)) {
+		object1->PlayAnimation();
+	}
+	else {
+		object1->StopAnimation();
+	}
+
+	cameraObject->Update();
 	object1->Update();
 	object2->Update();
+	object3->Update();
+	particleMan->Update();
 }
 
 void GameScene::Draw() {
@@ -100,9 +159,10 @@ void GameScene::Draw() {
 	ImGui::Begin("cube");
 	ImGui::SetWindowPos(ImVec2(0, 0));
 	ImGui::SetWindowSize(ImVec2(500, 200));
-	ImGui::InputFloat3("cubePos", object2Pos);
+	//ImGui::InputFloat3("cubePos", object2Pos);
 	//ImGui::SliderFloat3("object2Pos", object2Pos,-1000,1000);
-	//ImGui::DragFloat3("object2Pos", object2Pos);
+	ImGui::DragFloat3("object2Pos", object2Pos);
+	ImGui::DragFloat3("cameraEye", cameraEye);
 	ImGui::End();
 
 	// コマンドリストの取得
