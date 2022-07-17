@@ -59,6 +59,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void Move(float moveAmount);
+
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
@@ -81,8 +83,9 @@ private: // メンバ変数
 	FbxModel* model3 = nullptr;
 	FbxObject3d* object3 = nullptr;
 
-	float object2Pos[3] = { 0,0,50.0f };
 	XMFLOAT3 object1Pos = { 0.0f,0.0f,0.0f };
+	float object2Pos[3] = { 0,-5.0f,20.0f };
+	float object3Pos[3] = { 0,0,20.0f };
 	float cameraEye[3] = { 0.0f,50.0f,-20.0f };
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 	float xMoveAmount = 0.0f;
@@ -90,4 +93,12 @@ private: // メンバ変数
 
 	Sphere object1Collision;
 	Sphere object2Collision;
+	Sphere object3Collision;
+
+	bool isObject2Death = false;
+	bool isObject3Active = false;
+	bool isDash = false;
+	float defMoveAmount = 1.0f;
+	float dashMoveAmount = 3.0f;
+	int dashTimer = 8;
 };

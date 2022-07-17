@@ -14,7 +14,11 @@ GameScene::GameScene() {
 
 GameScene::~GameScene() {
 	safe_delete(object1);
+	safe_delete(object2);
+	safe_delete(object3);
 	safe_delete(model1);
+	safe_delete(model2);
+	safe_delete(model3);
 	safe_delete(spriteBG);
 }
 
@@ -57,8 +61,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 
 	// モデル名を指定してファイル読み込み
 	model1 = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
-	model2 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
-	model3 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	model2 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	model3 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
 	// デバイスをセット
 	FbxObject3d::SetDevice(dxCommon->GetDevice());
@@ -74,6 +78,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	object2 = new FbxObject3d;
 	object2->Initialize();
 	object2->SetModel(model2);
+	object2->SetScale({ 0.3f,0.3f,0.3f });
 
 	object3 = new FbxObject3d;
 	object3->Initialize();
@@ -89,58 +94,43 @@ void GameScene::Update() {
 		object1->StopAnimation();
 	}
 
-	if (input->PushKey(DIK_W)) {
-		zMoveAmount += 1.0f;
-		object1->SetRotation({0.0f,0.0f,0.0f});
-		if (input->PushKey(DIK_A)) {
-			xMoveAmount -= 1.0f;
-			object1->SetRotation({ 0.0f,315.0f,0.0f });
-		}
-		else if (input->PushKey(DIK_D)) {
-			xMoveAmount += 1.0f;
-			object1->SetRotation({ 0.0f,45.0f,0.0f });
-		}
-	}
-	else if (input->PushKey(DIK_S)) {
-		zMoveAmount -= 1.0f;
-		object1->SetRotation({ 0.0f,180.0f,0.0f });
-		if (input->PushKey(DIK_A)) {
-			xMoveAmount -= 1.0f;
-			object1->SetRotation({ 0.0f,235.0f,0.0f });
-		}
-		else if (input->PushKey(DIK_D)) {
-			xMoveAmount += 1.0f;
-			object1->SetRotation({ 0.0f,135.0f,0.0f });
-		}
-	}
-	else if (input->PushKey(DIK_A)) {
-		xMoveAmount -= 1.0f;
-		object1->SetRotation({ 0.0f,270.0f,0.0f });
-	}
-	else if (input->PushKey(DIK_D)) {
-		xMoveAmount += 1.0f;
-		object1->SetRotation({ 0.0f,90.0f,0.0f });
+	if (input->TriggerKey(DIK_SPACE)) {
+		isDash = true;
 	}
 
-
+	if (!isDash) {
+		Move(defMoveAmount);
+	}
+	else if (isDash) {
+		Move(dashMoveAmount);
+		dashTimer--;
+		if (dashTimer <= 0) {
+			dashTimer = 8;
+			isDash = false;
+		}
+	}
 
 	cameraObject->SetEye({ cameraEye[0] + xMoveAmount, cameraEye[1],cameraEye[2] + zMoveAmount });
 	cameraObject->SetTarget({cameraTarget.x + xMoveAmount, cameraTarget.y,cameraTarget.z + zMoveAmount});
 
 	object1->SetPosition({ object1Pos.x + xMoveAmount, object1Pos.y,object1Pos.z + zMoveAmount });
 	object2->SetPosition({ object2Pos[0], object2Pos[1], object2Pos[2] });
+	object3->SetPosition({ object3Pos[0], object3Pos[1], object3Pos[2] });
+
 
 	object1Collision.center = XMLoadFloat3(&object1->GetPosition());
-	object1Collision.radius = 1.0f;
+	object1Collision.radius = 3.0f;
 
 	object2Collision.center = XMLoadFloat3(&object2->GetPosition());
-	object2Collision.radius = 1.0f;
+	object2Collision.radius = 3.0f;
 
-	if (Collision::CheckSphere2Sphere(object1Collision, object2Collision)) {
+	object3Collision.center = XMLoadFloat3(&object3->GetPosition());
+	object3Collision.radius = 3.0f;
+
+	if (Collision::CheckSphere2Sphere(object1Collision, object2Collision) && !isObject2Death) {
+		isObject2Death = true;
+		isObject3Active = true;
 		object1->PlayAnimation();
-	}
-	else {
-		object1->StopAnimation();
 	}
 
 	cameraObject->Update();
@@ -186,7 +176,10 @@ void GameScene::Draw() {
 
 #pragma region 3D描画
 	object1->Draw(cmdList);
-	object2->Draw(cmdList);
+	if (!isObject2Death) {
+		object2->Draw(cmdList);
+	}
+	object3->Draw(cmdList);
 
 	// パーティクルの描画
 	particleMan->Draw(cmdList);
@@ -207,4 +200,39 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 #pragma endregion
+}
+
+void GameScene::Move(float moveAmount) {
+	if (input->PushKey(DIK_W)) {
+		zMoveAmount += moveAmount;
+		object1->SetRotation({ 0.0f,0.0f,0.0f });
+		if (input->PushKey(DIK_A)) {
+			xMoveAmount -= moveAmount;
+			object1->SetRotation({ 0.0f,315.0f,0.0f });
+		}
+		else if (input->PushKey(DIK_D)) {
+			xMoveAmount += moveAmount;
+			object1->SetRotation({ 0.0f,45.0f,0.0f });
+		}
+	}
+	else if (input->PushKey(DIK_S)) {
+		zMoveAmount -= moveAmount;
+		object1->SetRotation({ 0.0f,180.0f,0.0f });
+		if (input->PushKey(DIK_A)) {
+			xMoveAmount -= moveAmount;
+			object1->SetRotation({ 0.0f,235.0f,0.0f });
+		}
+		else if (input->PushKey(DIK_D)) {
+			xMoveAmount += moveAmount;
+			object1->SetRotation({ 0.0f,135.0f,0.0f });
+		}
+	}
+	else if (input->PushKey(DIK_A)) {
+		xMoveAmount -= moveAmount;
+		object1->SetRotation({ 0.0f,270.0f,0.0f });
+	}
+	else if (input->PushKey(DIK_D)) {
+		xMoveAmount += moveAmount;
+		object1->SetRotation({ 0.0f,90.0f,0.0f });
+	}
 }
