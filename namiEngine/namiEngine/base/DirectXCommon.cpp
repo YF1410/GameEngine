@@ -18,32 +18,32 @@ void DirectXCommon::Initialize(WinApp* winApp) {
 	this->winApp = winApp;
 
 	// DXGIデバイス初期化
-	if (!InitializeDXGIDevice()) 	{
+	if (!InitializeDXGIDevice()) {
 		assert(0);
 	}
 
 	// コマンド関連初期化
-	if (!InitializeCommand()) 	{
+	if (!InitializeCommand()) {
 		assert(0);
 	}
 
 	// スワップチェーンの生成
-	if (!CreateSwapChain()) 	{
+	if (!CreateSwapChain()) {
 		assert(0);
 	}
 
 	// レンダーターゲット生成
-	if (!CreateFinalRenderTargets()) 	{
+	if (!CreateFinalRenderTargets()) {
 		assert(0);
 	}
 
 	// 深度バッファ生成
-	if (!CreateDepthBuffer()) 	{
+	if (!CreateDepthBuffer()) {
 		assert(0);
 	}
 
 	// フェンス生成
-	if (!CreateFence()) 	{
+	if (!CreateFence()) {
 		assert(0);
 	}
 
@@ -126,7 +126,7 @@ void DirectXCommon::PostDraw() {
 
 	// コマンドリストの実行完了を待つ
 	commandQueue->Signal(fence.Get(), ++fenceVal);
-	if (fence->GetCompletedValue() != fenceVal) 	{
+	if (fence->GetCompletedValue() != fenceVal) {
 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
 		fence->SetEventOnCompletion(fenceVal, event);
 		WaitForSingleObject(event, INFINITE);
@@ -161,7 +161,7 @@ bool DirectXCommon::InitializeDXGIDevice() {
 #ifdef _DEBUG
 	ComPtr<ID3D12Debug> debugController;
 	//デバッグレイヤーをオンに
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) 	{
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
 	}
 #endif
@@ -177,7 +177,7 @@ bool DirectXCommon::InitializeDXGIDevice() {
 
 	// DXGIファクトリーの生成
 	result = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
@@ -188,23 +188,23 @@ bool DirectXCommon::InitializeDXGIDevice() {
 	ComPtr<IDXGIAdapter1> tmpAdapter;
 	for (int i = 0;
 		dxgiFactory->EnumAdapters1(i, &tmpAdapter) != DXGI_ERROR_NOT_FOUND;
-		i++) 	{
+		i++) {
 		adapters.push_back(tmpAdapter); // 動的配列に追加する
 	}
 
-	for (int i = 0; i < adapters.size(); i++) 	{
+	for (int i = 0; i < adapters.size(); i++) {
 		DXGI_ADAPTER_DESC1 adesc;
 		adapters[i]->GetDesc1(&adesc); // アダプターの情報を取得
 
 		// ソフトウェアデバイスを回避
-		if (adesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) 		{
+		if (adesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) {
 			continue;
 		}
 
 		std::wstring strDesc = adesc.Description; // アダプター名
 
 		// Intel UHD Graphics（オンボードグラフィック）を回避
-		if (strDesc.find(L"Intel") == std::wstring::npos) 		{
+		if (strDesc.find(L"Intel") == std::wstring::npos) {
 			tmpAdapter = adapters[i]; // 採用
 			break;
 		}
@@ -213,16 +213,16 @@ bool DirectXCommon::InitializeDXGIDevice() {
 	D3D_FEATURE_LEVEL featureLevel;
 
 	result = S_FALSE;
-	for (int i = 0; i < _countof(levels); i++) 	{
+	for (int i = 0; i < _countof(levels); i++) {
 		// デバイスを生成
 		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i], IID_PPV_ARGS(&device));
-		if (SUCCEEDED(result)) 		{
+		if (SUCCEEDED(result)) {
 			// デバイスを生成できた時点でループを抜ける
 			featureLevel = levels[i];
 			break;
 		}
 	}
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
@@ -256,7 +256,7 @@ bool DirectXCommon::CreateSwapChain() {
 		nullptr,
 		&swapchain1
 	);
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return result;
 	}
@@ -270,14 +270,14 @@ bool DirectXCommon::InitializeCommand() {
 
 	// コマンドアロケータを生成
 	result = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return result;
 	}
 
 	// コマンドリストを生成
 	result = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList));
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return result;
 	}
@@ -285,7 +285,7 @@ bool DirectXCommon::InitializeCommand() {
 	// 標準設定でコマンドキューを生成
 	D3D12_COMMAND_QUEUE_DESC cmdQueueDesc{};
 	result = device->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&commandQueue));
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return result;
 	}
@@ -298,7 +298,7 @@ bool DirectXCommon::CreateFinalRenderTargets() {
 
 	DXGI_SWAP_CHAIN_DESC swcDesc = {};
 	result = swapchain->GetDesc(&swcDesc);
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return result;
 	}
@@ -308,17 +308,17 @@ bool DirectXCommon::CreateFinalRenderTargets() {
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
 	heapDesc.NumDescriptors = swcDesc.BufferCount;
 	result = device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&rtvHeaps));
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return result;
 	}
 
 	// 裏表の２つ分について
 	backBuffers.resize(swcDesc.BufferCount);
-	for (int i = 0; i < backBuffers.size(); i++) 	{
+	for (int i = 0; i < backBuffers.size(); i++) {
 		// スワップチェーンからバッファを取得
 		result = swapchain->GetBuffer(i, IID_PPV_ARGS(&backBuffers[i]));
-		if (FAILED(result)) 		{
+		if (FAILED(result)) {
 			assert(0);
 			return result;
 		}
@@ -360,7 +360,7 @@ bool DirectXCommon::CreateDepthBuffer() {
 		&CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.0f, 0),
 		IID_PPV_ARGS(&depthBuffer)
 	);
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return result;
 	}
@@ -370,7 +370,7 @@ bool DirectXCommon::CreateDepthBuffer() {
 	dsvHeapDesc.NumDescriptors = 1; // 深度ビューは1つ
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV; // デプスステンシルビュー
 	result = device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return result;
 	}
@@ -394,7 +394,7 @@ bool DirectXCommon::CreateFence() {
 
 	// フェンスの生成
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}

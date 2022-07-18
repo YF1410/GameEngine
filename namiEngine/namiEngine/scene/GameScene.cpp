@@ -125,18 +125,46 @@ void GameScene::Update() {
 	object2Collision.radius = 3.0f;
 
 	object3Collision.center = XMLoadFloat3(&object3->GetPosition());
-	object3Collision.radius = 3.0f;
+	object3Collision.radius = 1.0f;
 
-	if (Collision::CheckSphere2Sphere(object1Collision, object2Collision) && !isObject2Death) {
-		isObject2Death = true;
+	if (Collision::CheckSphere2Sphere(object1Collision, object2Collision) && isObject2Active) {
+		isObject2Active = false;
 		isObject3Active = true;
+	}
+
+	if (Collision::CheckSphere2Sphere(object1Collision, object3Collision) && isObject3Active) {
+		isObject3Active = false;
 		object1->PlayAnimation();
+	}
+
+	if (input->TriggerKey(DIK_R)) {
+		object1Pos = { 0.0f,0.0f,0.0f };
+		object2Pos[0] = 0;
+		object2Pos[1] = -5.0f;
+		object2Pos[2] = 20.0f;
+		object3Pos[0] = 10.0f;
+		object3Pos[1] = 0;
+		object3Pos[2] = 20.0f;
+		cameraEye[0] = 0.0f;
+		cameraEye[1] = 50.0f;
+		cameraEye[2] = -20.0f;
+		cameraTarget = { 0.0f,0.0f,0.0f };
+		xMoveAmount = 0.0f;
+		zMoveAmount = 0.0f;
+		isObject2Active = true;
+		isObject3Active = false;
+		object1->StopAnimation();
 	}
 
 	cameraObject->Update();
 	object1->Update();
-	object2->Update();
-	object3->Update();
+	if (isObject2Active) {
+		object2->Update();
+	}
+
+	if (isObject3Active) {
+		object3->Update();
+	}
 	particleMan->Update();
 }
 
@@ -176,10 +204,13 @@ void GameScene::Draw() {
 
 #pragma region 3D描画
 	object1->Draw(cmdList);
-	if (!isObject2Death) {
+	if (isObject2Active) {
 		object2->Draw(cmdList);
 	}
-	object3->Draw(cmdList);
+
+	if (isObject3Active) {
+		object3->Draw(cmdList);
+	}
 
 	// パーティクルの描画
 	particleMan->Draw(cmdList);

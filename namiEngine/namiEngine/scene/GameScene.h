@@ -85,7 +85,7 @@ private: // メンバ変数
 
 	XMFLOAT3 object1Pos = { 0.0f,0.0f,0.0f };
 	float object2Pos[3] = { 0,-5.0f,20.0f };
-	float object3Pos[3] = { 0,0,20.0f };
+	float object3Pos[3] = { 6.0f,0,20.0f };
 	float cameraEye[3] = { 0.0f,50.0f,-20.0f };
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 	float xMoveAmount = 0.0f;
@@ -95,7 +95,7 @@ private: // メンバ変数
 	Sphere object2Collision;
 	Sphere object3Collision;
 
-	bool isObject2Death = false;
+	bool isObject2Active = true;
 	bool isObject3Active = false;
 	bool isDash = false;
 	float defMoveAmount = 1.0f;
