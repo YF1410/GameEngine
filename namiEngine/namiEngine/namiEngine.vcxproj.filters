@@ -75,9 +75,6 @@
     <ClCompile Include="audio\Audio.cpp">
       <Filter>Engine\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Angle.cpp">
-      <Filter>Engine\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="base\DirectXCommon.cpp">
       <Filter>Engine\Base</Filter>
     </ClCompile>
@@ -172,9 +169,6 @@
     </ClInclude>
     <ClInclude Include="audio\Audio.h">
       <Filter>Engine\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Angle.h">
-      <Filter>Engine\Utility</Filter>
     </ClInclude>
     <ClInclude Include="base\DirectXCommon.h">
       <Filter>Engine\Base</Filter>
