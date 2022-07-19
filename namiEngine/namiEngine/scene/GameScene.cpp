@@ -99,31 +99,31 @@ void GameScene::Draw() {
 	object2Pos[1] = object2->GetPosition().y;
 	object2Pos[2] = object2->GetPosition().z;
 
-	ImGui::Begin("cube");
-	ImGui::SetWindowPos(ImVec2(0, 0));
-	ImGui::SetWindowSize(ImVec2(500, 200));
-	ImGui::InputFloat3("cubePos", object2Pos);
-	//ImGui::SliderFloat3("object2Pos", object2Pos,-1000,1000);
-	//ImGui::DragFloat3("object2Pos", object2Pos);
-	ImGui::End();
+	//ImGui::Begin("cube");
+	//ImGui::SetWindowPos(ImVec2(0, 0));
+	//ImGui::SetWindowSize(ImVec2(500, 200));
+	//ImGui::InputFloat3("cubePos", object2Pos);
+	////ImGui::SliderFloat3("object2Pos", object2Pos,-1000,1000);
+	////ImGui::DragFloat3("object2Pos", object2Pos);
+	//ImGui::End();
 
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
 
 #pragma region 背景スプライト描画
-	// 背景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
-	// 背景スプライト描画
-	spriteBG->Draw();
+	//// 背景スプライト描画前処理
+	//Sprite::PreDraw(cmdList);
+	//// 背景スプライト描画
+	//spriteBG->Draw();
 
-	/// <summary>
-	/// ここに背景スプライトの描画処理を追加できる
-	/// </summary>
+	///// <summary>
+	///// ここに背景スプライトの描画処理を追加できる
+	///// </summary>
 
-	// スプライト描画後処理
-	Sprite::PostDraw();
-	// 深度バッファクリア
-	dxCommon->ClearDepthBuffer();
+	//// スプライト描画後処理
+	//Sprite::PostDraw();
+	//// 深度バッファクリア
+	//dxCommon->ClearDepthBuffer();
 #pragma endregion
 
 #pragma region 3D描画

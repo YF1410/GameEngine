@@ -6,7 +6,7 @@
 #include <DirectXMath.h>
 
 class Sprite {
-private: // エイリアス
+public: // エイリアス
 // Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
@@ -39,7 +39,7 @@ public: // 静的メンバ関数
 	// スプライト生成
 	static Sprite* Create(UINT texNumber, XMFLOAT2 position, XMFLOAT4 color = { 1, 1, 1, 1 }, XMFLOAT2 anchorpoint = { 0.0f, 0.0f }, bool isFlipX = false, bool isFlipY = false);
 
-private: // 静的メンバ変数
+protected: // 静的メンバ変数
 	// テクスチャの最大枚数
 	static const int srvCount = 512;
 	// 頂点数
@@ -66,6 +66,8 @@ public: // メンバ関数
 	Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color, XMFLOAT2 anchorpoint, bool isFlipX, bool isFlipY);
 	// 初期化
 	bool Initialize();
+	//頂点バッファ生成
+	void VertexBufferGeneration();
 	// 角度の設定
 	void SetRotation(float rotation);
 	// 座標の設定
@@ -83,7 +85,7 @@ public: // メンバ関数
 	// 描画
 	void Draw();
 
-private: // メンバ変数
+protected: // メンバ変数
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	// 定数バッファ

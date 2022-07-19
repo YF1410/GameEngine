@@ -3,6 +3,7 @@
 #include "Audio.h"
 #include "GameScene.h"
 #include "FbxLoader.h"
+#include "PostEffect.h"
 
 //# Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -12,6 +13,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Input* input = nullptr;
 	Audio* audio = nullptr;
 	GameScene* gameScene = nullptr;
+	PostEffect* postEffect = nullptr;
 
 	// ゲームウィンドウの作成
 	win = new WinApp();
@@ -51,6 +53,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	gameScene = new GameScene();
 	gameScene->Initialize(dxCommon, input, audio);
 
+	//ポストエフェクト用のテクスチャの読み込み
+	//Sprite::LoadTexture(100, L"Resources/white1x1.png");
+	//ポストエフェクトの初期化
+	postEffect = new PostEffect();
+	postEffect->Initialize();
+
+
 	while (true)  // ゲームループ
 	{
 		// メッセージ処理
@@ -65,11 +74,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// ゲームシーンの毎フレーム処理
 		gameScene->Update();
 
+		//レンダーテクスチャへの描画
+		postEffect->PreDrawScene(dxCommon->GetCommandList());
+		gameScene->Draw();
+		postEffect->PostDrawScene(dxCommon->GetCommandList());
+
 #pragma endregion DirectX毎フレーム処理
 
 #pragma region グラフィックスコマンド
 		// 描画開始
 		dxCommon->PreDraw();
+
+		//ポストエフェクトの描画
+		postEffect->Draw(dxCommon->GetCommandList());
 
 		// ゲームシーンの描画
 		//gameScene->Draw();
@@ -87,6 +104,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	safe_delete(input);
 	safe_delete(audio);
 	safe_delete(dxCommon);
+	safe_delete(postEffect);
 
 	// ゲームウィンドウの破棄
 	win->TerminateGameWindow();
