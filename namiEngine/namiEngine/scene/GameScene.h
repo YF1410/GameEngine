@@ -77,5 +77,5 @@ private: // メンバ変数
 	FbxModel* model2 = nullptr;
 	FbxObject3d* object2 = nullptr;
 
-	float object2Pos[3] = { 0,0,0 };
+	float object2Pos[3] = { 0,-30.0f,0 };
 };

@@ -51,7 +51,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	particleMan->SetCamera(cameraObject);
 
 	// カメラ注視点をセット
-	cameraObject->SetTarget({ 0, 0, 0 });
+	cameraObject->SetTarget({ 0, 2.5f, 0 });
 	cameraObject->SetDistance(50.0f);
 
 	// モデル名を指定してファイル読み込み
@@ -74,30 +74,31 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	object2 = new FbxObject3d;
 	object2->Initialize();
 	object2->SetModel(model2);
+	object2->SetRotation({ 10.0f,20.0f,0 });
 }
 
 void GameScene::Update() {
 	cameraObject->Update();
 	particleMan->Update();
 	//object1->PlayAnimation();
-	if (input->PushPad(ButtonA) || input->TriggerKey(DIK_P)) {
+	/*if (input->PushPad(ButtonA) || input->TriggerKey(DIK_P)) {
 		object1->PlayAnimation();
 	}
 	if (input->PushPad(ButtonB) || input->TriggerKey(DIK_L)) {
 		object1->StopAnimation();
-	}
+	}*/
 
 	object2->SetPosition({ object2Pos[0], object2Pos[1], object2Pos[2] });
 
-	object1->Update();
+	//object1->Update();
 	object2->Update();
 }
 
 void GameScene::Draw() {
 
-	object2Pos[0] = object2->GetPosition().x;
+	/*object2Pos[0] = object2->GetPosition().x;
 	object2Pos[1] = object2->GetPosition().y;
-	object2Pos[2] = object2->GetPosition().z;
+	object2Pos[2] = object2->GetPosition().z;*/
 
 	//ImGui::Begin("cube");
 	//ImGui::SetWindowPos(ImVec2(0, 0));
@@ -127,7 +128,7 @@ void GameScene::Draw() {
 #pragma endregion
 
 #pragma region 3D描画
-	object1->Draw(cmdList);
+	//object1->Draw(cmdList);
 	object2->Draw(cmdList);
 
 	// パーティクルの描画
