@@ -19,7 +19,7 @@ GameScene::~GameScene() {
 	safe_delete(spriteBG);
 }
 
-void GameScene::Initialize(std::shared_ptr<DirectXCommon> dxCommon, std::shared_ptr <Input> input, std::shared_ptr <Audio> audio) {
+void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) {
 	// nullptrチェック
 	assert(dxCommon);
 	assert(input);

@@ -47,7 +47,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(std::shared_ptr<DirectXCommon> dxCommon, std::shared_ptr <Input> input, std::shared_ptr <Audio> audio);
+	void Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -62,9 +62,9 @@ public: // メンバ関数
 	void Move(float moveAmount);
 
 private: // メンバ変数
-	std::shared_ptr<DirectXCommon> dxCommon;
-	std::shared_ptr<Input> input;
-	std::shared_ptr<Audio> audio;
+	DirectXCommon* dxCommon = nullptr;
+	Input* input = nullptr;
+	Audio* audio = nullptr;
 	DebugText* debugText = nullptr;
 
 	/// <summary>

@@ -9,9 +9,9 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//ポインタ置き場
 	std::unique_ptr<WinApp> win(new WinApp());
-	std::shared_ptr<DirectXCommon> dxCommon(new DirectXCommon());
-	std::shared_ptr<Input> input(new Input());
-	std::shared_ptr<Audio> audio(new Audio());
+	std::unique_ptr<DirectXCommon> dxCommon(new DirectXCommon());
+	std::unique_ptr<Input> input(new Input());
+	std::unique_ptr<Audio> audio(new Audio());
 	std::unique_ptr<GameScene> gameScene(new GameScene());
 	std::unique_ptr<PostEffect> postEffect(new PostEffect());
 
@@ -46,7 +46,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	// ゲームシーンの初期化
-	gameScene->Initialize(dxCommon, input, audio);
+	gameScene->Initialize(dxCommon.get(), input.get(), audio.get());
 
 	//ポストエフェクト用のテクスチャの読み込み
 	//Sprite::LoadTexture(100, L"Resources/white1x1.png");
