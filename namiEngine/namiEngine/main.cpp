@@ -8,35 +8,31 @@
 //# Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//ポインタ置き場
-	WinApp* win = nullptr;
-	DirectXCommon* dxCommon = nullptr;
-	Input* input = nullptr;
-	Audio* audio = nullptr;
-	GameScene* gameScene = nullptr;
-	PostEffect* postEffect = nullptr;
+	std::unique_ptr<WinApp> win(new WinApp());
+	std::shared_ptr<DirectXCommon> dxCommon(new DirectXCommon());
+	std::shared_ptr<Input> input(new Input());
+	std::shared_ptr<Audio> audio(new Audio());
+	std::unique_ptr<GameScene> gameScene(new GameScene());
+	std::unique_ptr<PostEffect> postEffect(new PostEffect());
 
 	// ゲームウィンドウの作成
-	win = new WinApp();
 	win->CreateGameWindow();
 
 	//DirectX初期化処理
-	dxCommon = new DirectXCommon();
-	dxCommon->Initialize(win);
+	dxCommon->Initialize(win->GetHwnd());
 
 #pragma region 汎用機能初期化
 
 	//入力の初期化
-	input = new Input();
 	input->Initialize(win->GetInstance(), win->GetHwnd());
 
 	// オーディオの初期化
-	audio = new Audio();
-	if (!audio->Initialize()) 	{
+	if (!audio->Initialize()) {
 		assert(0);
 		return 1;
 	}
 	// スプライト静的初期化
-	if (!Sprite::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height)) 	{
+	if (!Sprite::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height)) {
 		assert(0);
 		return 1;
 	}
@@ -50,20 +46,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	// ゲームシーンの初期化
-	gameScene = new GameScene();
 	gameScene->Initialize(dxCommon, input, audio);
 
 	//ポストエフェクト用のテクスチャの読み込み
 	//Sprite::LoadTexture(100, L"Resources/white1x1.png");
 	//ポストエフェクトの初期化
-	postEffect = new PostEffect();
 	postEffect->Initialize();
 
 
 	while (true)  // ゲームループ
 	{
 		// メッセージ処理
-		if (win->ProcessMessage()) 		{
+		if (win->ProcessMessage()) {
 			break;
 		}
 
@@ -99,18 +93,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//解放
 	// 各種解放
-	safe_delete(gameScene);
 	FbxLoader::GetInstance()->Finalize();
-	safe_delete(input);
-	safe_delete(audio);
-	safe_delete(dxCommon);
-	safe_delete(postEffect);
 
 	// ゲームウィンドウの破棄
 	win->TerminateGameWindow();
-	safe_delete(win);
 
 	return 0;
 }
-
-//s

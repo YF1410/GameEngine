@@ -16,13 +16,10 @@ GameScene::~GameScene() {
 	safe_delete(object1);
 	safe_delete(object2);
 	safe_delete(object3);
-	safe_delete(model1);
-	safe_delete(model2);
-	safe_delete(model3);
 	safe_delete(spriteBG);
 }
 
-void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) {
+void GameScene::Initialize(std::shared_ptr<DirectXCommon> dxCommon, std::shared_ptr <Input> input, std::shared_ptr <Audio> audio) {
 	// nullptrチェック
 	assert(dxCommon);
 	assert(input);
@@ -174,14 +171,14 @@ void GameScene::Draw() {
 	object2Pos[1] = object2->GetPosition().y;
 	object2Pos[2] = object2->GetPosition().z;
 
-	ImGui::Begin("cube");
-	ImGui::SetWindowPos(ImVec2(0, 0));
-	ImGui::SetWindowSize(ImVec2(500, 200));
-	//ImGui::InputFloat3("cubePos", object2Pos);
-	//ImGui::SliderFloat3("object2Pos", object2Pos,-1000,1000);
-	ImGui::DragFloat3("object2Pos", object2Pos);
-	ImGui::DragFloat3("cameraEye", cameraEye);
-	ImGui::End();
+	//ImGui::Begin("cube");
+	//ImGui::SetWindowPos(ImVec2(0, 0));
+	//ImGui::SetWindowSize(ImVec2(500, 200));
+	////ImGui::InputFloat3("cubePos", object2Pos);
+	////ImGui::SliderFloat3("object2Pos", object2Pos,-1000,1000);
+	//ImGui::DragFloat3("object2Pos", object2Pos);
+	//ImGui::DragFloat3("cameraEye", cameraEye);
+	//ImGui::End();
 
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();

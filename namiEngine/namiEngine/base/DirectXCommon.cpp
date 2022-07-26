@@ -11,11 +11,8 @@
 
 using namespace Microsoft::WRL;
 
-void DirectXCommon::Initialize(WinApp* winApp) {
-	// nullptrチェック
-	assert(winApp);
-
-	this->winApp = winApp;
+void DirectXCommon::Initialize(HWND hwnd) {
+	this->hwnd = hwnd;
 
 	// DXGIデバイス初期化
 	if (!InitializeDXGIDevice()) {
@@ -98,7 +95,7 @@ void DirectXCommon::PreDraw() {
 			float cputime = deltaTime - commandWaitTime;
 			char str[50];
 			sprintf_s(str, "fps=%03.0f cpu usage=%06.2f%%", frameRate, cputime * FPS_BASIS * 100.0f);
-			SetWindowTextA(winApp->GetHwnd(), str);
+			SetWindowTextA(hwnd, str);
 		}
 	}
 }
@@ -245,7 +242,6 @@ bool DirectXCommon::CreateSwapChain() {
 	swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // フルスクリーン切り替えを許可
 	//IDXGISwapChain1のComPtrを用意
 	ComPtr<IDXGISwapChain1> swapchain1;
-	HWND hwnd = winApp->GetHwnd();
 	//スワップチェーンを生成
 	result = dxgiFactory->CreateSwapChainForHwnd
 	(
@@ -428,7 +424,7 @@ bool DirectXCommon::InitImgui() {
 		assert(0);
 		return false;
 	}
-	if (!ImGui_ImplWin32_Init(winApp->GetHwnd())) {
+	if (!ImGui_ImplWin32_Init(hwnd)) {
 		assert(0);
 		return false;
 	}

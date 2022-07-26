@@ -17,7 +17,7 @@ private: // エイリアス
 
 public: // メンバ関数
 	// 初期化
-	void Initialize(WinApp* win);
+	void Initialize(HWND hwnd);
 	// 描画前処理
 	void PreDraw();
 	/// 描画後処理
@@ -33,7 +33,7 @@ public: // メンバ関数
 
 private: // メンバ変数
 	// ウィンドウズアプリケーション管理
-	WinApp* winApp;
+	HWND hwnd;
 
 	// Direct3D関連
 	ComPtr<IDXGIFactory6> dxgiFactory;
