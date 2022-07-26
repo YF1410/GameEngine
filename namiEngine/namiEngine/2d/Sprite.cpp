@@ -349,20 +349,7 @@ bool Sprite::Initialize() {
 
 	HRESULT result = S_FALSE;
 
-	// 頂点バッファ生成
-	result = device->CreateCommittedResource
-	(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(VertexPosUv) * vertNum),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&vertBuff)
-	);
-	if (FAILED(result)) 	{
-		assert(0);
-		return false;
-	}
+	VertexBufferGeneration();
 
 	// 頂点バッファへのデータ転送
 	TransferVertices();
@@ -397,6 +384,22 @@ bool Sprite::Initialize() {
 	}
 
 	return true;
+}
+
+void Sprite::VertexBufferGeneration() {
+	HRESULT result = S_FALSE;
+	// 頂点バッファ生成
+	result = device->CreateCommittedResource
+	(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(VertexPosUv) * vertNum),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&vertBuff)
+	);
+	
+	assert(SUCCEEDED(result));
 }
 
 void Sprite::SetRotation(float rotation) {
