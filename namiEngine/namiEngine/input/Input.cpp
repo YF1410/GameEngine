@@ -175,6 +175,11 @@ bool Input::CheckRightTrigger() {
 	return false;
 }
 
+double Input::PadStickAngle()
+{
+	double radian = atan2(currentPadState.lY - 0, currentPadState.lX - 0);
+	return radian * (180.0f / 3.14159265359f);
+}
 
 bool Input::CheckRightLStick() {
 	if (currentPadState.lX > unresponsiveRange) {

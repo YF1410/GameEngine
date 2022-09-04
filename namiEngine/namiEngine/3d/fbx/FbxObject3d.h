@@ -82,6 +82,11 @@ public: // メンバ関数
 	void PlayAnimation();
 
 	/// <summary>
+	/// アニメーションループ開始
+	/// </summary>
+	void LoopAnimation();
+
+	/// <summary>
 	/// アニメーション停止
 	/// </summary>
 	void StopAnimation();
@@ -98,6 +103,8 @@ public: // メンバ関数
 	inline void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
 	// スケールの設定
 	inline void SetScale(XMFLOAT3 scale) { this->scale = scale; }
+
+	bool GetIsPlay() { return isPlay; }
 
 protected: // メンバ変数
 	// 定数バッファ（座標変換行列用）
@@ -126,4 +133,6 @@ protected: // メンバ変数
 	FbxTime saveTime;
 	//アニメーション再生中
 	bool isPlay = false;
+	//アニメーションループ再生中
+	bool isLoop = false;
 };

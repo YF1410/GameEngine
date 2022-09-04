@@ -100,6 +100,8 @@ public: //メンバ関数
 	bool CheckRightTrigger();
 
 	//パッドスティックチェック
+	double PadStickAngle();
+
 	bool CheckRightLStick();
 	bool CheckLeftLStick();
 	bool CheckUpLStick();

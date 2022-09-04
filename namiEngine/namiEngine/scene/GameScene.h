@@ -49,10 +49,28 @@ public: // メンバ関数
 	/// </summary>
 	void Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio);
 
+	//タイトル
+	void TitleUpdate();
+
+	//ゲームシーン
+	void GameUpdate();
+
+	//終了画面
+	void EndUpdate();
+
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
 	void Update();
+
+	//タイトル
+	void TitleDraw();
+
+	//ゲームシーン
+	void GameDraw();
+
+	//終了画面
+	void EndDraw();
 
 	/// <summary>
 	/// 描画
@@ -61,32 +79,47 @@ public: // メンバ関数
 
 	void Move(float moveAmount);
 
+	void DamageShake();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
 	Audio* audio = nullptr;
 	DebugText* debugText = nullptr;
 
+	bool isNowTitle = true;
+	bool isNowGame = false;
+	bool isNowEnd = false;
+
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
 	Camera* cameraObject = nullptr;
-	Sprite* spriteBG = nullptr;
+	Sprite* spriteBG1 = nullptr;
+	Sprite* spriteBG2 = nullptr;
 	ParticleManager* particleMan = nullptr;
 
 	FbxModel* model1 = nullptr;
-	FbxObject3d* object1 = nullptr;
+	std::unique_ptr<FbxObject3d> object1;
 
 	FbxModel* model2 = nullptr;
-	FbxObject3d* object2 = nullptr;
+	std::unique_ptr<FbxObject3d> object2;
 
 	FbxModel* model3 = nullptr;
-	FbxObject3d* object3 = nullptr;
+	std::unique_ptr<FbxObject3d> object3;
+
+	Model* groundModel = nullptr;
+	Object3d* groundObj = nullptr;
+
+	Model* skydomeModel = nullptr;
+	Object3d* skydomeObj = nullptr;
+	LightGroup* lightGroup = nullptr;
 
 	XMFLOAT3 object1Pos = { 0.0f,0.0f,0.0f };
 	float object2Pos[3] = { 0,-5.0f,20.0f };
-	float object3Pos[3] = { 6.0f,0,20.0f };
-	float cameraEye[3] = { 0.0f,50.0f,-20.0f };
+	float object3Pos[3] = { 10.0f,0,20.0f };
+	float cameraEye[3] = { 0.0f,20.0f,-50.0f };
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 	float xMoveAmount = 0.0f;
 	float zMoveAmount = 0.0f;
@@ -101,4 +134,7 @@ private: // メンバ変数
 	float defMoveAmount = 1.0f;
 	float dashMoveAmount = 3.0f;
 	int dashTimer = 8;
+	int enemyHP = 3;
+	bool isDamage = false;
+	float shakeObjectPos[3] = {0.0f,0.0f,0.0f};
 };

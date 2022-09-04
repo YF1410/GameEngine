@@ -253,14 +253,18 @@ void FbxObject3d::Update() {
 		//最後まで再生したら先頭に戻す
 		if (currentTime > endTime) {
 			currentTime = startTime;
+			isPlay = false;
 		}
 	}
-	/*else if (!isPlay) {
-		currentTime -= frameTime * 2;
-		if (currentTime < startTime) {
+
+	if (isLoop) {
+		//1フレームずつ進める
+		currentTime += frameTime;
+		//最後まで再生したら先頭に戻す
+		if (currentTime > endTime) {
 			currentTime = startTime;
 		}
-	}*/
+	}
 
 	// 定数バッファへデータ転送
 	ConstBufferDataSkin* constMapSkin = nullptr;
@@ -280,6 +284,9 @@ void FbxObject3d::Update() {
 }
 
 void FbxObject3d::PlayAnimation() {
+	if (isLoop) {
+		isLoop = false;
+	}
 	FbxScene* fbxScene = fbxmodel->GetFbxScene();
 	//0番のアニメーション取得
 	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
@@ -302,6 +309,36 @@ void FbxObject3d::PlayAnimation() {
 		currentTime = startTime;
 		//再生中状態にする
 		isPlay = true;
+	}
+}
+
+void FbxObject3d::LoopAnimation()
+{
+	if (isPlay) {
+		isPlay = false;
+	}
+	FbxScene* fbxScene = fbxmodel->GetFbxScene();
+	//0番のアニメーション取得
+	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	//アニメーションの名前取得
+	const char* animstackname = animstack->GetName();
+	//アニメーションの時間情報
+	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
+
+	//開始時間取得
+	startTime = takeinfo->mLocalTimeSpan.GetStart();
+	//終了時間取得
+	endTime = takeinfo->mLocalTimeSpan.GetStop();
+
+	if (startTime < saveTime) {
+		currentTime = saveTime;
+		isLoop = true;
+	}
+	else {
+		//開始時間に合わせる
+		currentTime = startTime;
+		//再生中状態にする
+		isLoop = true;
 	}
 }
 

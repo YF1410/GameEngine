@@ -37,6 +37,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		return 1;
 	}
 
+	// 3Dオブジェクト静的初期化
+	Object3d::StaticInitialize(dxCommon->GetDevice());
+	// ライト静的初期化
+	LightGroup::StaticInitialize(dxCommon->GetDevice());
 	// パーティクルマネージャ初期化
 	ParticleManager::GetInstance()->Initialize(dxCommon->GetDevice());
 	//FBX初期化
@@ -69,9 +73,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		gameScene->Update();
 
 		//レンダーテクスチャへの描画
-		postEffect->PreDrawScene(dxCommon->GetCommandList());
-		gameScene->Draw();
-		postEffect->PostDrawScene(dxCommon->GetCommandList());
+		//postEffect->PreDrawScene(dxCommon->GetCommandList());
+		//gameScene->Draw();
+		//postEffect->PostDrawScene(dxCommon->GetCommandList());
 
 #pragma endregion DirectX毎フレーム処理
 
@@ -80,10 +84,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PreDraw();
 
 		//ポストエフェクトの描画
-		postEffect->Draw(dxCommon->GetCommandList());
+		//postEffect->Draw(dxCommon->GetCommandList());
 
 		// ゲームシーンの描画
-		//gameScene->Draw();
+		gameScene->Draw();
 
 		// 描画終了
 		dxCommon->PostDraw();
