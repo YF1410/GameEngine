@@ -6,6 +6,8 @@
 #include <iomanip>
 #include "imgui.h"
 #include "Collision.h"
+#include <stdlib.h>
+#include <time.h>
 
 using namespace DirectX;
 
@@ -40,11 +42,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	debugText->Initialize(debugTextTexNumber);
 
 	// テクスチャ読み込み
-	if (!Sprite::LoadTexture(1, L"Resources/background.png")) {
+	if (!Sprite::LoadTexture(1, L"Resources/title.png")) {
 		assert(0);
 		return;
 	}
-	if (!Sprite::LoadTexture(2, L"Resources/001.png")) {
+	if (!Sprite::LoadTexture(2, L"Resources/gameend.png")) {
 		assert(0);
 		return;
 	}
@@ -96,10 +98,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	groundObj = Object3d::Create(groundModel);
 	groundObj->SetScale({ 2.0f,2.0f,2.0f });
 	skydomeObj = Object3d::Create(skydomeModel);
+	
+	srand(time(NULL));
 }
 
 void GameScene::TitleUpdate() {
-	if (input->TriggerKey(DIK_1)) {
+	if (input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) {
 		isNowTitle = false;
 		isNowGame = true;
 	}
@@ -114,9 +118,8 @@ void GameScene::GameUpdate() {
 		object1->StopAnimation();
 	}
 
-	if (input->TriggerKey(DIK_SPACE)) {
+	if (input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D))) {
 		isDash = true;
-		isDamage = true;
 	}
 
 	if (!isDash) {
@@ -134,8 +137,20 @@ void GameScene::GameUpdate() {
 	cameraObject->SetEye({ cameraEye[0] + xMoveAmount, cameraEye[1],cameraEye[2] + zMoveAmount });
 	cameraObject->SetTarget({ cameraTarget.x + xMoveAmount, cameraTarget.y,cameraTarget.z + zMoveAmount });
 
+	if (isDamageShake) {
+		damageShakeCount++;
+		DamageShake();
+		if (damageShakeCount >= 10) {
+			damageShakeCount = 0;
+			for (int i = 0; i < 3; i++) {
+				shakeObjectPos[i] = 0;
+			}
+			isDamageShake = false;
+		}
+	}
+
 	object1->SetPosition({ object1Pos.x + xMoveAmount, object1Pos.y,object1Pos.z + zMoveAmount });
-	object2->SetPosition({ object2Pos[0], object2Pos[1], object2Pos[2] });
+	object2->SetPosition({ object2Pos[0] + shakeObjectPos[0], object2Pos[1] + shakeObjectPos[0], object2Pos[2] + shakeObjectPos[0]});
 	object3->SetPosition({ object3Pos[0], object3Pos[1], object3Pos[2] });
 
 
@@ -152,6 +167,7 @@ void GameScene::GameUpdate() {
 	if (input->TriggerKey(DIK_1) && !object1->GetIsPlay()) {
 		object1Collision.radius = 10.0f;
 		isDamage = true;
+		isDamageShake = true;
 		object1->PlayAnimation();
 	}
 
@@ -187,7 +203,7 @@ void GameScene::GameUpdate() {
 }
 
 void GameScene::EndUpdate() {
-	if (input->TriggerKey(DIK_1)) {
+	if (input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) {
 		object1Pos = { 0.0f,0.0f,0.0f };
 		object2Pos[0] = 0;
 		object2Pos[1] = -5.0f;
@@ -377,5 +393,7 @@ void GameScene::Move(float moveAmount) {
 }
 
 void GameScene::DamageShake() {
-
+	for (int i = 0; i < 3; i++) {
+		shakeObjectPos[i] = rand()%4-2;
+	}
 }

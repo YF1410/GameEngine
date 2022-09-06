@@ -136,5 +136,7 @@ private: // メンバ変数
 	int dashTimer = 8;
 	int enemyHP = 3;
 	bool isDamage = false;
+	bool isDamageShake = false;
+	int damageShakeCount = 0;
 	float shakeObjectPos[3] = {0.0f,0.0f,0.0f};
 };
