@@ -18,7 +18,7 @@ public: // 静的メンバ関数
 	// 静的初期化
 	static void StaticInitialize(ID3D12Device* device);
 
-	static Model* CreateFromObject(const std::string& text, bool smoothing = false);
+	static std::unique_ptr<Model> CreateFromObject(const std::string& text, bool smoothing = false);
 
 private: // 静的メンバ変数
 	// デバイス

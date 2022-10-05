@@ -1,16 +1,14 @@
 #include "DebugText.h"
 
+ DebugText DebugText::instance;
+
 DebugText::DebugText() {
 }
 
 DebugText::~DebugText() {
-	for (int i = 0; i < _countof(spriteDatas); i++) {
-		delete spriteDatas[i];
-	}
 }
 
 DebugText* DebugText::GetInstance() {
-	static DebugText instance;
 	return &instance;
 }
 

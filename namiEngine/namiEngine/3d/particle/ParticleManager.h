@@ -134,6 +134,11 @@ public: // メンバ関数
 	/// </summary>
 	void CreateModel();
 
+	/// <summary>
+	/// 後始末
+	/// </summary>
+	void Finalize();
+
 private: // メンバ変数
 	// デバイス
 	ID3D12Device* device = nullptr;
@@ -161,6 +166,8 @@ private: // メンバ変数
 	std::forward_list<Particle> particles;
 	// カメラ
 	Camera* cameraObject = nullptr;
+public:
+	static ParticleManager instance;
 private:
 	ParticleManager() = default;
 	ParticleManager(const ParticleManager&) = delete;

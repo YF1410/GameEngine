@@ -87,7 +87,7 @@ public: // 静的メンバ関数
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static Object3d* Create(Model* model = nullptr);
+	static std::unique_ptr<Object3d> Create(Model* model = nullptr);
 
 private: // 静的メンバ変数
 	// デバイス
@@ -163,6 +163,8 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="scale">スケール</param>
 	void SetScale(XMFLOAT3 scale) { this->objScale = scale; }
+
+	void SetScale(float scale) { this->objScale = { scale ,scale,scale }; }
 
 	/// <summary>
 	/// モデルのセット

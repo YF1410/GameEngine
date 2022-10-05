@@ -112,7 +112,7 @@ bool Input::TriggerKey(BYTE keyNumber) {
 
 bool Input::PushMouse(MouseButton buttonType) {
 	// 異常な引数を検出
-	assert(0 <= buttonType <= 4);
+	assert(LeftButton <= buttonType && buttonType <= CenterButton);
 
 	// 0でなければ押している
 	if (currentMouseState.rgbButtons[buttonType]) {
@@ -125,7 +125,7 @@ bool Input::PushMouse(MouseButton buttonType) {
 
 bool Input::TriggerMouse(MouseButton buttonType) {
 	// 異常な引数を検出
-	assert(0 <= buttonType <= 4);
+	assert(LeftButton <= buttonType && buttonType <= CenterButton);
 
 	// 前回が0で、今回が0でなければトリガー
 	if (!currentMouseState.rgbButtons[buttonType] && prevMouseState.rgbButtons[buttonType]) {
@@ -138,7 +138,7 @@ bool Input::TriggerMouse(MouseButton buttonType) {
 
 bool Input::PushPad(ButtonKind padButtonType) {
 	// 異常な引数を検出
-	assert(0 <= padButtonType <= ButtonKindMax);
+	assert(ButtonA <= padButtonType && padButtonType <= ButtonKindMax);
 
 	// 0でなければ押している
 	if (currentPadState.rgbButtons[padButtonType]) {
@@ -151,7 +151,7 @@ bool Input::PushPad(ButtonKind padButtonType) {
 
 bool Input::TriggerPad(ButtonKind padButtonType) {
 	// 異常な引数を検出
-	assert(0 <= padButtonType <= ButtonKindMax);
+	assert(ButtonA <= padButtonType && padButtonType <= ButtonKindMax);
 
 	// 前回が0で、今回が0でなければトリガー
 	if (!currentPadState.rgbButtons[padButtonType] && prevPadState.rgbButtons[padButtonType]) {

@@ -95,26 +95,26 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	Camera* cameraObject = nullptr;
-	Sprite* spriteBG1 = nullptr;
-	Sprite* spriteBG2 = nullptr;
-	ParticleManager* particleMan = nullptr;
+	std::unique_ptr <Camera> cameraObject;
+	std::unique_ptr<Sprite> spriteBG1;
+	std::unique_ptr<Sprite> spriteBG2;
+	ParticleManager* particleMan;
 
-	FbxModel* model1 = nullptr;
+	std::unique_ptr<FbxModel> model1;
 	std::unique_ptr<FbxObject3d> object1;
 
-	FbxModel* model2 = nullptr;
+	std::unique_ptr<FbxModel> model2;
 	std::unique_ptr<FbxObject3d> object2;
 
-	FbxModel* model3 = nullptr;
+	std::unique_ptr<FbxModel> model3;
 	std::unique_ptr<FbxObject3d> object3;
 
-	Model* groundModel = nullptr;
-	Object3d* groundObj = nullptr;
+	std::unique_ptr<Model> groundModel;
+	std::unique_ptr<Object3d> groundObj;
 
-	Model* skydomeModel = nullptr;
-	Object3d* skydomeObj = nullptr;
-	LightGroup* lightGroup = nullptr;
+	std::unique_ptr<Model> skydomeModel;
+	std::unique_ptr<Object3d> skydomeObj;
+	std::unique_ptr<LightGroup> lightGroup;
 
 	XMFLOAT3 object1Pos = { 0.0f,0.0f,0.0f };
 	float object2Pos[3] = { 0,-5.0f,20.0f };

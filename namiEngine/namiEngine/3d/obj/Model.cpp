@@ -18,9 +18,9 @@ void Model::StaticInitialize(ID3D12Device* device) {
 	Mesh::StaticInitialize(device);
 }
 
-Model* Model::CreateFromObject(const std::string& text, bool smoothing) {
+std::unique_ptr<Model> Model::CreateFromObject(const std::string& text, bool smoothing) {
 	// 3Dオブジェクトのインスタンスを生成
-	Model* model = new Model();
+	std::unique_ptr<Model> model = std::make_unique<Model>();
 	if (model == nullptr) 	{
 		return nullptr;
 	}
@@ -28,7 +28,7 @@ Model* Model::CreateFromObject(const std::string& text, bool smoothing) {
 	// 初期化
 	model->Initialize(text, smoothing);
 	if (model == nullptr) 	{
-		delete model;
+		//delete model;
 		assert(0);
 		return nullptr;
 	}

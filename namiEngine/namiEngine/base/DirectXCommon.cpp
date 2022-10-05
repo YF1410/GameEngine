@@ -11,6 +11,27 @@
 
 using namespace Microsoft::WRL;
 
+DirectXCommon::~DirectXCommon() {
+	dxgiFactory.Reset();
+	commandList.Reset();
+	commandAllocator.Reset();
+	commandQueue.Reset();
+	swapchain.Reset();
+	backBuffers.clear();
+	depthBuffer.Reset();
+	rtvHeaps.Reset();
+	dsvHeap.Reset();
+	fence.Reset();
+	imguiHeap.Reset();
+	ID3D12DebugDevice* debugInterface;
+
+	if (SUCCEEDED(device.Get()->QueryInterface(&debugInterface)))
+	{
+		debugInterface->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
+		debugInterface->Release();
+	}
+}
+
 void DirectXCommon::Initialize(HWND hwnd) {
 	this->hwnd = hwnd;
 

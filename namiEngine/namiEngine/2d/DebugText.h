@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include <Windows.h>
 #include <string>
+#include <memory>
 
 /// <summary>
 /// デバッグ用文字表示
@@ -15,6 +16,7 @@ public:
 	static const int fontHeight = 18;		// フォント画像内1文字分の縦幅
 	static const int fontLineCount = 14;	// フォント画像内1行分の文字数
 	static const int bufferSize = 256;	// 書式付き文字列展開用バッファサイズ
+	static DebugText instance;
 
 public:// 静的メンバ関数
 	static DebugText* GetInstance();
@@ -44,7 +46,7 @@ private:
 
 private:
 	// スプライトデータの配列
-	Sprite* spriteDatas[maxCharCount] = {};
+	std::unique_ptr<Sprite> spriteDatas[maxCharCount] = {};
 	// スプライトデータ配列の添え字番号
 	int spriteIndex = 0;
 

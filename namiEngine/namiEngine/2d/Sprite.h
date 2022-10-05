@@ -4,6 +4,7 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include <DirectXMath.h>
+#include <memory>
 
 class Sprite {
 public: // エイリアス
@@ -37,7 +38,7 @@ public: // 静的メンバ関数
 	// 描画後処理
 	static void PostDraw();
 	// スプライト生成
-	static Sprite* Create(UINT texNumber, XMFLOAT2 position, XMFLOAT4 color = { 1, 1, 1, 1 }, XMFLOAT2 anchorpoint = { 0.0f, 0.0f }, bool isFlipX = false, bool isFlipY = false);
+	static std::unique_ptr<Sprite> Create(UINT texNumber, XMFLOAT2 position, XMFLOAT4 color = { 1, 1, 1, 1 }, XMFLOAT2 anchorpoint = { 0.0f, 0.0f }, bool isFlipX = false, bool isFlipY = false);
 
 protected: // 静的メンバ変数
 	// テクスチャの最大枚数

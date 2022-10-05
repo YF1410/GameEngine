@@ -16,6 +16,7 @@ private: // エイリアス
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 public: // メンバ関数
+	~DirectXCommon();
 	// 初期化
 	void Initialize(HWND hwnd);
 	// 描画前処理

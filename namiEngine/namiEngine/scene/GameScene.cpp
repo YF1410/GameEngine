@@ -15,8 +15,6 @@ GameScene::GameScene() {
 }
 
 GameScene::~GameScene() {
-	safe_delete(spriteBG1);
-	safe_delete(spriteBG2);
 }
 
 void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) {
@@ -30,7 +28,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	this->audio = audio;
 
 	// カメラ生成
-	cameraObject = new Camera(WinApp::window_width, WinApp::window_height);
+	cameraObject = std::make_unique<Camera>(WinApp::window_width, WinApp::window_height);
 
 	// デバッグテキスト用テクスチャ読み込み
 	if (!Sprite::LoadTexture(debugTextTexNumber, L"Resources/debugfont.png")) {
@@ -51,18 +49,19 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 		return;
 	}
 	// 背景スプライト生成
-	spriteBG1 = Sprite::Create(1, { 0.0f,0.0f });
+
+	spriteBG1 = Sprite::Create(1, {0.0f,0.0f});
 	spriteBG2 = Sprite::Create(2, { 0.0f,0.0f });
 	// パーティクルマネージャ生成
 	particleMan = ParticleManager::GetInstance();
-	particleMan->SetCamera(cameraObject);
+	particleMan->SetCamera(cameraObject.get());
 
 	// カメラ注視点をセット
 	cameraObject->SetTarget(cameraTarget);
 	cameraObject->SetEye({ cameraEye[0],cameraEye[1],cameraEye[2] });
 
 	// モデル名を指定してファイル読み込み
-	model1 = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
+	model1=FbxLoader::GetInstance()->LoadModelFromFile("Walking");
 	model2 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
 	model3 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 	groundModel = Model::CreateFromObject("stage1");
@@ -70,36 +69,36 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	// ライト生成
 	lightGroup = LightGroup::Create();
 	// 3Dオブエクトにライトをセット
-	Object3d::SetLightGroup(lightGroup);
+	Object3d::SetLightGroup(lightGroup.get());
 	// 3Dオブジェクトにカメラをセット
-	Object3d::SetCamera(cameraObject);
+	Object3d::SetCamera(cameraObject.get());
 
 	// デバイスをセット
 	FbxObject3d::SetDevice(dxCommon->GetDevice());
 	// カメラをセット
-	FbxObject3d::SetCamera(cameraObject);
+	FbxObject3d::SetCamera(cameraObject.get());
 	// グラフィックスパイプライン生成
 	FbxObject3d::CreateGraphicsPipeline();
 
 	//object1 = new FbxObject3d;
 	object1 = std::make_unique<FbxObject3d>();
 	object1->Initialize();
-	object1->SetModel(model1);
+	object1->SetModel(model1.get());
 
 	object2 = std::make_unique<FbxObject3d>();
 	object2->Initialize();
-	object2->SetModel(model2);
+	object2->SetModel(model2.get());
 	object2->SetScale({ 0.3f,0.3f,0.3f });
 
 	object3 = std::make_unique<FbxObject3d>();
 	object3->Initialize();
-	object3->SetModel(model3);
+	object3->SetModel(model3.get());
 
-	groundObj = Object3d::Create(groundModel);
+	groundObj = Object3d::Create(groundModel.get());
 	groundObj->SetScale({ 2.0f,2.0f,2.0f });
-	skydomeObj = Object3d::Create(skydomeModel);
+	skydomeObj = Object3d::Create(skydomeModel.get());
 	
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 }
 
 void GameScene::TitleUpdate() {
@@ -394,6 +393,6 @@ void GameScene::Move(float moveAmount) {
 
 void GameScene::DamageShake() {
 	for (int i = 0; i < 3; i++) {
-		shakeObjectPos[i] = rand()%4-2;
+		shakeObjectPos[i] = static_cast<float>(rand()%4-2);
 	}
 }

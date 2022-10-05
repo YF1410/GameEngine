@@ -126,6 +126,9 @@
     <ClCompile Include="BaseEnemy.cpp">
       <Filter>Application\GameObject\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="NamiGame.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\DebugText.h">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="BaseEnemy.h">
       <Filter>Application\GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="NamiGame.h">
+      <Filter>Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
