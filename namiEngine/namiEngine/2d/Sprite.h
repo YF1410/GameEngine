@@ -31,6 +31,8 @@ public: // サブクラス
 public: // 静的メンバ関数
 	// 静的初期化
 	static bool StaticInitialize(ID3D12Device* device, int window_width, int window_height);
+	//静的解放
+	static void StaticFinalize();
 	// テクスチャ読み込み
 	static bool LoadTexture(UINT texnumber, const wchar_t* filename);
 	// 描画前処理

@@ -62,6 +62,11 @@ public: // 静的メンバ関数
 	static void StaticInitialize(ID3D12Device* device);
 
 	/// <summary>
+	/// 静的解放
+	/// </summary>
+	static void StaticFinalize();
+
+	/// <summary>
 	/// インスタンス生成
 	/// </summary>
 	/// <returns>インスタンス</returns>

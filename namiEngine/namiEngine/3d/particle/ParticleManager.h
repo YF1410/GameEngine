@@ -166,8 +166,12 @@ private: // ƒƒ“ƒo•Ï”
 	std::forward_list<Particle> particles;
 	// ƒJƒƒ‰
 	Camera* cameraObject = nullptr;
-public:
-	static ParticleManager instance;
+private:
+	static std::unique_ptr<ParticleManager> instance;
+	//friend decltype(instance)::deleter_type;
+	//friend decltype(instance)::deleter_type  std::make_unique<decltype(instance)>();
+	friend std::unique_ptr<ParticleManager>::deleter_type;
+	friend std::unique_ptr<ParticleManager> std::make_unique<ParticleManager>();
 private:
 	ParticleManager() = default;
 	ParticleManager(const ParticleManager&) = delete;

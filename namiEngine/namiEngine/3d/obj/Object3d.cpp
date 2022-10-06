@@ -39,6 +39,11 @@ void Object3d::StaticInitialize(ID3D12Device* device, Camera* cameraObject) {
 	Model::StaticInitialize(device);
 }
 
+void Object3d::StaticFinalize() {
+	/*pipelineSet.pipelinestate->Release();
+	pipelineSet.rootsignature->Release();*/
+}
+
 void Object3d::CreateGraphicsPipeline() {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
@@ -232,7 +237,6 @@ Object3d::~Object3d() {
 		CollisionManager::GetInstance()->RemoveCollider(collider);
 		delete collider;
 	}
-	delete &pipelineSet;
 }
 
 bool Object3d::Initialize() {

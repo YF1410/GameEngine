@@ -2,21 +2,10 @@
 
 //# Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	NamiGame game;
-	game.Initialize();
-	while (true)  // ゲームループ
-	{
-		game.Update();
 
-		//終了処理が入ったら
-		if (game.GetIsEnd()) {
-			break;
-		}
+	std::unique_ptr<Framework> game = std::make_unique<NamiGame>();
 
-		game.Draw();
-	}
-
-	game.Finalize();
+	game->Run();
 
 	return 0;
 }

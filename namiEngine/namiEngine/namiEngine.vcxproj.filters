@@ -129,6 +129,9 @@
     <ClCompile Include="NamiGame.cpp">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="Framework.cpp">
+      <Filter>Engine\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\DebugText.h">
@@ -253,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="NamiGame.h">
       <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework.h">
+      <Filter>Engine\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

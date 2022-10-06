@@ -1,27 +1,9 @@
 #include "NamiGame.h"
 
 void NamiGame::Initialize() {
-	win = std::make_unique<WinApp>();
-	dxCommon = std::make_unique<DirectXCommon>();
-	input = std::make_unique<Input>();
-	audio = std::make_unique<Audio>();
+	Framework::Initialize();
 	gameScene = std::make_unique<GameScene>();
 	postEffect = std::make_unique<PostEffect>();
-	// ゲームウィンドウの作成
-	win->CreateGameWindow();
-
-	//DirectX初期化処理
-	dxCommon->Initialize(win->GetHwnd());
-
-#pragma region 汎用機能初期化
-
-	//入力の初期化
-	input->Initialize(win->GetInstance(), win->GetHwnd());
-
-	// オーディオの初期化
-	if (!audio->Initialize()) {
-		assert(0);
-	}
 	// スプライト静的初期化
 	if (!Sprite::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height)) {
 		assert(0);
@@ -54,22 +36,15 @@ void NamiGame::Finalize() {
 	// 各種解放
 	FbxLoader::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
+	LightGroup::StaticFinalize();
+	Object3d::StaticFinalize();
+	Sprite::StaticFinalize();
 
-	// ゲームウィンドウの破棄
-	win->TerminateGameWindow();
+	Framework::Finalize();
 }
 
 void NamiGame::Update() {
-	// メッセージ処理
-	if (win->ProcessMessage()) {
-		isEnd_ = true;
-		return;
-	}
-
-#pragma region DirectX毎フレーム処理
-
-	// 入力関連の毎フレーム処理
-	input->Update();
+	Framework::Update();
 	// ゲームシーンの毎フレーム処理
 	gameScene->Update();
 }

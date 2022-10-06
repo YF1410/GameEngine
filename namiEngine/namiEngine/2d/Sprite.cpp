@@ -202,7 +202,17 @@ bool Sprite::StaticInitialize(ID3D12Device* device, int window_width, int window
 		return false;
 	}
 
+	rootSignature->SetName(L"SpliteRootSig");
+	pipelineState->SetName(L"SplitePipeLineState");
+
 	return true;
+}
+
+void Sprite::StaticFinalize() {
+	rootSignature.Reset();
+	pipelineState.Reset();
+	descHeap.Reset();
+	//delete &texBuff[srvCount];
 }
 
 bool Sprite::LoadTexture(UINT texnumber, const wchar_t* filename) {

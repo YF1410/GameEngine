@@ -1,31 +1,20 @@
 #pragma once
+#include "Framework.h"
 
-#include "WinApp.h"
-#include "DirectXCommon.h"
-#include "Audio.h"
 #include "GameScene.h"
-#include "FbxLoader.h"
 #include "PostEffect.h"
 
-class NamiGame {
+class NamiGame : public Framework {
 public:
 	//初期化
-	void Initialize();
+	void Initialize() override;
 	//終了
-	void Finalize();
+	void Finalize() override;
 	//毎フレーム更新
-	void Update();
+	void Update() override;
 	//描画
-	void Draw();
-	//ゲッター
-	bool GetIsEnd() { return isEnd_; }
-
+	void Draw() override;
 private:
-	bool isEnd_ = false;
-	std::unique_ptr<WinApp> win;
-	std::unique_ptr<DirectXCommon> dxCommon;
-	std::unique_ptr<Input> input;
-	std::unique_ptr<Audio> audio;
 	std::unique_ptr<GameScene> gameScene;
 	std::unique_ptr<PostEffect> postEffect;
 };

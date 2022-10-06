@@ -19,6 +19,11 @@ void LightGroup::StaticInitialize(ID3D12Device * device)
 	LightGroup::device = device;
 }
 
+void LightGroup::StaticFinalize()
+{
+	device->Release();
+}
+
 std::unique_ptr<LightGroup> LightGroup::Create()
 {
 	// 3Dオブジェクトのインスタンスを生成
