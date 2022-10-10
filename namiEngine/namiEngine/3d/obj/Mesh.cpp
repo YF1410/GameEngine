@@ -4,16 +4,23 @@
 
 #pragma comment(lib, "d3dcompiler.lib")
 
+using namespace Microsoft::WRL;
 using namespace DirectX;
 
 // 静的メンバ変数の実体
-ID3D12Device* Mesh::device = nullptr;
+ComPtr<ID3D12Device> Mesh::device;
 
-void Mesh::StaticInitialize(ID3D12Device* device) {
+void Mesh::StaticInitialize(ComPtr<ID3D12Device> device) {
 	Mesh::device = device;
 
 	// マテリアルの静的初期化
 	Material::StaticInitialize(device);
+	//device->SetName(L"3DObjMeshDevice");
+}
+
+void Mesh::StaticFinalize(){
+	Material::StaticFinalize();
+	device.Reset();
 }
 
 void Mesh::SetName(const std::string& name) {

@@ -31,7 +31,6 @@ void NamiGame::Initialize() {
 }
 
 void NamiGame::Finalize() {
-	gameScene.release();
 	//‰ð•ú
 	// ŠeŽí‰ð•ú
 	FbxLoader::GetInstance()->Finalize();
@@ -39,7 +38,8 @@ void NamiGame::Finalize() {
 	LightGroup::StaticFinalize();
 	Object3d::StaticFinalize();
 	Sprite::StaticFinalize();
-
+	postEffect.release();
+	gameScene.release();
 	Framework::Finalize();
 }
 

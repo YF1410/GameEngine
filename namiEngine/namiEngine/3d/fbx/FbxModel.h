@@ -77,7 +77,7 @@ public: // サブクラス
 
 public:
 	// バッファ生成
-	void CreateBuffers(ID3D12Device* device);
+	void CreateBuffers(ComPtr<ID3D12Device> device);
 	// 描画
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 	// モデルの変形行列取得

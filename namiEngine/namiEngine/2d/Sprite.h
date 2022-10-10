@@ -30,7 +30,7 @@ public: // サブクラス
 
 public: // 静的メンバ関数
 	// 静的初期化
-	static bool StaticInitialize(ID3D12Device* device, int window_width, int window_height);
+	static bool StaticInitialize(ComPtr<ID3D12Device> device, int window_width, int window_height);
 	//静的解放
 	static void StaticFinalize();
 	// テクスチャ読み込み
@@ -48,7 +48,7 @@ protected: // 静的メンバ変数
 	// 頂点数
 	static const int vertNum = 4;
 	// デバイス
-	static ID3D12Device* device;
+	static ComPtr<ID3D12Device> device;
 	// デスクリプタサイズ
 	static UINT descriptorHandleIncrementSize;
 	// コマンドリスト

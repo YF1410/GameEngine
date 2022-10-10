@@ -12,6 +12,7 @@
 using namespace Microsoft::WRL;
 
 DirectXCommon::~DirectXCommon() {
+	device.Reset();
 	dxgiFactory.Reset();
 	commandList.Reset();
 	commandAllocator.Reset();
@@ -24,17 +25,38 @@ DirectXCommon::~DirectXCommon() {
 	fence.Reset();
 	imguiHeap.Reset();
 	ID3D12DebugDevice* debugInterface;
+	ComPtr<IDXGIAdapter1> tmpAdapter;
+	ID3D12Device* debugDevice = nullptr;
+	D3D_FEATURE_LEVEL featureLevel;
+	D3D_FEATURE_LEVEL levels[] =
+	{
+		D3D_FEATURE_LEVEL_12_1,
+		D3D_FEATURE_LEVEL_12_0,
+		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0,
+	};
+	HRESULT result = S_FALSE;
+	for (int i = 0; i < _countof(levels); i++) {
+		// デバイスを生成
+		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i], IID_PPV_ARGS(&debugDevice));
+		if (SUCCEEDED(result)) {
+			// デバイスを生成できた時点でループを抜ける
+			featureLevel = levels[i];
+			break;
+		}
+	}
 
-	if (SUCCEEDED(device.Get()->QueryInterface(&debugInterface)))
+	if (SUCCEEDED(debugDevice->QueryInterface(&debugInterface)))
 	{
 		debugInterface->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
 		debugInterface->Release();
+		debugDevice->Release();
 	}
 }
 
 void DirectXCommon::Initialize(HWND hwnd) {
 	this->hwnd = hwnd;
-
+	
 	// DXGIデバイス初期化
 	if (!InitializeDXGIDevice()) {
 		assert(0);
@@ -244,7 +266,7 @@ bool DirectXCommon::InitializeDXGIDevice() {
 		assert(0);
 		return false;
 	}
-
+	device->SetName(L"DirectXCommonDevice");
 	return true;
 }
 
@@ -450,7 +472,7 @@ bool DirectXCommon::InitImgui() {
 		return false;
 	}
 	if (!ImGui_ImplDX12_Init(
-		GetDevice(),
+		GetDevice().Get(),
 		swcDesc.BufferCount,
 		swcDesc.BufferDesc.Format,
 		imguiHeap.Get(),

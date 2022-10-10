@@ -83,7 +83,7 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <returns></returns>
-	void Initialize(ID3D12Device* device);
+	void Initialize(ComPtr<ID3D12Device> device);
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -141,7 +141,7 @@ public: // メンバ関数
 
 private: // メンバ変数
 	// デバイス
-	ID3D12Device* device = nullptr;
+	ComPtr<ID3D12Device> device = nullptr;
 	// デスクリプタサイズ
 	UINT descriptorHandleIncrementSize = 0u;
 	// ルートシグネチャ

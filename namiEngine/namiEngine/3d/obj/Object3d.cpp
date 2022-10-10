@@ -16,13 +16,13 @@ using namespace std;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-ID3D12Device* Object3d::device = nullptr;
+ComPtr<ID3D12Device> Object3d::device;
 ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
 Object3d::PipelineSet Object3d::pipelineSet;
 Camera* Object3d::cameraObject = nullptr;
 LightGroup* Object3d::lightGroup = nullptr;
 
-void Object3d::StaticInitialize(ID3D12Device* device, Camera* cameraObject) {
+void Object3d::StaticInitialize(ComPtr<ID3D12Device> device, Camera* cameraObject) {
 	// 再初期化チェック
 	assert(!Object3d::device);
 
@@ -40,8 +40,10 @@ void Object3d::StaticInitialize(ID3D12Device* device, Camera* cameraObject) {
 }
 
 void Object3d::StaticFinalize() {
-	/*pipelineSet.pipelinestate->Release();
-	pipelineSet.rootsignature->Release();*/
+	Model::StaticFinalize();
+	device.Reset();
+	pipelineSet.pipelinestate.Reset();
+	pipelineSet.rootsignature.Reset();
 }
 
 void Object3d::CreateGraphicsPipeline() {

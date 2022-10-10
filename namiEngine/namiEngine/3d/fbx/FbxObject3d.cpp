@@ -9,7 +9,7 @@ using namespace DirectX;
 /// <summary>
 /// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
 /// </summary>
-ID3D12Device* FbxObject3d::device = nullptr;
+ComPtr<ID3D12Device> FbxObject3d::device;
 Camera* FbxObject3d::cameraObject = nullptr;
 ComPtr<ID3D12RootSignature> FbxObject3d::rootsignature;
 ComPtr<ID3D12PipelineState> FbxObject3d::pipelinestate;

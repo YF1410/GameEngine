@@ -8,6 +8,8 @@
 #include <string>
 #include "FbxModel.h"
 
+using namespace Microsoft::WRL;
+
 class FbxLoader {
 private://エイリアス
 	//std::を省略
@@ -37,7 +39,7 @@ public:
 	/// 初期化
 	/// </summary>
 	/// <param name = "device">D3D12デバイス</param>
-	void Initialize(ID3D12Device* device);
+	void Initialize(ComPtr<ID3D12Device> device);
 
 	/// <summary>
 	/// 後始末
@@ -94,7 +96,7 @@ private:
 	void operator=(const FbxLoader& obj) = delete;
 
 	//D3D12デバイス
-	ID3D12Device* device = nullptr;
+	ComPtr<ID3D12Device> device = nullptr;
 
 	//FBXマネージャ
 	FbxManager* fbxManager = nullptr;

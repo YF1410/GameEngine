@@ -39,7 +39,7 @@ ParticleManager* ParticleManager::GetInstance() {
 	return instance.get();
 }
 
-void ParticleManager::Initialize(ID3D12Device* device) {
+void ParticleManager::Initialize(ComPtr<ID3D12Device> device) {
 	// nullptrチェック
 	assert(device);
 
@@ -73,6 +73,10 @@ void ParticleManager::Initialize(ID3D12Device* device) {
 }
 
 void ParticleManager::Finalize() {
+	device.Reset();
+	rootsignature.Reset();
+	pipelinestate.Reset();
+	descHeap.Reset();
 	instance.release();
 }
 

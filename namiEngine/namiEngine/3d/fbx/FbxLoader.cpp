@@ -5,6 +5,7 @@
 /// </summary>
 const std::string FbxLoader::baseDirectory = "Resources/";
 const std::string FbxLoader::defaultTextureFileName = "white1x1.png";
+using namespace Microsoft::WRL;
 using namespace DirectX;
 
 FbxLoader* FbxLoader::GetInstance() {
@@ -23,7 +24,7 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& s
 	}
 }
 
-void FbxLoader::Initialize(ID3D12Device* device) {
+void FbxLoader::Initialize(ComPtr<ID3D12Device> device) {
 	//再初期化チェック
 	assert(fbxManager == nullptr);
 	//引数からメンバ変数に代入

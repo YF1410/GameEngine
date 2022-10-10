@@ -2,14 +2,20 @@
 #include <DirectXTex.h>
 #include <cassert>
 
+using namespace Microsoft::WRL;
 using namespace DirectX;
 using namespace std;
 
 // Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
-ID3D12Device* Material::device = nullptr;
+ComPtr<ID3D12Device> Material::device;
 
-void Material::StaticInitialize(ID3D12Device* device) {
+void Material::StaticInitialize(ComPtr<ID3D12Device> device) {
 	Material::device = device;
+	//device->SetName(L"3DObjMaterialDevice");
+}
+
+void Material::StaticFinalize() {
+	device.Reset();
 }
 
 Material* Material::Create() {

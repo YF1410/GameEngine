@@ -10,7 +10,7 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 
 // 静的メンバ変数の実体
-ID3D12Device* Sprite::device = nullptr;
+ComPtr<ID3D12Device> Sprite::device;
 UINT Sprite::descriptorHandleIncrementSize;
 ID3D12GraphicsCommandList* Sprite::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> Sprite::rootSignature;
@@ -19,7 +19,7 @@ XMMATRIX Sprite::matProjection;
 ComPtr<ID3D12DescriptorHeap> Sprite::descHeap;
 ComPtr<ID3D12Resource> Sprite::texBuff[srvCount];
 
-bool Sprite::StaticInitialize(ID3D12Device* device, int window_width, int window_height) {
+bool Sprite::StaticInitialize(ComPtr<ID3D12Device> device, int window_width, int window_height) {
 	// nullptrチェック
 	assert(device);
 
@@ -204,15 +204,19 @@ bool Sprite::StaticInitialize(ID3D12Device* device, int window_width, int window
 
 	rootSignature->SetName(L"SpliteRootSig");
 	pipelineState->SetName(L"SplitePipeLineState");
+	descHeap->SetName(L"SpliteDescHeap");
 
 	return true;
 }
 
 void Sprite::StaticFinalize() {
+	device.Reset();
 	rootSignature.Reset();
 	pipelineState.Reset();
 	descHeap.Reset();
-	//delete &texBuff[srvCount];
+	for (int i = 0; i < srvCount; i++) {
+		texBuff[i].Reset();
+	}
 }
 
 bool Sprite::LoadTexture(UINT texnumber, const wchar_t* filename) {

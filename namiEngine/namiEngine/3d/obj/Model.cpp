@@ -2,13 +2,14 @@
 #include <fstream>
 #include <sstream>
 
+using namespace Microsoft::WRL;
 using namespace std;
 
 // 静的メンバ変数の実体
-ID3D12Device* Model::device = nullptr;
+ComPtr<ID3D12Device> Model::device;
 UINT Model::descriptorHandleIncrementSize = 0;
 
-void Model::StaticInitialize(ID3D12Device* device) {
+void Model::StaticInitialize(ComPtr<ID3D12Device> device) {
 	// nullptrチェック
 	assert(device);
 
@@ -16,6 +17,12 @@ void Model::StaticInitialize(ID3D12Device* device) {
 
 	// メッシュの静的初期化
 	Mesh::StaticInitialize(device);
+	//device->SetName(L"3DObjModelDevice");
+}
+
+void Model::StaticFinalize() {
+	Mesh::StaticFinalize();
+	device.Reset();
 }
 
 std::unique_ptr<Model> Model::CreateFromObject(const std::string& text, bool smoothing) {
