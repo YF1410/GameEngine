@@ -176,6 +176,11 @@ void FbxObject3d::CreateGraphicsPipeline() {
 	if (FAILED(result)) { assert(0); }
 }
 
+FbxObject3d::~FbxObject3d() {
+	constBuffTransform.Reset();
+	constBuffSkin.Reset();
+}
+
 void FbxObject3d::Initialize() {
 	HRESULT result;
 	// 定数バッファの生成

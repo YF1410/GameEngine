@@ -77,6 +77,8 @@ private: // 静的メンバ変数
 	static ComPtr<ID3D12Device> device;
 
 public: // メンバ関数
+	~LightGroup();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>

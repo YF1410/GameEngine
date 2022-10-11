@@ -239,6 +239,7 @@ Object3d::~Object3d() {
 		CollisionManager::GetInstance()->RemoveCollider(collider);
 		delete collider;
 	}
+	constBuffB0.Reset();
 }
 
 bool Object3d::Initialize() {

@@ -77,6 +77,9 @@ void ParticleManager::Finalize() {
 	rootsignature.Reset();
 	pipelinestate.Reset();
 	descHeap.Reset();
+	vertBuff.Reset();
+	texbuff.Reset();
+	constBuff.Reset();
 	instance.release();
 }
 

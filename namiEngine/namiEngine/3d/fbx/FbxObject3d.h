@@ -59,6 +59,7 @@ private: // Ã“Iƒƒ“ƒo•Ï”
 	static ComPtr<ID3D12PipelineState> pipelinestate;
 
 public: // ƒƒ“ƒoŠÖ”
+	~FbxObject3d();
 	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>

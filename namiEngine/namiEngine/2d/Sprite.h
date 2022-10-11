@@ -67,6 +67,8 @@ protected: // 静的メンバ変数
 public: // メンバ関数
 	// コンストラクタ
 	Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color, XMFLOAT2 anchorpoint, bool isFlipX, bool isFlipY);
+	//デストラクタ
+	~Sprite();
 	// 初期化
 	bool Initialize();
 	//頂点バッファ生成

@@ -36,6 +36,10 @@ std::unique_ptr<LightGroup> LightGroup::Create()
 	return instance;
 }
 
+LightGroup::~LightGroup() {
+	constBuff.Reset();
+}
+
 void LightGroup::Initialize()
 {
 	// nullptrチェック

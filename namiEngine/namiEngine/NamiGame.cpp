@@ -38,8 +38,8 @@ void NamiGame::Finalize() {
 	LightGroup::StaticFinalize();
 	Object3d::StaticFinalize();
 	Sprite::StaticFinalize();
-	postEffect.release();
-	gameScene.release();
+	postEffect.reset();
+	gameScene.reset();
 	Framework::Finalize();
 }
 
