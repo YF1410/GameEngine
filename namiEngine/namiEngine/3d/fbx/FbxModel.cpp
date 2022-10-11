@@ -121,4 +121,7 @@ void FbxModel::Draw(ID3D12GraphicsCommandList* cmdList) {
 FbxModel::~FbxModel() {
 	//FBXƒV[ƒ“‚Ì‰ð•ú
 	//fbxScene->Destroy();
+	vertBuff.Reset();
+	indexBuff.Reset();
+	texbuff.Reset();
 }

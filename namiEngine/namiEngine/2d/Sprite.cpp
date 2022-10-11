@@ -214,7 +214,7 @@ void Sprite::StaticFinalize() {
 	rootSignature.Reset();
 	pipelineState.Reset();
 	descHeap.Reset();
-	for (int i = 0; i < srvCount; i++) {
+	for (int i = 0; i < _countof(texBuff); i++) {
 		texBuff[i].Reset();
 	}
 }

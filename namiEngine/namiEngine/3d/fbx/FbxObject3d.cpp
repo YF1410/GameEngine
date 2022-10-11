@@ -174,9 +174,13 @@ void FbxObject3d::CreateGraphicsPipeline() {
 	// グラフィックスパイプラインの生成
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(pipelinestate.ReleaseAndGetAddressOf()));
 	if (FAILED(result)) { assert(0); }
+
+	rootsignature->SetName(L"FbxObject3DRootSig");
 }
 
 FbxObject3d::~FbxObject3d() {
+	rootsignature.Reset();
+	pipelinestate.Reset();
 	constBuffTransform.Reset();
 	constBuffSkin.Reset();
 }

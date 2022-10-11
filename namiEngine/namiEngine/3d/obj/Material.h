@@ -48,6 +48,7 @@ private: // 静的メンバ変数
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
 
 public: // メンバ関数
+	~Material();
 	// 定数バッファの取得
 	ID3D12Resource* GetConstantBuffer() { return constBuff.Get(); }
 	// テクスチャ読み込み

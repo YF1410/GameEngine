@@ -158,7 +158,7 @@ void Model::Initialize(const std::string& text, bool smoothing) {
 				// マテリアル名で検索し、マテリアルを割り当てる
 				auto itr = materials.find(materialName);
 				if (itr != materials.end()) 				{
-					mesh->SetMaterial(itr->second);
+					mesh->SetMaterial(itr->second.get());
 				}
 			}
 		}
@@ -403,7 +403,7 @@ void Model::LoadTexture() {
 	string directoryPath = "Resources/" + name + "/";
 
 	for (auto& m : materials) 	{
-		Material* material = m.second;
+		Material* material = m.second.get();
 
 		// テクスチャあり
 		if (material->textureFilename.size() > 0) 		{
@@ -443,7 +443,7 @@ void Model::Draw(ID3D12GraphicsCommandList* cmdList) {
 }
 
 void Model::SetAlpha(float alpha) {
-	for (auto m : materials) 	{
+	for (auto& m : materials) 	{
 		m.second->alpha = alpha;
 		m.second->Update();
 	}

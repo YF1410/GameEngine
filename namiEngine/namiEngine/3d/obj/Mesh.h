@@ -39,6 +39,7 @@ private: // 静的メンバ変数
 	static ComPtr<ID3D12Device> device;
 
 public: // メンバ関数
+	~Mesh();
 	// 名前を取得
 	const std::string& GetName() { return name; }
 	// 名前をセット

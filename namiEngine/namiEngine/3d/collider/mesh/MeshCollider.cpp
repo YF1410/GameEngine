@@ -4,52 +4,52 @@
 using namespace DirectX;
 
 void MeshCollider::ConstructTriangles(Model* model) {
-	//三角形リストをクリア
-	triangles.clear();
-	//モデルの持つメッシュリストを取得
-	const std::vector<Mesh*>& meshes = model->GetMeshes();
-	//現在のメッシュの開始三角形番号を入れておく(0で初期化)
-	int start = 0;
+	////三角形リストをクリア
+	//triangles.clear();
+	////モデルの持つメッシュリストを取得
+	//const std::vector<std::unique_ptr<Mesh>>& meshes = model->GetMeshes();
+	////現在のメッシュの開始三角形番号を入れておく(0で初期化)
+	//int start = 0;
 
-	//全メッシュについて順に処理する
-	std::vector<Mesh*>::const_iterator it = meshes.cbegin();
-	for (; it != meshes.cend(); ++it) {
-		Mesh* mesh = *it;
-		const std::vector<Mesh::VertexPosNormalUv>& vertices = mesh->GetVertices();
-		const std::vector<unsigned short>& indices = mesh->GetIndices();
-		//インデックスは三角形の数x3個あるので、そこからメッシュ内の三角形の数を逆算する
-		size_t triangleNum = indices.size() / 3;
-		//現在のメッシュの三角形の数だけ、三角形リストにスペースを追加する
-		triangles.resize(triangles.size() + triangleNum);
-		//全三角形に対して順に処理する
-		for (int i = 0; i < triangleNum; i++) {
-			//今から計算する三角形の参照
-			Triangle& tri = triangles[start + i];
-			int idx0 = indices[i * 3 + 0];
-			int idx1 = indices[i * 3 + 1];
-			int idx2 = indices[i * 3 + 2];
-			//三角形の3頂点の座標を代入
-			tri.p0 = {
-				vertices[idx0].pos.x,
-				vertices[idx0].pos.y,
-				vertices[idx0].pos.z,
-				1 };
+	////全メッシュについて順に処理する
+	//std::vector<std::unique_ptr<Mesh>>::const_iterator it = meshes.cbegin();
+	//for (; it != meshes.cend(); ++it) {
+	//	std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(it);
+	//	const std::vector<Mesh::VertexPosNormalUv>& vertices = mesh->GetVertices();
+	//	const std::vector<unsigned short>& indices = mesh->GetIndices();
+	//	//インデックスは三角形の数x3個あるので、そこからメッシュ内の三角形の数を逆算する
+	//	size_t triangleNum = indices.size() / 3;
+	//	//現在のメッシュの三角形の数だけ、三角形リストにスペースを追加する
+	//	triangles.resize(triangles.size() + triangleNum);
+	//	//全三角形に対して順に処理する
+	//	for (int i = 0; i < triangleNum; i++) {
+	//		//今から計算する三角形の参照
+	//		Triangle& tri = triangles[start + i];
+	//		int idx0 = indices[i * 3 + 0];
+	//		int idx1 = indices[i * 3 + 1];
+	//		int idx2 = indices[i * 3 + 2];
+	//		//三角形の3頂点の座標を代入
+	//		tri.p0 = {
+	//			vertices[idx0].pos.x,
+	//			vertices[idx0].pos.y,
+	//			vertices[idx0].pos.z,
+	//			1 };
 
-			tri.p1 = {
-				vertices[idx1].pos.x,
-				vertices[idx1].pos.y,
-				vertices[idx1].pos.z,
-				1 };
+	//		tri.p1 = {
+	//			vertices[idx1].pos.x,
+	//			vertices[idx1].pos.y,
+	//			vertices[idx1].pos.z,
+	//			1 };
 
-			tri.p2 = {
-				vertices[idx2].pos.x,
-				vertices[idx2].pos.y,
-				vertices[idx2].pos.z,
-				1 };
-			//3頂点から法線を計算
-			tri.ComputeNormal();
-		}
-	}
+	//		tri.p2 = {
+	//			vertices[idx2].pos.x,
+	//			vertices[idx2].pos.y,
+	//			vertices[idx2].pos.z,
+	//			1 };
+	//		//3頂点から法線を計算
+	//		tri.ComputeNormal();
+	//	}
+	//}
 }
 
 void MeshCollider::Update() {

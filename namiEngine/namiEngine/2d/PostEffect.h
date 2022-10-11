@@ -9,6 +9,8 @@ public:
 	/// </summary>
 	PostEffect();
 
+	~PostEffect();
+
 	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>

@@ -45,9 +45,6 @@
     <ClCompile Include="2d\Sprite.cpp">
       <Filter>Engine\2D</Filter>
     </ClCompile>
-    <ClCompile Include="3d\fbx\FbxLoader.cpp">
-      <Filter>Engine\3D\FBX</Filter>
-    </ClCompile>
     <ClCompile Include="3d\fbx\FbxModel.cpp">
       <Filter>Engine\3D\FBX</Filter>
     </ClCompile>
@@ -131,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="Framework.cpp">
       <Filter>Engine\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="3d\fbx\FbxLoader.cpp">
+      <Filter>Engine\3D\FBX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -45,15 +45,15 @@ public: // メンバ関数
 	//アルファ値を設定
 	void SetAlpha(float alpha);
 	// メッシュコンテナを取得
-	inline const std::vector<Mesh*>& GetMeshes() { return meshes; }
+	inline const std::vector<std::unique_ptr<Mesh>>& GetMeshes() { return meshes; }
 
 private: // メンバ変数
 	// 名前
 	std::string name;
 	// メッシュコンテナ
-	std::vector<Mesh*> meshes;
+	std::vector<std::unique_ptr<Mesh>> meshes;
 	// マテリアルコンテナ
-	std::unordered_map<std::string, Material*> materials;
+	std::unordered_map<std::string, std::unique_ptr<Material>> materials;
 	// デフォルトマテリアル
 	Material* defaultMaterial = nullptr;
 	// デスクリプタヒープ

@@ -39,6 +39,11 @@ void Mesh::SetMaterial(Material* material) {
 	this->material = material;
 }
 
+Mesh::~Mesh() {
+	vertBuff.Reset();
+	indexBuff.Reset();
+}
+
 void Mesh::CreateBuffers() {
 	HRESULT result;
 

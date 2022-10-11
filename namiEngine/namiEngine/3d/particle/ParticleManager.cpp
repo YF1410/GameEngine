@@ -385,6 +385,7 @@ void ParticleManager::InitializeGraphicsPipeline() {
 	if (FAILED(result)) {
 		assert(0);
 	}
+	rootsignature->SetName(L"ParticleManagerRootSig");
 }
 
 void ParticleManager::LoadTexture() {

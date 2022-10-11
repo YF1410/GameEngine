@@ -195,6 +195,7 @@ void Object3d::CreateGraphicsPipeline() {
 	if (FAILED(result)) {
 		assert(0);
 	}
+	pipelineSet.rootsignature->SetName(L"Object3DRootSig");
 }
 
 void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdList) {

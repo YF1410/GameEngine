@@ -26,6 +26,11 @@ Material* Material::Create() {
 	return instance;
 }
 
+Material::~Material() {
+	texbuff.Reset();
+	constBuff.Reset();
+}
+
 void Material::Initialize() {
 	// 定数バッファの生成
 	CreateConstantBuffer();
@@ -133,6 +138,8 @@ void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIP
 		&srvDesc, //テクスチャ設定情報
 		cpuDescHandleSRV
 	);
+	texbuff->SetName(L"MaterialTex");
+	constBuff->SetName(L"MaterialConstBuff");
 }
 
 void Material::Update() {

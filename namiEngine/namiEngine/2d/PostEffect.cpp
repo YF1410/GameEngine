@@ -20,6 +20,18 @@ PostEffect::PostEffect() : Sprite(
 {
 }
 
+PostEffect::~PostEffect() {
+	for (int i = 0; i < _countof(texBuff); i++) {
+		texBuff[i].Reset();
+	}
+	descHeapSRV.Reset();
+	depthBuff.Reset();
+	descHeapRTV.Reset();
+	descHeapDSV.Reset();
+	pipelineState.Reset();
+	rootSignature.Reset();
+}
+
 void PostEffect::Initialize() {
 	//パイプライン生成
 	CreateGraphicsPipelineState();
@@ -347,6 +359,8 @@ void PostEffect::CreateGraphicsPipelineState() {
 	// グラフィックスパイプラインの生成
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineState));
 	assert(SUCCEEDED(result));
+
+	rootSignature->SetName(L"PostEffectRootSig");
 }
 
 void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList) {
