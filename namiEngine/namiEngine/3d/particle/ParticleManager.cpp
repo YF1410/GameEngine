@@ -80,7 +80,7 @@ void ParticleManager::Finalize() {
 	vertBuff.Reset();
 	texbuff.Reset();
 	constBuff.Reset();
-	instance.release();
+	instance.reset();
 }
 
 void ParticleManager::Update() {

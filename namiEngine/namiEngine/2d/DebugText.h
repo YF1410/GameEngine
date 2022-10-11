@@ -22,8 +22,10 @@ public:// 静的メンバ関数
 	static DebugText* GetInstance();
 
 public:// メンバ関数
-
+	//初期化
 	void Initialize(UINT texnumber);
+	//後始末
+	void Finalize();
 
 	inline void SetPos(float x, float y) {
 		posX = x;

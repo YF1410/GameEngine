@@ -141,7 +141,7 @@ public: // メンバ関数
 
 private: // メンバ変数
 	// デバイス
-	ComPtr<ID3D12Device> device = nullptr;
+	ComPtr<ID3D12Device> device;
 	// デスクリプタサイズ
 	UINT descriptorHandleIncrementSize = 0u;
 	// ルートシグネチャ

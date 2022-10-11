@@ -11,11 +11,6 @@ ComPtr<ID3D12Device> Material::device;
 
 void Material::StaticInitialize(ComPtr<ID3D12Device> device) {
 	Material::device = device;
-	//device->SetName(L"3DObjMaterialDevice");
-}
-
-void Material::StaticFinalize() {
-	device.Reset();
 }
 
 Material* Material::Create() {
