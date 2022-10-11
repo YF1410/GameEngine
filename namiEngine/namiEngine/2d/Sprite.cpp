@@ -358,8 +358,6 @@ Sprite::Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color,
 }
 
 Sprite::~Sprite() {
-	vertBuff.Reset();
-	constBuff.Reset();
 }
 
 bool Sprite::Initialize() {

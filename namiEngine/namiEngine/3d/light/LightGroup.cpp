@@ -37,7 +37,6 @@ std::unique_ptr<LightGroup> LightGroup::Create()
 }
 
 LightGroup::~LightGroup() {
-	constBuff.Reset();
 }
 
 void LightGroup::Initialize()

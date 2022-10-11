@@ -43,9 +43,9 @@ public: // 静的メンバ関数
 	/// <summary>
 	/// グラフィックパイプラインの生成
 	/// </summary>
-	static void CreateGraphicsPipeline();
+	static void CreateGraphicsPipeline(ComPtr<ID3D12Device> device);
+	static void StaticFinalize();
 	// setter
-	static void SetDevice(ComPtr<ID3D12Device> device) { FbxObject3d::device = device; }
 	static void SetCamera(Camera* cameraObject) { FbxObject3d::cameraObject = cameraObject; }
 
 private: // 静的メンバ変数
@@ -59,7 +59,6 @@ private: // 静的メンバ変数
 	static ComPtr<ID3D12PipelineState> pipelinestate;
 
 public: // メンバ関数
-	~FbxObject3d();
 	/// <summary>
 	/// 初期化
 	/// </summary>

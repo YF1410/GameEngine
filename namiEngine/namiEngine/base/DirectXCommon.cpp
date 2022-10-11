@@ -24,6 +24,7 @@ DirectXCommon::~DirectXCommon() {
 	dsvHeap.Reset();
 	fence.Reset();
 	imguiHeap.Reset();
+	ImGui_ImplDX12_Shutdown();
 	ID3D12DebugDevice* debugInterface;
 	ComPtr<IDXGIAdapter1> tmpAdapter;
 	ID3D12Device* debugDevice = nullptr;
@@ -56,7 +57,7 @@ DirectXCommon::~DirectXCommon() {
 
 void DirectXCommon::Initialize(HWND hwnd) {
 	this->hwnd = hwnd;
-	
+
 	// DXGIデバイス初期化
 	if (!InitializeDXGIDevice()) {
 		assert(0);

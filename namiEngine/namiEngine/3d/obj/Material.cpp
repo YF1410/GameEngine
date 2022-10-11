@@ -6,7 +6,7 @@ using namespace Microsoft::WRL;
 using namespace DirectX;
 using namespace std;
 
-// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
+// ï¿½Ã“Iï¿½ï¿½ï¿½ï¿½ï¿½oï¿½Ïï¿½ï¿½Ìï¿½ï¿½ï¿½
 ComPtr<ID3D12Device> Material::device;
 
 void Material::StaticInitialize(ComPtr<ID3D12Device> device) {
@@ -27,16 +27,16 @@ Material* Material::Create() {
 }
 
 void Material::Initialize() {
-	// ’è”ƒoƒbƒtƒ@‚Ì¶¬
+	// ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Ìï¿½ï¿½ï¿½
 	CreateConstantBuffer();
 }
 
 void Material::CreateConstantBuffer() {
 	HRESULT result;
-	// ’è”ƒoƒbƒtƒ@‚Ì¶¬
+	// ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Ìï¿½ï¿½ï¿½
 	result = device->CreateCommittedResource
 	(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), // ƒAƒbƒvƒ[ƒh‰Â”\
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), // ï¿½Aï¿½bï¿½vï¿½ï¿½ï¿½[ï¿½hï¿½Â”\
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB1) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
@@ -49,7 +49,7 @@ void Material::CreateConstantBuffer() {
 }
 
 void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle, CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle) {
-	// ƒeƒNƒXƒ`ƒƒ‚È‚µ
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½È‚ï¿½
 	if (textureFilename.size() == 0) 	{
 		textureFilename = "white1x1.png";
 	}
@@ -59,15 +59,15 @@ void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIP
 
 	HRESULT result = S_FALSE;
 
-	// WICƒeƒNƒXƒ`ƒƒ‚Ìƒ[ƒh
+	// WICï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ìƒï¿½ï¿½[ï¿½h
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 
-	// ƒtƒ@ƒCƒ‹ƒpƒX‚ğŒ‹‡
+	// ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½pï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	string filepath = directoryPath + textureFilename;
 	wchar_t wfilepath[128];
 
-	// ƒ†ƒjƒR[ƒh•¶š—ñ‚É•ÏŠ·
+	// ï¿½ï¿½ï¿½jï¿½Rï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É•ÏŠï¿½
 	MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), -1, wfilepath, _countof(wfilepath));
 
 	result = LoadFromWICFile
@@ -79,9 +79,9 @@ void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIP
 		assert(0);
 	}
 
-	const Image* img = scratchImg.GetImage(0, 0, 0); // ¶ƒf[ƒ^’Šo
+	const Image* img = scratchImg.GetImage(0, 0, 0); // ï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½o
 
-	// ƒŠƒ\[ƒXİ’è
+	// ï¿½ï¿½ï¿½\ï¿½[ï¿½Xï¿½İ’ï¿½
 	CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D
 	(
 		metadata.format,
@@ -91,13 +91,13 @@ void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIP
 		(UINT16)metadata.mipLevels
 	);
 
-	// ƒeƒNƒXƒ`ƒƒ—pƒoƒbƒtƒ@‚Ì¶¬
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½pï¿½oï¿½bï¿½tï¿½@ï¿½Ìï¿½ï¿½ï¿½
 	result = device->CreateCommittedResource
 	(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0),
 		D3D12_HEAP_FLAG_NONE,
 		&texresDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ, // ƒeƒNƒXƒ`ƒƒ—pw’è
+		D3D12_RESOURCE_STATE_GENERIC_READ, // ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½pï¿½wï¿½ï¿½
 		nullptr,
 		IID_PPV_ARGS(&texbuff)
 	);
@@ -105,39 +105,39 @@ void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIP
 		assert(0);
 	}
 
-	// ƒeƒNƒXƒ`ƒƒƒoƒbƒtƒ@‚Éƒf[ƒ^“]‘—
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½oï¿½bï¿½tï¿½@ï¿½Éƒfï¿½[ï¿½^ï¿½]ï¿½ï¿½
 	result = texbuff->WriteToSubresource
 	(
 		0,
-		nullptr, // ‘S—Ìˆæ‚ÖƒRƒs[
-		img->pixels, // Œ³ƒf[ƒ^ƒAƒhƒŒƒX
-		(UINT)img->rowPitch, // 1ƒ‰ƒCƒ“ƒTƒCƒY
-		(UINT)img->slicePitch // 1–‡ƒTƒCƒY
+		nullptr, // ï¿½Sï¿½Ìˆï¿½ÖƒRï¿½sï¿½[
+		img->pixels, // ï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Aï¿½hï¿½ï¿½ï¿½X
+		(UINT)img->rowPitch, // 1ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Tï¿½Cï¿½Y
+		(UINT)img->slicePitch // 1ï¿½ï¿½ï¿½Tï¿½Cï¿½Y
 	);
 	if (FAILED(result)) 	{
 		assert(0);
 	}
 
-	// ƒVƒF[ƒ_ƒŠƒ\[ƒXƒrƒ…[ì¬
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // İ’è\‘¢‘Ì
+	// ï¿½Vï¿½Fï¿½[ï¿½_ï¿½ï¿½ï¿½\ï¿½[ï¿½Xï¿½rï¿½ï¿½ï¿½[ï¿½ì¬
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // ï¿½İ’ï¿½\ï¿½ï¿½ï¿½ï¿½
 	D3D12_RESOURCE_DESC resDesc = texbuff->GetDesc();
 
 	srvDesc.Format = resDesc.Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; //2DƒeƒNƒXƒ`ƒƒ
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; //2Dï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½
 	srvDesc.Texture2D.MipLevels = 1;
 
 	device->CreateShaderResourceView
 	(
-		texbuff.Get(), //ƒrƒ…[‚ÆŠÖ˜A•t‚¯‚éƒoƒbƒtƒ@
-		&srvDesc, //ƒeƒNƒXƒ`ƒƒİ’èî•ñ
+		texbuff.Get(), //ï¿½rï¿½ï¿½ï¿½[ï¿½ÆŠÖ˜Aï¿½tï¿½ï¿½ï¿½ï¿½oï¿½bï¿½tï¿½@
+		&srvDesc, //ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½İ’ï¿½ï¿½ï¿½
 		cpuDescHandleSRV
 	);
 }
 
 void Material::Update() {
 	HRESULT result;
-	// ’è”ƒoƒbƒtƒ@‚Öƒf[ƒ^“]‘—
+	// ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Öƒfï¿½[ï¿½^ï¿½]ï¿½ï¿½
 	ConstBufferDataB1* constMap = nullptr;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result)) 	{

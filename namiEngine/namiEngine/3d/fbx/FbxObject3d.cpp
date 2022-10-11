@@ -7,32 +7,33 @@ using namespace Microsoft::WRL;
 using namespace DirectX;
 
 /// <summary>
-/// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
+/// ï¿½Ã“Iï¿½ï¿½ï¿½ï¿½ï¿½oï¿½Ïï¿½ï¿½Ìï¿½ï¿½ï¿½
 /// </summary>
 ComPtr<ID3D12Device> FbxObject3d::device;
 Camera* FbxObject3d::cameraObject = nullptr;
 ComPtr<ID3D12RootSignature> FbxObject3d::rootsignature;
 ComPtr<ID3D12PipelineState> FbxObject3d::pipelinestate;
 
-void FbxObject3d::CreateGraphicsPipeline() {
+void FbxObject3d::CreateGraphicsPipeline(ComPtr<ID3D12Device> device) {
 	HRESULT result = S_FALSE;
-	ComPtr<ID3DBlob> vsBlob; // ’¸“_ƒVƒF[ƒ_ƒIƒuƒWƒFƒNƒg
-	ComPtr<ID3DBlob> psBlob;    // ƒsƒNƒZƒ‹ƒVƒF[ƒ_ƒIƒuƒWƒFƒNƒg
-	ComPtr<ID3DBlob> errorBlob; // ƒGƒ‰[ƒIƒuƒWƒFƒNƒg
+	ComPtr<ID3DBlob> vsBlob; // ï¿½ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
+	ComPtr<ID3DBlob> psBlob;    // ï¿½sï¿½Nï¿½Zï¿½ï¿½ï¿½Vï¿½Fï¿½[ï¿½_ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
+	ComPtr<ID3DBlob> errorBlob; // ï¿½Gï¿½ï¿½ï¿½[ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
 
 	assert(device);
+	FbxObject3d::device = device;
 
-	// ’¸“_ƒVƒF[ƒ_‚Ì“Ç‚İ‚İ‚ÆƒRƒ“ƒpƒCƒ‹
+	// ï¿½ï¿½ï¿½_ï¿½Vï¿½Fï¿½[ï¿½_ï¿½Ì“Ç‚İï¿½ï¿½İ‚ÆƒRï¿½ï¿½ï¿½pï¿½Cï¿½ï¿½
 	result = D3DCompileFromFile(
-		L"Resources/shaders/FBXVS.hlsl",    // ƒVƒF[ƒ_ƒtƒ@ƒCƒ‹–¼
+		L"Resources/shaders/FBXVS.hlsl",    // ï¿½Vï¿½Fï¿½[ï¿½_ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½
 		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // ƒCƒ“ƒNƒ‹[ƒh‰Â”\‚É‚·‚é
-		"main", "vs_5_0",    // ƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg–¼AƒVƒF[ƒ_[ƒ‚ƒfƒ‹w’è
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // ƒfƒoƒbƒO—pİ’è
+		D3D_COMPILE_STANDARD_FILE_INCLUDE, // ï¿½Cï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½[ï¿½hï¿½Â”\ï¿½É‚ï¿½ï¿½ï¿½
+		"main", "vs_5_0",    // ï¿½Gï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Aï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½wï¿½ï¿½
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // ï¿½fï¿½oï¿½bï¿½Oï¿½pï¿½İ’ï¿½
 		0,
 		&vsBlob, &errorBlob);
 	if (FAILED(result)) {
-		// errorBlob‚©‚çƒGƒ‰[“à—e‚ğstringŒ^‚ÉƒRƒs[
+		// errorBlobï¿½ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½eï¿½ï¿½stringï¿½^ï¿½ÉƒRï¿½sï¿½[
 		std::string errstr;
 		errstr.resize(errorBlob->GetBufferSize());
 
@@ -40,22 +41,22 @@ void FbxObject3d::CreateGraphicsPipeline() {
 			errorBlob->GetBufferSize(),
 			errstr.begin());
 		errstr += "\n";
-		// ƒGƒ‰[“à—e‚ğo—ÍƒEƒBƒ“ƒhƒE‚É•\¦
+		// ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½eï¿½ï¿½ï¿½oï¿½ÍƒEï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½É•\ï¿½ï¿½
 		OutputDebugStringA(errstr.c_str());
 		exit(1);
 	}
 
-	// ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ì“Ç‚İ‚İ‚ÆƒRƒ“ƒpƒCƒ‹
+	// ï¿½sï¿½Nï¿½Zï¿½ï¿½ï¿½Vï¿½Fï¿½[ï¿½_ï¿½Ì“Ç‚İï¿½ï¿½İ‚ÆƒRï¿½ï¿½ï¿½pï¿½Cï¿½ï¿½
 	result = D3DCompileFromFile(
-		L"Resources/shaders/FBXPS.hlsl",    // ƒVƒF[ƒ_ƒtƒ@ƒCƒ‹–¼
+		L"Resources/shaders/FBXPS.hlsl",    // ï¿½Vï¿½Fï¿½[ï¿½_ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½
 		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // ƒCƒ“ƒNƒ‹[ƒh‰Â”\‚É‚·‚é
-		"main", "ps_5_0",    // ƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg–¼AƒVƒF[ƒ_[ƒ‚ƒfƒ‹w’è
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // ƒfƒoƒbƒO—pİ’è
+		D3D_COMPILE_STANDARD_FILE_INCLUDE, // ï¿½Cï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½[ï¿½hï¿½Â”\ï¿½É‚ï¿½ï¿½ï¿½
+		"main", "ps_5_0",    // ï¿½Gï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Aï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½wï¿½ï¿½
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // ï¿½fï¿½oï¿½bï¿½Oï¿½pï¿½İ’ï¿½
 		0,
 		&psBlob, &errorBlob);
 	if (FAILED(result)) {
-		// errorBlob‚©‚çƒGƒ‰[“à—e‚ğstringŒ^‚ÉƒRƒs[
+		// errorBlobï¿½ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½eï¿½ï¿½stringï¿½^ï¿½ÉƒRï¿½sï¿½[
 		std::string errstr;
 		errstr.resize(errorBlob->GetBufferSize());
 
@@ -63,57 +64,57 @@ void FbxObject3d::CreateGraphicsPipeline() {
 			errorBlob->GetBufferSize(),
 			errstr.begin());
 		errstr += "\n";
-		// ƒGƒ‰[“à—e‚ğo—ÍƒEƒBƒ“ƒhƒE‚É•\¦
+		// ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½eï¿½ï¿½ï¿½oï¿½ÍƒEï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½É•\ï¿½ï¿½
 		OutputDebugStringA(errstr.c_str());
 		exit(1);
 	}
 
-	// ’¸“_ƒŒƒCƒAƒEƒg
+	// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Cï¿½Aï¿½Eï¿½g
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{ // xyÀ•W(1s‚Å‘‚¢‚½‚Ù‚¤‚ªŒ©‚â‚·‚¢)
+		{ // xyï¿½ï¿½ï¿½W(1ï¿½sï¿½Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â‚·ï¿½ï¿½)
 			"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
-		{ // –@üƒxƒNƒgƒ‹(1s‚Å‘‚¢‚½‚Ù‚¤‚ªŒ©‚â‚·‚¢)
+		{ // ï¿½@ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½(1ï¿½sï¿½Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â‚·ï¿½ï¿½)
 			"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
-		{ // uvÀ•W(1s‚Å‘‚¢‚½‚Ù‚¤‚ªŒ©‚â‚·‚¢)
+		{ // uvï¿½ï¿½ï¿½W(1ï¿½sï¿½Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â‚·ï¿½ï¿½)
 			"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
-		{ // ‰e‹¿‚ğó‚¯‚éƒ{[ƒ“”Ô†(4‚Â)
+		{ // ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ó‚¯‚ï¿½{ï¿½[ï¿½ï¿½ï¿½Ôï¿½(4ï¿½ï¿½)
 			"BONEINDICES",0,DXGI_FORMAT_R32G32B32A32_UINT,0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
-		{ // ƒ{[ƒ“‚ÌƒXƒLƒ“ƒEƒFƒCƒg(4‚Â)
+		{ // ï¿½{ï¿½[ï¿½ï¿½ï¿½ÌƒXï¿½Lï¿½ï¿½ï¿½Eï¿½Fï¿½Cï¿½g(4ï¿½ï¿½)
 			"BONEWEIGHTS",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
 	};
 
-	// ƒOƒ‰ƒtƒBƒbƒNƒXƒpƒCƒvƒ‰ƒCƒ“‚Ì—¬‚ê‚ğİ’è
+	// ï¿½Oï¿½ï¿½ï¿½tï¿½Bï¿½bï¿½Nï¿½Xï¿½pï¿½Cï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ì—ï¿½ï¿½ï¿½ï¿½İ’ï¿½
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline{};
 	gpipeline.VS = CD3DX12_SHADER_BYTECODE(vsBlob.Get());
 	gpipeline.PS = CD3DX12_SHADER_BYTECODE(psBlob.Get());
 
-	// ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
-	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // •W€İ’è
-	// ƒ‰ƒXƒ^ƒ‰ƒCƒUƒXƒe[ƒg
+	// ï¿½Tï¿½ï¿½ï¿½vï¿½ï¿½ï¿½}ï¿½Xï¿½N
+	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // ï¿½Wï¿½ï¿½ï¿½İ’ï¿½
+	// ï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Cï¿½Uï¿½Xï¿½eï¿½[ï¿½g
 	gpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	//gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	//gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
-	// ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg
+	// ï¿½fï¿½vï¿½Xï¿½Xï¿½eï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½g
 	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 
-	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ÌƒuƒŒƒ“ƒhİ’è
+	// ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½[ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½Ìƒuï¿½ï¿½ï¿½ï¿½ï¿½hï¿½İ’ï¿½
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
-	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;    // RBGA‘S‚Ä‚Ìƒ`ƒƒƒ“ƒlƒ‹‚ğ•`‰æ
+	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;    // RBGAï¿½Sï¿½Ä‚Ìƒ`ï¿½ï¿½ï¿½ï¿½ï¿½lï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½
 	blenddesc.BlendEnable = true;
 	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
 	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
@@ -123,67 +124,67 @@ void FbxObject3d::CreateGraphicsPipeline() {
 	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 
-	// ƒuƒŒƒ“ƒhƒXƒe[ƒg‚Ìİ’è
+	// ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½hï¿½Xï¿½eï¿½[ï¿½gï¿½Ìİ’ï¿½
 	gpipeline.BlendState.RenderTarget[0] = blenddesc;
 	gpipeline.BlendState.RenderTarget[1] = blenddesc;
 
-	// [“xƒoƒbƒtƒ@‚ÌƒtƒH[ƒ}ƒbƒg
+	// ï¿½[ï¿½xï¿½oï¿½bï¿½tï¿½@ï¿½Ìƒtï¿½Hï¿½[ï¿½}ï¿½bï¿½g
 	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
-	// ’¸“_ƒŒƒCƒAƒEƒg‚Ìİ’è
+	// ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Cï¿½Aï¿½Eï¿½gï¿½Ìİ’ï¿½
 	gpipeline.InputLayout.pInputElementDescs = inputLayout;
 	gpipeline.InputLayout.NumElements = _countof(inputLayout);
 
-	// }Œ`‚ÌŒ`óİ’èiOŠpŒ`j
+	// ï¿½}ï¿½`ï¿½ÌŒ`ï¿½ï¿½İ’ï¿½iï¿½Oï¿½pï¿½`ï¿½j
 	gpipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-	gpipeline.NumRenderTargets = 2;    // •`‰æ‘ÎÛ‚Í2‚Â
-	gpipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM; // 0`255w’è‚ÌRGBA
-	gpipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM; // 0`255w’è‚ÌRGBA
-	gpipeline.SampleDesc.Count = 1; // 1ƒsƒNƒZƒ‹‚É‚Â‚«1‰ñƒTƒ“ƒvƒŠƒ“ƒO
+	gpipeline.NumRenderTargets = 2;    // ï¿½`ï¿½ï¿½ÎÛ‚ï¿½2ï¿½ï¿½
+	gpipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM; // 0ï¿½`255ï¿½wï¿½ï¿½ï¿½RGBA
+	gpipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM; // 0ï¿½`255ï¿½wï¿½ï¿½ï¿½RGBA
+	gpipeline.SampleDesc.Count = 1; // 1ï¿½sï¿½Nï¿½Zï¿½ï¿½ï¿½É‚Â‚ï¿½1ï¿½ï¿½Tï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½O
 
-	// ƒfƒXƒNƒŠƒvƒ^ƒŒƒ“ƒW
+	// ï¿½fï¿½Xï¿½Nï¿½ï¿½ï¿½vï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½W
 	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
-	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 ƒŒƒWƒXƒ^
+	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 ï¿½ï¿½ï¿½Wï¿½Xï¿½^
 
-	// ƒ‹[ƒgƒpƒ‰ƒ[ƒ^
+	// ï¿½ï¿½ï¿½[ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^
 	CD3DX12_ROOT_PARAMETER rootparams[3];
-	// CBViÀ•W•ÏŠ·s—ñ—pj
+	// CBVï¿½iï¿½ï¿½ï¿½Wï¿½ÏŠï¿½ï¿½sï¿½ï¿½pï¿½j
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	// SRViƒeƒNƒXƒ`ƒƒj
+	// SRVï¿½iï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½j
 	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
-	// CBV (ƒXƒLƒjƒ“ƒO—p)
+	// CBV (ï¿½Xï¿½Lï¿½jï¿½ï¿½ï¿½Oï¿½p)
 	rootparams[2].InitAsConstantBufferView(3, 0, D3D12_SHADER_VISIBILITY_ALL);
 
-	// ƒXƒ^ƒeƒBƒbƒNƒTƒ“ƒvƒ‰[
+	// ï¿½Xï¿½^ï¿½eï¿½Bï¿½bï¿½Nï¿½Tï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
 
-	// ƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ìİ’è
+	// ï¿½ï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½lï¿½`ï¿½ï¿½ï¿½Ìİ’ï¿½
 	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
 	rootSignatureDesc.Init_1_0(_countof(rootparams), rootparams, 1, &samplerDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ComPtr<ID3DBlob> rootSigBlob;
-	// ƒo[ƒWƒ‡ƒ“©“®”»’è‚ÌƒVƒŠƒAƒ‰ƒCƒY
+	// ï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌƒVï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Cï¿½Y
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
-	// ƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ì¶¬
+	// ï¿½ï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½lï¿½`ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(rootsignature.ReleaseAndGetAddressOf()));
 	if (FAILED(result)) { assert(0); }
 
 	gpipeline.pRootSignature = rootsignature.Get();
 
-	// ƒOƒ‰ƒtƒBƒbƒNƒXƒpƒCƒvƒ‰ƒCƒ“‚Ì¶¬
+	// ï¿½Oï¿½ï¿½ï¿½tï¿½Bï¿½bï¿½Nï¿½Xï¿½pï¿½Cï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(pipelinestate.ReleaseAndGetAddressOf()));
 	if (FAILED(result)) { assert(0); }
 }
 
-FbxObject3d::~FbxObject3d() {
-	constBuffTransform.Reset();
-	constBuffSkin.Reset();
+void FbxObject3d::StaticFinalize() {
+	rootsignature.Reset();
+	pipelinestate.Reset();
 }
 
 void FbxObject3d::Initialize() {
 	HRESULT result;
-	// ’è”ƒoƒbƒtƒ@‚Ì¶¬
+	// ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Ìï¿½ï¿½ï¿½
 	result = device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
@@ -192,7 +193,7 @@ void FbxObject3d::Initialize() {
 		nullptr,
 		IID_PPV_ARGS(&constBuffTransform));
 
-	//ƒXƒLƒ“—p’è”ƒoƒbƒtƒ@
+	//ï¿½Xï¿½Lï¿½ï¿½ï¿½pï¿½è”ï¿½oï¿½bï¿½tï¿½@
 	result = device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
@@ -201,7 +202,7 @@ void FbxObject3d::Initialize() {
 		nullptr,
 		IID_PPV_ARGS(&constBuffSkin));
 
-	//’è”ƒoƒbƒtƒ@‚Öƒf[ƒ^“]‘—
+	//ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Öƒfï¿½[ï¿½^ï¿½]ï¿½ï¿½
 	ConstBufferDataSkin* constMapSkin = nullptr;
 	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
 	for (int i = 0; i < MAX_BONES; i++) {
@@ -209,14 +210,14 @@ void FbxObject3d::Initialize() {
 	}
 	constBuffSkin->Unmap(0, nullptr);
 
-	//1ƒtƒŒ[ƒ€•ª‚ÌŠÔ‚ğ60FPS‚ÅŒÅ’è
+	//1ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½Ô‚ï¿½60FPSï¿½ÅŒÅ’ï¿½
 	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 }
 
 void FbxObject3d::Update() {
 	XMMATRIX matScale, matRot, matTrans;
 
-	// ƒXƒP[ƒ‹A‰ñ“]A•½sˆÚ“®s—ñ‚ÌŒvZ
+	// ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½Aï¿½ï¿½]ï¿½Aï¿½ï¿½ï¿½sï¿½Ú“ï¿½ï¿½sï¿½ï¿½ÌŒvï¿½Z
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
 	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
@@ -224,21 +225,21 @@ void FbxObject3d::Update() {
 	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
-	// ƒ[ƒ‹ƒhs—ñ‚Ì‡¬
-	matWorld = XMMatrixIdentity(); // •ÏŒ`‚ğƒŠƒZƒbƒg
-	matWorld *= matScale; // ƒ[ƒ‹ƒhs—ñ‚ÉƒXƒP[ƒŠƒ“ƒO‚ğ”½‰f
-	matWorld *= matRot; // ƒ[ƒ‹ƒhs—ñ‚É‰ñ“]‚ğ”½‰f
-	matWorld *= matTrans; // ƒ[ƒ‹ƒhs—ñ‚É•½sˆÚ“®‚ğ”½‰f
+	// ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½sï¿½ï¿½Ìï¿½ï¿½ï¿½
+	matWorld = XMMatrixIdentity(); // ï¿½ÏŒ`ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½g
+	matWorld *= matScale; // ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½sï¿½ï¿½ÉƒXï¿½Pï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½ğ”½‰f
+	matWorld *= matRot; // ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½sï¿½ï¿½É‰ï¿½]ï¿½ğ”½‰f
+	matWorld *= matTrans; // ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½sï¿½ï¿½É•ï¿½ï¿½sï¿½Ú“ï¿½ï¿½ğ”½‰f
 
-	// ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ
+	// ï¿½rï¿½ï¿½ï¿½[ï¿½vï¿½ï¿½ï¿½Wï¿½Fï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½
 	const XMMATRIX& matViewProjection = cameraObject->GetViewProjectionMatrix();
-	// ƒ‚ƒfƒ‹‚ÌƒƒbƒVƒ…ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ìƒï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½tï¿½Hï¿½[ï¿½ï¿½
 	const XMMATRIX& modelTransform = fbxmodel->GetModelTransform();
-	// ƒJƒƒ‰À•W
+	// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½W
 	const XMFLOAT3& cameraPos = cameraObject->GetEye();
 
 	HRESULT result;
-	// ’è”ƒoƒbƒtƒ@‚Öƒf[ƒ^“]‘—
+	// ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Öƒfï¿½[ï¿½^ï¿½]ï¿½ï¿½
 	ConstBufferDataTransform* constMap = nullptr;
 	result = constBuffTransform->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result)) {
@@ -248,14 +249,14 @@ void FbxObject3d::Update() {
 		constBuffTransform->Unmap(0, nullptr);
 	}
 
-	//ƒ{[ƒ“”z—ñ
+	//ï¿½{ï¿½[ï¿½ï¿½ï¿½zï¿½ï¿½
 	std::vector <FbxModel::Bone>& bones = fbxmodel->GetBones();
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“
+	//ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½
 	if (isPlay) {
-		//1ƒtƒŒ[ƒ€‚¸‚Âi‚ß‚é
+		//1ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Âiï¿½ß‚ï¿½
 		currentTime += frameTime;
-		//ÅŒã‚Ü‚ÅÄ¶‚µ‚½‚çæ“ª‚É–ß‚·
+		//ï¿½ÅŒï¿½Ü‚ÅÄï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ“ªï¿½É–ß‚ï¿½
 		if (currentTime > endTime) {
 			currentTime = startTime;
 			isPlay = false;
@@ -263,25 +264,25 @@ void FbxObject3d::Update() {
 	}
 
 	if (isLoop) {
-		//1ƒtƒŒ[ƒ€‚¸‚Âi‚ß‚é
+		//1ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Âiï¿½ß‚ï¿½
 		currentTime += frameTime;
-		//ÅŒã‚Ü‚ÅÄ¶‚µ‚½‚çæ“ª‚É–ß‚·
+		//ï¿½ÅŒï¿½Ü‚ÅÄï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ“ªï¿½É–ß‚ï¿½
 		if (currentTime > endTime) {
 			currentTime = startTime;
 		}
 	}
 
-	// ’è”ƒoƒbƒtƒ@‚Öƒf[ƒ^“]‘—
+	// ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Öƒfï¿½[ï¿½^ï¿½]ï¿½ï¿½
 	ConstBufferDataSkin* constMapSkin = nullptr;
 	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
 	for (int i = 0; i < bones.size(); i++) {
-		//¡‚Ìp¨s—ñ
+		//ï¿½ï¿½ï¿½Ìpï¿½ï¿½ï¿½sï¿½ï¿½
 		XMMATRIX matCurrentPose;
-		//¡‚Ìp¨s—ñ‚ğæ“¾
+		//ï¿½ï¿½ï¿½Ìpï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½æ“¾
 		FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
-		//XMMATRIX‚É•ÏŠ·
+		//XMMATRIXï¿½É•ÏŠï¿½
 		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
-		//‡¬‚µ‚ÄƒXƒLƒjƒ“ƒOs—ñ‚É
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄƒXï¿½Lï¿½jï¿½ï¿½ï¿½Oï¿½sï¿½ï¿½ï¿½
 		constMapSkin->bones[i] = fbxmodel->GetModelTransform() * bones[i].invInitialPose *
 			matCurrentPose * XMMatrixInverse(nullptr, fbxmodel->GetModelTransform());
 	}
@@ -293,16 +294,16 @@ void FbxObject3d::PlayAnimation() {
 		isLoop = false;
 	}
 	FbxScene* fbxScene = fbxmodel->GetFbxScene();
-	//0”Ô‚ÌƒAƒjƒ[ƒVƒ‡ƒ“æ“¾
+	//0ï¿½Ô‚ÌƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½æ“¾
 	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì–¼‘Oæ“¾
+	//ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ì–ï¿½ï¿½Oï¿½æ“¾
 	const char* animstackname = animstack->GetName();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŠÔî•ñ
+	//ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½Ôï¿½ï¿½
 	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
 
-	//ŠJnŠÔæ“¾
+	//ï¿½Jï¿½nï¿½ï¿½ï¿½Ôæ“¾
 	startTime = takeinfo->mLocalTimeSpan.GetStart();
-	//I—¹ŠÔæ“¾
+	//ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ôæ“¾
 	endTime = takeinfo->mLocalTimeSpan.GetStop();
 
 	if (startTime < saveTime) {
@@ -310,9 +311,9 @@ void FbxObject3d::PlayAnimation() {
 		isPlay = true;
 	}
 	else {
-		//ŠJnŠÔ‚É‡‚í‚¹‚é
+		//ï¿½Jï¿½nï¿½ï¿½ï¿½Ô‚Éï¿½ï¿½í‚¹ï¿½ï¿½
 		currentTime = startTime;
-		//Ä¶’†ó‘Ô‚É‚·‚é
+		//ï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½Ô‚É‚ï¿½ï¿½ï¿½
 		isPlay = true;
 	}
 }
@@ -323,16 +324,16 @@ void FbxObject3d::LoopAnimation()
 		isPlay = false;
 	}
 	FbxScene* fbxScene = fbxmodel->GetFbxScene();
-	//0”Ô‚ÌƒAƒjƒ[ƒVƒ‡ƒ“æ“¾
+	//0ï¿½Ô‚ÌƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½æ“¾
 	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì–¼‘Oæ“¾
+	//ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ì–ï¿½ï¿½Oï¿½æ“¾
 	const char* animstackname = animstack->GetName();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŠÔî•ñ
+	//ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½Ôï¿½ï¿½
 	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
 
-	//ŠJnŠÔæ“¾
+	//ï¿½Jï¿½nï¿½ï¿½ï¿½Ôæ“¾
 	startTime = takeinfo->mLocalTimeSpan.GetStart();
-	//I—¹ŠÔæ“¾
+	//ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ôæ“¾
 	endTime = takeinfo->mLocalTimeSpan.GetStop();
 
 	if (startTime < saveTime) {
@@ -340,48 +341,48 @@ void FbxObject3d::LoopAnimation()
 		isLoop = true;
 	}
 	else {
-		//ŠJnŠÔ‚É‡‚í‚¹‚é
+		//ï¿½Jï¿½nï¿½ï¿½ï¿½Ô‚Éï¿½ï¿½í‚¹ï¿½ï¿½
 		currentTime = startTime;
-		//Ä¶’†ó‘Ô‚É‚·‚é
+		//ï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½Ô‚É‚ï¿½ï¿½ï¿½
 		isLoop = true;
 	}
 }
 
 void FbxObject3d::StopAnimation() {
 	//FbxScene* fbxScene = model->GetFbxScene();
-	////0”Ô‚ÌƒAƒjƒ[ƒVƒ‡ƒ“æ“¾
+	////0ï¿½Ô‚ÌƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½æ“¾
 	//FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
-	////ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì–¼‘Oæ“¾
+	////ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ì–ï¿½ï¿½Oï¿½æ“¾
 	//const char* animstackname = animstack->GetName();
-	////ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŠÔî•ñ
+	////ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½Ôï¿½ï¿½
 	//FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
 
-	////ŠJnŠÔæ“¾
+	////ï¿½Jï¿½nï¿½ï¿½ï¿½Ôæ“¾
 	//startTime = takeinfo->mLocalTimeSpan.GetStart();
-	////ŠJnŠÔ‚É‡‚í‚¹‚é
+	////ï¿½Jï¿½nï¿½ï¿½ï¿½Ô‚Éï¿½ï¿½í‚¹ï¿½ï¿½
 	//currentTime = startTime;
-	//Ä¶‚µ‚Ä‚¢‚È‚¢ó‘Ô‚É‚·‚é
+	//ï¿½Äï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½Ô‚É‚ï¿½ï¿½ï¿½
 	saveTime = currentTime;
 	isPlay = false;
 }
 
 
 void FbxObject3d::Draw(ID3D12GraphicsCommandList* cmdList) {
-	// ƒ‚ƒfƒ‹‚ÌŠ„‚è“–‚Ä‚ª‚È‚¯‚ê‚Î•`‰æ‚µ‚È‚¢
+	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌŠï¿½ï¿½è“–ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½Î•`ï¿½æ‚µï¿½È‚ï¿½
 	if (fbxmodel == nullptr) {
 		return;
 	}
 
-	// ƒpƒCƒvƒ‰ƒCƒ“ƒXƒe[ƒg‚Ìİ’è
+	// ï¿½pï¿½Cï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½gï¿½Ìİ’ï¿½
 	cmdList->SetPipelineState(pipelinestate.Get());
-	// ƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ìİ’è
+	// ï¿½ï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½lï¿½`ï¿½ï¿½ï¿½Ìİ’ï¿½
 	cmdList->SetGraphicsRootSignature(rootsignature.Get());
-	// ƒvƒŠƒ~ƒeƒBƒuŒ`ó‚ğİ’è
+	// ï¿½vï¿½ï¿½ï¿½~ï¿½eï¿½Bï¿½uï¿½`ï¿½ï¿½ï¿½İ’ï¿½
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	// ’è”ƒoƒbƒtƒ@ƒrƒ…[‚ğƒZƒbƒg
+	// ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½rï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Zï¿½bï¿½g
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffTransform->GetGPUVirtualAddress());
 	cmdList->SetGraphicsRootConstantBufferView(2, constBuffSkin->GetGPUVirtualAddress());
 
-	// ƒ‚ƒfƒ‹•`‰æ
+	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½`ï¿½ï¿½
 	fbxmodel->Draw(cmdList);
 }

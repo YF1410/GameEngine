@@ -11,6 +11,8 @@ void NamiGame::Initialize() {
 
 	// 3Dオブジェクト静的初期化
 	Object3d::StaticInitialize(dxCommon->GetDevice());
+	// FBXオブジェクトグラフィックスパイプライン生成
+	FbxObject3d::CreateGraphicsPipeline(dxCommon->GetDevice());
 	// ライト静的初期化
 	LightGroup::StaticInitialize(dxCommon->GetDevice());
 	// パーティクルマネージャ初期化
@@ -36,6 +38,7 @@ void NamiGame::Finalize() {
 	FbxLoader::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
 	LightGroup::StaticFinalize();
+	FbxObject3d::StaticFinalize();
 	Object3d::StaticFinalize();
 	Sprite::StaticFinalize();
 	postEffect.reset();
