@@ -177,8 +177,8 @@ void FbxObject3d::CreateGraphicsPipeline() {
 }
 
 FbxObject3d::~FbxObject3d() {
-	/*constBuffTransform.Reset();
-	constBuffSkin.Reset();*/
+	constBuffTransform.Reset();
+	constBuffSkin.Reset();
 }
 
 void FbxObject3d::Initialize() {

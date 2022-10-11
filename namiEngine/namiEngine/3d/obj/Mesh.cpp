@@ -15,6 +15,12 @@ void Mesh::StaticInitialize(ComPtr<ID3D12Device> device) {
 
 	// マテリアルの静的初期化
 	Material::StaticInitialize(device);
+	//device->SetName(L"3DObjMeshDevice");
+}
+
+void Mesh::StaticFinalize(){
+	Material::StaticFinalize();
+	device.Reset();
 }
 
 void Mesh::SetName(const std::string& name) {

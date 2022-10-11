@@ -96,7 +96,7 @@ private:
 	void operator=(const FbxLoader& obj) = delete;
 
 	//D3D12デバイス
-	ComPtr<ID3D12Device> device;
+	ComPtr<ID3D12Device> device = nullptr;
 
 	//FBXマネージャ
 	FbxManager* fbxManager = nullptr;

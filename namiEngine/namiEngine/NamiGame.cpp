@@ -13,10 +13,6 @@ void NamiGame::Initialize() {
 	Object3d::StaticInitialize(dxCommon->GetDevice());
 	// ライト静的初期化
 	LightGroup::StaticInitialize(dxCommon->GetDevice());
-	//デバッグテキスト初期化
-
-	// デバッグテキスト初期化
-	DebugText::GetInstance()->Initialize(debugTextTexNumber);
 	// パーティクルマネージャ初期化
 	ParticleManager::GetInstance()->Initialize(dxCommon->GetDevice());
 	//FBX初期化
@@ -39,7 +35,6 @@ void NamiGame::Finalize() {
 	// 各種解放
 	FbxLoader::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
-	DebugText::GetInstance()->Finalize();
 	LightGroup::StaticFinalize();
 	Object3d::StaticFinalize();
 	Sprite::StaticFinalize();

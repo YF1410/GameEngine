@@ -17,6 +17,12 @@ void Model::StaticInitialize(ComPtr<ID3D12Device> device) {
 
 	// ƒƒbƒVƒ…‚ÌÃ“I‰Šú‰»
 	Mesh::StaticInitialize(device);
+	//device->SetName(L"3DObjModelDevice");
+}
+
+void Model::StaticFinalize() {
+	Mesh::StaticFinalize();
+	device.Reset();
 }
 
 std::unique_ptr<Model> Model::CreateFromObject(const std::string& text, bool smoothing) {

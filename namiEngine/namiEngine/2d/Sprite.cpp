@@ -210,13 +210,13 @@ bool Sprite::StaticInitialize(ComPtr<ID3D12Device> device, int window_width, int
 }
 
 void Sprite::StaticFinalize() {
-	/*device.Reset();
+	device.Reset();
 	rootSignature.Reset();
 	pipelineState.Reset();
 	descHeap.Reset();
 	for (int i = 0; i < srvCount; i++) {
 		texBuff[i].Reset();
-	}*/
+	}
 }
 
 bool Sprite::LoadTexture(UINT texnumber, const wchar_t* filename) {

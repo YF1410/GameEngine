@@ -20,12 +20,6 @@ void DebugText::Initialize(UINT texnumber) {
 	}
 }
 
-void DebugText::Finalize() {
-	for (int i = 0; i < _countof(spriteDatas); i++) {
-		spriteDatas[i].reset();
-	}
-}
-
 // 1•¶Žš—ñ’Ç‰Á
 void DebugText::Print(const std::string& text, float x, float y, float scale = 1.0f) {
 	SetPos(x, y);

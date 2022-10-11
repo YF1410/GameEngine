@@ -5,8 +5,6 @@
 #include "PostEffect.h"
 
 class NamiGame : public Framework {
-private:
-	static const int debugTextTexNumber = 0;
 public:
 	//‰Šú‰»
 	void Initialize() override;

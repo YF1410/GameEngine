@@ -24,9 +24,9 @@ DirectXCommon::~DirectXCommon() {
 	dsvHeap.Reset();
 	fence.Reset();
 	imguiHeap.Reset();
-	ComPtr<ID3D12DebugDevice> debugInterface;
+	ID3D12DebugDevice* debugInterface;
 	ComPtr<IDXGIAdapter1> tmpAdapter;
-	ComPtr<ID3D12Device> debugDevice;
+	ID3D12Device* debugDevice = nullptr;
 	D3D_FEATURE_LEVEL featureLevel;
 	D3D_FEATURE_LEVEL levels[] =
 	{
@@ -46,16 +46,17 @@ DirectXCommon::~DirectXCommon() {
 		}
 	}
 
-	debugDevice->QueryInterface(debugInterface.GetAddressOf());
-	debugInterface->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
-	debugInterface.Reset();
-	debugDevice.Reset();
-
+	if (SUCCEEDED(debugDevice->QueryInterface(&debugInterface)))
+	{
+		debugInterface->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
+		debugInterface->Release();
+		debugDevice->Release();
+	}
 }
 
 void DirectXCommon::Initialize(HWND hwnd) {
 	this->hwnd = hwnd;
-
+	
 	// DXGIデバイス初期化
 	if (!InitializeDXGIDevice()) {
 		assert(0);

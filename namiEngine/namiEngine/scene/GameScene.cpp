@@ -36,8 +36,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 		return;
 	}
 	// デバッグテキスト初期化
-	//debugText = DebugText::GetInstance();
-	//debugText->Initialize(debugTextTexNumber);
+	debugText = DebugText::GetInstance();
+	debugText->Initialize(debugTextTexNumber);
 
 	// テクスチャ読み込み
 	if (!Sprite::LoadTexture(1, L"Resources/title.png")) {

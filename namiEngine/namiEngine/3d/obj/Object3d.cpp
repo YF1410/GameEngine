@@ -40,6 +40,10 @@ void Object3d::StaticInitialize(ComPtr<ID3D12Device> device, Camera* cameraObjec
 }
 
 void Object3d::StaticFinalize() {
+	Model::StaticFinalize();
+	device.Reset();
+	pipelineSet.pipelinestate.Reset();
+	pipelineSet.rootsignature.Reset();
 }
 
 void Object3d::CreateGraphicsPipeline() {
@@ -235,6 +239,7 @@ Object3d::~Object3d() {
 		CollisionManager::GetInstance()->RemoveCollider(collider);
 		delete collider;
 	}
+	constBuffB0.Reset();
 }
 
 bool Object3d::Initialize() {
