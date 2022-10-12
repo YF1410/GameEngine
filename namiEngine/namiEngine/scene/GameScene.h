@@ -31,7 +31,11 @@ private: // エイリアス
 
 private: // 静的メンバ変数
 	static const int debugTextTexNumber = 0;
-
+public:
+	struct PlayerStatus {
+		bool isHaveElement = false;
+		bool isDash = false;
+	};
 public: // メンバ関数
 
 	/// <summary>
@@ -100,14 +104,14 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> spriteBG2;
 	ParticleManager* particleMan;
 
-	std::unique_ptr<FbxModel> model1;
-	std::unique_ptr<FbxObject3d> object1;
+	std::unique_ptr<FbxModel> playerModel;
+	std::unique_ptr<FbxObject3d> player;
 
-	std::unique_ptr<FbxModel> model2;
-	std::unique_ptr<FbxObject3d> object2;
+	std::unique_ptr<FbxModel> enemyModel;
+	std::unique_ptr<FbxObject3d> enemy;
 
-	std::unique_ptr<FbxModel> model3;
-	std::unique_ptr<FbxObject3d> object3;
+	std::unique_ptr<FbxModel> elementModel;
+	std::unique_ptr<FbxObject3d> element;
 
 	std::unique_ptr<Model> groundModel;
 	std::unique_ptr<Object3d> groundObj;
@@ -116,21 +120,22 @@ private: // メンバ変数
 	std::unique_ptr<Object3d> skydomeObj;
 	std::unique_ptr<LightGroup> lightGroup;
 
-	XMFLOAT3 object1Pos = { 0.0f,0.0f,0.0f };
-	float object2Pos[3] = { 0,-5.0f,20.0f };
-	float object3Pos[3] = { 10.0f,0,20.0f };
+	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };
+	float enemyPos[3] = { 0,-5.0f,20.0f };
+	float elementPos[3] = { 10.0f,0,20.0f };
 	float cameraEye[3] = { 0.0f,20.0f,-50.0f };
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 	float xMoveAmount = 0.0f;
 	float zMoveAmount = 0.0f;
 
-	Sphere object1Collision;
-	Sphere object2Collision;
-	Sphere object3Collision;
+	Sphere playerCollision;
+	Sphere enemyCollision;
+	Sphere elementCollision;
 
-	bool isObject2Active = true;
-	bool isObject3Active = false;
-	bool isDash = false;
+	PlayerStatus playerStatus;
+
+	bool isEnemeyActive = true;
+	bool isElementActive = false;
 	float defMoveAmount = 1.0f;
 	float dashMoveAmount = 3.0f;
 	int dashTimer = 8;

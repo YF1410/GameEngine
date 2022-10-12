@@ -61,9 +61,9 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	cameraObject->SetEye({ cameraEye[0],cameraEye[1],cameraEye[2] });
 
 	// モデル名を指定してファイル読み込み
-	model1=FbxLoader::GetInstance()->LoadModelFromFile("Walking");
-	model2 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
-	model3 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+	playerModel=FbxLoader::GetInstance()->LoadModelFromFile("Walking");
+	enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 	groundModel = Model::CreateFromObject("stage1");
 	skydomeModel = Model::CreateFromObject("skydome");
 	// ライト生成
@@ -81,22 +81,23 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	FbxObject3d::CreateGraphicsPipeline();
 
 	//object1 = new FbxObject3d;
-	object1 = std::make_unique<FbxObject3d>();
-	object1->Initialize();
-	object1->SetModel(model1.get());
+	player = std::make_unique<FbxObject3d>();
+	player->Initialize();
+	player->SetModel(playerModel.get());
 
-	object2 = std::make_unique<FbxObject3d>();
-	object2->Initialize();
-	object2->SetModel(model2.get());
-	object2->SetScale({ 0.3f,0.3f,0.3f });
+	enemy = std::make_unique<FbxObject3d>();
+	enemy->Initialize();
+	enemy->SetModel(enemyModel.get());
+	enemy->SetScale({ 0.3f,0.3f,0.3f });
 
-	object3 = std::make_unique<FbxObject3d>();
-	object3->Initialize();
-	object3->SetModel(model3.get());
+	element = std::make_unique<FbxObject3d>();
+	element->Initialize();
+	element->SetModel(elementModel.get());
 
 	groundObj = Object3d::Create(groundModel.get());
 	groundObj->SetScale({ 2.0f,2.0f,2.0f });
 	skydomeObj = Object3d::Create(skydomeModel.get());
+	skydomeObj->SetScale(5.0f);
 	
 	srand(static_cast<unsigned int>(time(NULL)));
 }
@@ -109,27 +110,26 @@ void GameScene::TitleUpdate() {
 }
 
 void GameScene::GameUpdate() {
-	//object1->PlayAnimation();
 	if (input->PushPad(ButtonA) || input->TriggerKey(DIK_P)) {
-		object1->PlayAnimation();
+		player->PlayAnimation();
 	}
 	if (input->PushPad(ButtonB) || input->TriggerKey(DIK_L)) {
-		object1->StopAnimation();
+		player->StopAnimation();
 	}
 
 	if (input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D))) {
-		isDash = true;
+		playerStatus.isDash = true;
 	}
 
-	if (!isDash) {
+	if (!playerStatus.isDash) {
 		Move(defMoveAmount);
 	}
-	else if (isDash) {
+	else if (playerStatus.isDash) {
 		Move(dashMoveAmount);
 		dashTimer--;
 		if (dashTimer <= 0) {
 			dashTimer = 8;
-			isDash = false;
+			playerStatus.isDash = false;
 		}
 	}
 
@@ -148,52 +148,67 @@ void GameScene::GameUpdate() {
 		}
 	}
 
-	object1->SetPosition({ object1Pos.x + xMoveAmount, object1Pos.y,object1Pos.z + zMoveAmount });
-	object2->SetPosition({ object2Pos[0] + shakeObjectPos[0], object2Pos[1] + shakeObjectPos[0], object2Pos[2] + shakeObjectPos[0]});
-	object3->SetPosition({ object3Pos[0], object3Pos[1], object3Pos[2] });
+	player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
+	enemy->SetPosition({ enemyPos[0] + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[0], enemyPos[2] + shakeObjectPos[0]});
+	element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
 
 
-	object1Collision.center = XMLoadFloat3(&object1->GetPosition());
-	object1Collision.radius = 3.0f;
+	playerCollision.center = XMLoadFloat3(&player->GetPosition());
+	playerCollision.radius = 3.0f;
 	isDamage = false;
 
-	object2Collision.center = XMLoadFloat3(&object2->GetPosition());
-	object2Collision.radius = 3.0f;
+	enemyCollision.center = XMLoadFloat3(&enemy->GetPosition());
+	enemyCollision.radius = 3.0f;
 
-	object3Collision.center = XMLoadFloat3(&object3->GetPosition());
-	object3Collision.radius = 1.0f;
+	elementCollision.center = XMLoadFloat3(&element->GetPosition());
+	elementCollision.radius = 1.0f;
 
-	if (input->TriggerKey(DIK_1) && !object1->GetIsPlay()) {
-		object1Collision.radius = 10.0f;
+	if (input->TriggerKey(DIK_1) && !player->GetIsPlay()) {
+		playerCollision.radius = 10.0f;
 		isDamage = true;
-		isDamageShake = true;
-		object1->PlayAnimation();
+		player->PlayAnimation();
 	}
 
-	if (Collision::CheckSphere2Sphere(object1Collision, object2Collision) && isObject2Active && isDamage) {
+	if (Collision::CheckSphere2Sphere(playerCollision, enemyCollision) && isEnemeyActive && isDamage) {
 		enemyHP--;
+		isDamageShake = true;
 		isDamage = false;
 	}
 
 	if (enemyHP <= 0) {
-		isObject2Active = false;
-		isObject3Active = true;
+		isEnemeyActive = false;
+		isElementActive = true;
 	}
 
-	if (Collision::CheckSphere2Sphere(object1Collision, object3Collision) && isObject3Active && !object1->GetIsPlay()) {
-		isObject3Active = false;
-		isNowEnd = true;
-		isNowGame = false;
+	if (Collision::CheckSphere2Sphere(playerCollision, elementCollision) && isElementActive && !player->GetIsPlay()) {
+		isElementActive = false;
+
+		enemyPos[0] = 0;
+		enemyPos[1] = -5.0f;
+		enemyPos[2] = 20.0f;
+		elementPos[0] = 10.0f;
+		elementPos[1] = 0;
+		elementPos[2] = 20.0f;
+		isEnemeyActive = true;
+		isElementActive = false;
+		enemyHP = 3;
+		isDamage = false;
+		player->StopAnimation();
+		playerStatus.isHaveElement = true;
+
+
+		/*isNowEnd = true;
+		isNowGame = false;*/
 	}
 
 	cameraObject->Update();
-	object1->Update();
-	if (isObject2Active) {
-		object2->Update();
+	player->Update();
+	if (isEnemeyActive) {
+		enemy->Update();
 	}
 
-	if (isObject3Active) {
-		object3->Update();
+	if (isElementActive) {
+		element->Update();
 	}
 
 	groundObj->Update();
@@ -203,24 +218,24 @@ void GameScene::GameUpdate() {
 
 void GameScene::EndUpdate() {
 	if (input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) {
-		object1Pos = { 0.0f,0.0f,0.0f };
-		object2Pos[0] = 0;
-		object2Pos[1] = -5.0f;
-		object2Pos[2] = 20.0f;
-		object3Pos[0] = 10.0f;
-		object3Pos[1] = 0;
-		object3Pos[2] = 20.0f;
+		playerPos = { 0.0f,0.0f,0.0f };
+		enemyPos[0] = 0;
+		enemyPos[1] = -5.0f;
+		enemyPos[2] = 20.0f;
+		elementPos[0] = 10.0f;
+		elementPos[1] = 0;
+		elementPos[2] = 20.0f;
 		cameraEye[0] = 0.0f;
 		cameraEye[1] = 20.0f;
 		cameraEye[2] = -50.0f;
 		cameraTarget = { 0.0f,0.0f,0.0f };
 		xMoveAmount = 0.0f;
 		zMoveAmount = 0.0f;
-		isObject2Active = true;
-		isObject3Active = false;
+		isEnemeyActive = true;
+		isElementActive = false;
 		enemyHP = 3;
 		isDamage = false;
-		object1->StopAnimation();
+		player->StopAnimation();
 
 		isNowEnd = false;
 		isNowTitle = true;
@@ -297,13 +312,13 @@ void GameScene::GameDraw() {
 	skydomeObj->Draw();
 	Object3d::PostDraw();
 
-	object1->Draw(cmdList);
-	if (isObject2Active) {
-		object2->Draw(cmdList);
+	player->Draw(cmdList);
+	if (isEnemeyActive) {
+		enemy->Draw(cmdList);
 	}
 
-	if (isObject3Active) {
-		object3->Draw(cmdList);
+	if (isElementActive) {
+		element->Draw(cmdList);
 	}
 
 	// パーティクルの描画
@@ -359,35 +374,35 @@ void GameScene::Draw() {
 void GameScene::Move(float moveAmount) {
 	if (input->PushKey(DIK_W)) {
 		zMoveAmount += moveAmount;
-		object1->SetRotation({ 0.0f,0.0f,0.0f });
+		player->SetRotation({ 0.0f,0.0f,0.0f });
 		if (input->PushKey(DIK_A)) {
 			xMoveAmount -= moveAmount;
-			object1->SetRotation({ 0.0f,315.0f,0.0f });
+			player->SetRotation({ 0.0f,315.0f,0.0f });
 		}
 		else if (input->PushKey(DIK_D)) {
 			xMoveAmount += moveAmount;
-			object1->SetRotation({ 0.0f,45.0f,0.0f });
+			player->SetRotation({ 0.0f,45.0f,0.0f });
 		}
 	}
 	else if (input->PushKey(DIK_S)) {
 		zMoveAmount -= moveAmount;
-		object1->SetRotation({ 0.0f,180.0f,0.0f });
+		player->SetRotation({ 0.0f,180.0f,0.0f });
 		if (input->PushKey(DIK_A)) {
 			xMoveAmount -= moveAmount;
-			object1->SetRotation({ 0.0f,235.0f,0.0f });
+			player->SetRotation({ 0.0f,235.0f,0.0f });
 		}
 		else if (input->PushKey(DIK_D)) {
 			xMoveAmount += moveAmount;
-			object1->SetRotation({ 0.0f,135.0f,0.0f });
+			player->SetRotation({ 0.0f,135.0f,0.0f });
 		}
 	}
 	else if (input->PushKey(DIK_A)) {
 		xMoveAmount -= moveAmount;
-		object1->SetRotation({ 0.0f,270.0f,0.0f });
+		player->SetRotation({ 0.0f,270.0f,0.0f });
 	}
 	else if (input->PushKey(DIK_D)) {
 		xMoveAmount += moveAmount;
-		object1->SetRotation({ 0.0f,90.0f,0.0f });
+		player->SetRotation({ 0.0f,90.0f,0.0f });
 	}	
 }
 
