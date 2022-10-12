@@ -59,7 +59,12 @@ public: // 静的メンバ関数
 	/// 静的初期化
 	/// </summary>
 	/// <param name="device">デバイス</param>
-	static void StaticInitialize(ID3D12Device* device);
+	static void StaticInitialize(ComPtr<ID3D12Device> device);
+
+	/// <summary>
+	/// 静的解放
+	/// </summary>
+	static void StaticFinalize();
 
 	/// <summary>
 	/// インスタンス生成
@@ -69,9 +74,11 @@ public: // 静的メンバ関数
 
 private: // 静的メンバ変数
 	// デバイス
-	static ID3D12Device* device;
+	static ComPtr<ID3D12Device> device;
 
 public: // メンバ関数
+	~LightGroup();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>

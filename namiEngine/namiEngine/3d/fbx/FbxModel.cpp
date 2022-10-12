@@ -1,6 +1,6 @@
 #include "FbxModel.h"
 
-void FbxModel::CreateBuffers(ID3D12Device* device) {
+void FbxModel::CreateBuffers(ComPtr<ID3D12Device> device) {
 	HRESULT result;
 	// 頂点データ全体のサイズ
 	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUvSkin) * vertices.size());
@@ -120,5 +120,5 @@ void FbxModel::Draw(ID3D12GraphicsCommandList* cmdList) {
 
 FbxModel::~FbxModel() {
 	//FBXシーンの解放
-	fbxScene->Destroy();
+	//fbxScene->Destroy();
 }

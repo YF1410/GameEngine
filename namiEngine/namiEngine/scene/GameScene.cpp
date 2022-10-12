@@ -36,8 +36,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 		return;
 	}
 	// デバッグテキスト初期化
-	debugText = DebugText::GetInstance();
-	debugText->Initialize(debugTextTexNumber);
+	//debugText = DebugText::GetInstance();
+	//debugText->Initialize(debugTextTexNumber);
 
 	// テクスチャ読み込み
 	if (!Sprite::LoadTexture(1, L"Resources/title.png")) {
@@ -73,12 +73,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	// 3Dオブジェクトにカメラをセット
 	Object3d::SetCamera(cameraObject.get());
 
-	// デバイスをセット
-	FbxObject3d::SetDevice(dxCommon->GetDevice());
 	// カメラをセット
 	FbxObject3d::SetCamera(cameraObject.get());
-	// グラフィックスパイプライン生成
-	FbxObject3d::CreateGraphicsPipeline();
 
 	//object1 = new FbxObject3d;
 	player = std::make_unique<FbxObject3d>();

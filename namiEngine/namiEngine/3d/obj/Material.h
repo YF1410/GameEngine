@@ -29,13 +29,15 @@ public: // サブクラス
 
 public: // 静的メンバ関数
 	// 静的初期化
-	static void StaticInitialize(ID3D12Device* device);
+	static void StaticInitialize(ComPtr<ID3D12Device> device);
+
+	static void StaticFinalize();
 	//マテリアル生成
 	static Material* Create();
 
 private: // 静的メンバ変数
 	// デバイス
-	static ID3D12Device* device;
+	static ComPtr<ID3D12Device> device;
 	// テクスチャバッファ
 	ComPtr<ID3D12Resource> texbuff;
 	// 定数バッファ

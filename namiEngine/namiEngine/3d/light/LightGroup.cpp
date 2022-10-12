@@ -1,14 +1,15 @@
 ﻿#include "LightGroup.h"
 #include <assert.h>
 
+using namespace Microsoft::WRL;
 using namespace DirectX;
 
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-ID3D12Device* LightGroup::device = nullptr;
+ComPtr<ID3D12Device> LightGroup::device;
 
-void LightGroup::StaticInitialize(ID3D12Device * device)
+void LightGroup::StaticInitialize(ComPtr<ID3D12Device> device)
 {
 	// 再初期化チェック
 	assert(!LightGroup::device);
@@ -17,6 +18,11 @@ void LightGroup::StaticInitialize(ID3D12Device * device)
 	assert(device);
 
 	LightGroup::device = device;
+}
+
+void LightGroup::StaticFinalize()
+{
+	device.Reset();
 }
 
 std::unique_ptr<LightGroup> LightGroup::Create()
@@ -28,6 +34,9 @@ std::unique_ptr<LightGroup> LightGroup::Create()
 	instance->Initialize();
 
 	return instance;
+}
+
+LightGroup::~LightGroup() {
 }
 
 void LightGroup::Initialize()

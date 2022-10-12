@@ -28,7 +28,7 @@ public: // メンバ関数
 	// 深度バッファのクリア
 	void ClearDepthBuffer();
 	// デバイスの取得
-	ID3D12Device* GetDevice() { return device.Get(); }
+	ComPtr<ID3D12Device> GetDevice() { return device; }
 	// 描画コマンドリストの取得
 	ID3D12GraphicsCommandList* GetCommandList() { return commandList.Get(); }
 

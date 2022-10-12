@@ -30,7 +30,9 @@ public: // サブクラス
 
 public: // 静的メンバ関数
 	// 静的初期化
-	static bool StaticInitialize(ID3D12Device* device, int window_width, int window_height);
+	static bool StaticInitialize(ComPtr<ID3D12Device> device, int window_width, int window_height);
+	//静的解放
+	static void StaticFinalize();
 	// テクスチャ読み込み
 	static bool LoadTexture(UINT texnumber, const wchar_t* filename);
 	// 描画前処理
@@ -46,7 +48,7 @@ protected: // 静的メンバ変数
 	// 頂点数
 	static const int vertNum = 4;
 	// デバイス
-	static ID3D12Device* device;
+	static ComPtr<ID3D12Device> device;
 	// デスクリプタサイズ
 	static UINT descriptorHandleIncrementSize;
 	// コマンドリスト
@@ -65,6 +67,8 @@ protected: // 静的メンバ変数
 public: // メンバ関数
 	// コンストラクタ
 	Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color, XMFLOAT2 anchorpoint, bool isFlipX, bool isFlipY);
+	//デストラクタ
+	~Sprite();
 	// 初期化
 	bool Initialize();
 	//頂点バッファ生成

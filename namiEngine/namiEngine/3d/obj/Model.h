@@ -13,16 +13,17 @@ private: // エイリアス
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
-
 public: // 静的メンバ関数
 	// 静的初期化
-	static void StaticInitialize(ID3D12Device* device);
+	static void StaticInitialize(ComPtr<ID3D12Device> device);
+
+	static void StaticFinalize();
 
 	static std::unique_ptr<Model> CreateFromObject(const std::string& text, bool smoothing = false);
 
 private: // 静的メンバ変数
 	// デバイス
-	static ID3D12Device* device;
+	static ComPtr<ID3D12Device> device;
 	// デスクリプタサイズ
 	static UINT descriptorHandleIncrementSize;
 

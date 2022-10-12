@@ -83,7 +83,7 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <returns></returns>
-	void Initialize(ID3D12Device* device);
+	void Initialize(ComPtr<ID3D12Device> device);
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -141,7 +141,7 @@ public: // メンバ関数
 
 private: // メンバ変数
 	// デバイス
-	ID3D12Device* device = nullptr;
+	ComPtr<ID3D12Device> device = nullptr;
 	// デスクリプタサイズ
 	UINT descriptorHandleIncrementSize = 0u;
 	// ルートシグネチャ
@@ -166,8 +166,12 @@ private: // メンバ変数
 	std::forward_list<Particle> particles;
 	// カメラ
 	Camera* cameraObject = nullptr;
-public:
-	static ParticleManager instance;
+private:
+	static std::unique_ptr<ParticleManager> instance;
+	//friend decltype(instance)::deleter_type;
+	//friend decltype(instance)::deleter_type  std::make_unique<decltype(instance)>();
+	friend std::unique_ptr<ParticleManager>::deleter_type;
+	friend std::unique_ptr<ParticleManager> std::make_unique<ParticleManager>();
 private:
 	ParticleManager() = default;
 	ParticleManager(const ParticleManager&) = delete;

@@ -23,13 +23,16 @@ DirectXCommon::~DirectXCommon() {
 	dsvHeap.Reset();
 	fence.Reset();
 	imguiHeap.Reset();
+	ImGui_ImplDX12_Shutdown();
 	ID3D12DebugDevice* debugInterface;
 
-	if (SUCCEEDED(device.Get()->QueryInterface(&debugInterface)))
+	if (SUCCEEDED(device->QueryInterface(&debugInterface)))
 	{
 		debugInterface->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
 		debugInterface->Release();
 	}
+
+	device.Reset();
 }
 
 void DirectXCommon::Initialize(HWND hwnd) {
@@ -244,7 +247,7 @@ bool DirectXCommon::InitializeDXGIDevice() {
 		assert(0);
 		return false;
 	}
-
+	device->SetName(L"DirectXCommonDevice");
 	return true;
 }
 
@@ -450,7 +453,7 @@ bool DirectXCommon::InitImgui() {
 		return false;
 	}
 	if (!ImGui_ImplDX12_Init(
-		GetDevice(),
+		GetDevice().Get(),
 		swcDesc.BufferCount,
 		swcDesc.BufferDesc.Format,
 		imguiHeap.Get(),

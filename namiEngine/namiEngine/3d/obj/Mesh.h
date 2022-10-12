@@ -30,11 +30,13 @@ public: // サブクラス
 
 public: // 静的メンバ関数
 	// 静的初期化
-	static void StaticInitialize(ID3D12Device* device);
+	static void StaticInitialize(ComPtr<ID3D12Device> device);
+
+	static void StaticFinalize();
 
 private: // 静的メンバ変数
 	// デバイス
-	static ID3D12Device* device;
+	static ComPtr<ID3D12Device> device;
 
 public: // メンバ関数
 	// 名前を取得
