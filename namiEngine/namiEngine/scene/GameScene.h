@@ -33,8 +33,13 @@ private: // 静的メンバ変数
 	static const int debugTextTexNumber = 0;
 public:
 	struct PlayerStatus {
+		float defMoveAmount = 1.0f;
+		float dashMoveAmount = 3.0f;
+		int dashTimer = 8;
+		int attackPowor = 1;
 		bool isHaveElement = false;
 		bool isDash = false;
+		bool isAttack = false;
 	};
 public: // メンバ関数
 
@@ -127,6 +132,7 @@ private: // メンバ変数
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 	float xMoveAmount = 0.0f;
 	float zMoveAmount = 0.0f;
+	XMFLOAT3 savePos;
 
 	Sphere playerCollision;
 	Sphere enemyCollision;
@@ -136,12 +142,11 @@ private: // メンバ変数
 
 	bool isEnemeyActive = true;
 	bool isElementActive = false;
-	float defMoveAmount = 1.0f;
-	float dashMoveAmount = 3.0f;
-	int dashTimer = 8;
 	int enemyHP = 3;
-	bool isDamage = false;
 	bool isDamageShake = false;
 	int damageShakeCount = 0;
 	float shakeObjectPos[3] = {0.0f,0.0f,0.0f};
+
+	float x = 0;
+	float z = 0;
 };

@@ -246,6 +246,7 @@ void FbxObject3d::Update() {
 		constMap->viewproj = matViewProjection;
 		constMap->world = modelTransform * matWorld;
 		constMap->cameraPos = cameraPos;
+		constMap->color = this->color;
 		constBuffTransform->Unmap(0, nullptr);
 	}
 

@@ -31,6 +31,8 @@ public: // サブクラス
 		XMMATRIX viewproj;    // ビュープロジェクション行列
 		XMMATRIX world; // ワールド行列
 		XMFLOAT3 cameraPos; // カメラ座標（ワールド座標）
+		float pad;
+		XMFLOAT4 color;
 	};
 
 	//定数バッファ用データ構造体(スキニング)
@@ -104,6 +106,8 @@ public: // メンバ関数
 	// スケールの設定
 	inline void SetScale(XMFLOAT3 scale) { this->scale = scale; }
 
+	void SetColor(XMFLOAT4 color) { this->color = color; }
+
 	bool GetIsPlay() { return isPlay; }
 
 protected: // メンバ変数
@@ -119,6 +123,8 @@ protected: // メンバ変数
 	XMFLOAT3 position = { 0,0,0 };
 	// ローカルワールド変換行列
 	XMMATRIX matWorld;
+	//色
+	XMFLOAT4 color = { 1,1,1,1 };
 	// モデル
 	FbxModel* fbxmodel = nullptr;
 	//1フレームの時間

@@ -12,7 +12,7 @@ PSOutput main(VSOutput input) : SV_TARGET
 {
 	PSOutput output;
 	// テクスチャマッピング
-	float4 texcolor = tex.Sample(smp, input.uv);
+	float4 texcolor = tex.Sample(smp, input.uv) * color;
 	// Lambert反射
 	float3 light = normalize(float3(1,-1,1)); // 右下奥　向きのライト
 	float diffuse = saturate(dot(-light, input.normal));

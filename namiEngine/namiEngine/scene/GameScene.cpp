@@ -36,8 +36,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 		return;
 	}
 	// デバッグテキスト初期化
-	//debugText = DebugText::GetInstance();
-	//debugText->Initialize(debugTextTexNumber);
+	debugText = DebugText::GetInstance();
+	debugText->Initialize(debugTextTexNumber);
 
 	// テクスチャ読み込み
 	if (!Sprite::LoadTexture(1, L"Resources/title.png")) {
@@ -50,7 +50,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	}
 	// 背景スプライト生成
 
-	spriteBG1 = Sprite::Create(1, {0.0f,0.0f});
+	spriteBG1 = Sprite::Create(1, { 0.0f,0.0f });
 	spriteBG2 = Sprite::Create(2, { 0.0f,0.0f });
 	// パーティクルマネージャ生成
 	particleMan = ParticleManager::GetInstance();
@@ -61,7 +61,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	cameraObject->SetEye({ cameraEye[0],cameraEye[1],cameraEye[2] });
 
 	// モデル名を指定してファイル読み込み
-	playerModel=FbxLoader::GetInstance()->LoadModelFromFile("Walking");
+	playerModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
 	enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("cube");
 	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 	groundModel = Model::CreateFromObject("stage1");
@@ -89,12 +89,17 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	element = std::make_unique<FbxObject3d>();
 	element->Initialize();
 	element->SetModel(elementModel.get());
+	element->SetColor({ 1,0,0,1 });
 
 	groundObj = Object3d::Create(groundModel.get());
 	groundObj->SetScale({ 2.0f,2.0f,2.0f });
 	skydomeObj = Object3d::Create(skydomeModel.get());
 	skydomeObj->SetScale(5.0f);
-	
+
+	player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
+	enemy->SetPosition({ enemyPos[0] + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[1], enemyPos[2] + shakeObjectPos[2] });
+	element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
+
 	srand(static_cast<unsigned int>(time(NULL)));
 }
 
@@ -118,20 +123,18 @@ void GameScene::GameUpdate() {
 	}
 
 	if (!playerStatus.isDash) {
-		Move(defMoveAmount);
+		Move(playerStatus.defMoveAmount);
 	}
 	else if (playerStatus.isDash) {
-		Move(dashMoveAmount);
-		dashTimer--;
-		if (dashTimer <= 0) {
-			dashTimer = 8;
+		Move(playerStatus.dashMoveAmount);
+		playerStatus.dashTimer--;
+		if (playerStatus.dashTimer <= 0) {
+			playerStatus.dashTimer = 8;
 			playerStatus.isDash = false;
 		}
 	}
 
-	cameraObject->SetEye({ cameraEye[0] + xMoveAmount, cameraEye[1],cameraEye[2] + zMoveAmount });
-	cameraObject->SetTarget({ cameraTarget.x + xMoveAmount, cameraTarget.y,cameraTarget.z + zMoveAmount });
-
+	float rad = atan2(player->GetPosition().z - enemy->GetPosition().z, player->GetPosition().x - enemy->GetPosition().x);
 	if (isDamageShake) {
 		damageShakeCount++;
 		DamageShake();
@@ -143,15 +146,26 @@ void GameScene::GameUpdate() {
 			isDamageShake = false;
 		}
 	}
+	else {
+		savePos = enemy->GetPosition();
+		x = (float)(cos(rad) * 0.1f + enemy->GetPosition().x);
+		z = (float)(sin(rad) * 0.1f + enemy->GetPosition().z);
+		if (enemyHP <= 0) {
+			isEnemeyActive = false;
+			isElementActive = true;
+		}
+	}
+
+	cameraObject->SetEye({ cameraEye[0] + xMoveAmount, cameraEye[1],cameraEye[2] + zMoveAmount });
+	cameraObject->SetTarget({ cameraTarget.x + xMoveAmount, cameraTarget.y,cameraTarget.z + zMoveAmount });
 
 	player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
-	enemy->SetPosition({ enemyPos[0] + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[0], enemyPos[2] + shakeObjectPos[0]});
+	enemy->SetPosition({x + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[1], z + shakeObjectPos[2] });
 	element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
-
 
 	playerCollision.center = XMLoadFloat3(&player->GetPosition());
 	playerCollision.radius = 3.0f;
-	isDamage = false;
+	playerStatus.isAttack = false;
 
 	enemyCollision.center = XMLoadFloat3(&enemy->GetPosition());
 	enemyCollision.radius = 3.0f;
@@ -160,20 +174,25 @@ void GameScene::GameUpdate() {
 	elementCollision.radius = 1.0f;
 
 	if (input->TriggerKey(DIK_1) && !player->GetIsPlay()) {
-		playerCollision.radius = 10.0f;
-		isDamage = true;
+		playerCollision.radius = 15.0f;
+		playerStatus.attackPowor = 1;
+		playerStatus.isAttack = true;
 		player->PlayAnimation();
 	}
 
-	if (Collision::CheckSphere2Sphere(playerCollision, enemyCollision) && isEnemeyActive && isDamage) {
-		enemyHP--;
-		isDamageShake = true;
-		isDamage = false;
+	if (input->TriggerKey(DIK_2) && !player->GetIsPlay() && playerStatus.isHaveElement) {
+		playerCollision.radius = 50.0f;
+		player->SetColor({ 1,1,1,1 });
+		playerStatus.attackPowor = 2;
+		playerStatus.isAttack = true;
+		playerStatus.isHaveElement = false;
+		player->PlayAnimation();
 	}
 
-	if (enemyHP <= 0) {
-		isEnemeyActive = false;
-		isElementActive = true;
+	if (Collision::CheckSphere2Sphere(playerCollision, enemyCollision) && isEnemeyActive && playerStatus.isAttack) {
+		enemyHP -= playerStatus.attackPowor;
+		isDamageShake = true;
+		playerStatus.isAttack = false;
 	}
 
 	if (Collision::CheckSphere2Sphere(playerCollision, elementCollision) && isElementActive && !player->GetIsPlay()) {
@@ -182,15 +201,18 @@ void GameScene::GameUpdate() {
 		enemyPos[0] = 0;
 		enemyPos[1] = -5.0f;
 		enemyPos[2] = 20.0f;
+		enemy->SetPosition({ enemyPos[0],enemyPos[1],enemyPos[2]});
+		savePos = enemy->GetPosition();
 		elementPos[0] = 10.0f;
 		elementPos[1] = 0;
 		elementPos[2] = 20.0f;
 		isEnemeyActive = true;
 		isElementActive = false;
+		player->SetColor({ 1,0,0,1 });
 		enemyHP = 3;
-		isDamage = false;
-		player->StopAnimation();
+		playerStatus.isAttack = false;
 		playerStatus.isHaveElement = true;
+		player->StopAnimation();
 
 
 		/*isNowEnd = true;
@@ -230,7 +252,7 @@ void GameScene::EndUpdate() {
 		isEnemeyActive = true;
 		isElementActive = false;
 		enemyHP = 3;
-		isDamage = false;
+		playerStatus.isAttack = false;
 		player->StopAnimation();
 
 		isNowEnd = false;
@@ -399,11 +421,12 @@ void GameScene::Move(float moveAmount) {
 	else if (input->PushKey(DIK_D)) {
 		xMoveAmount += moveAmount;
 		player->SetRotation({ 0.0f,90.0f,0.0f });
-	}	
+	}
 }
 
 void GameScene::DamageShake() {
+	enemy->SetPosition(savePos);
 	for (int i = 0; i < 3; i++) {
-		shakeObjectPos[i] = static_cast<float>(rand()%4-2);
+		shakeObjectPos[i] = static_cast<float>(rand() % 4 - 2);
 	}
 }
