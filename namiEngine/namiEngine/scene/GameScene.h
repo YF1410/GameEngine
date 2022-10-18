@@ -13,6 +13,7 @@
 #include "FbxObject3d.h"
 #include "CollisionPrimitive.h"
 #include "BaseEnemy.h"
+#include "ElementObject.h"
 
 #include <vector>
 
@@ -91,7 +92,7 @@ public: // メンバ関数
 
 	void Move(float moveAmount);
 
-	void DamageShake(bool isDamageShake,FbxObject3d* enemy);
+	//void DamageShake(bool isDamageShake,BaseEnemy* enemy);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
@@ -116,10 +117,11 @@ private: // メンバ変数
 	std::unique_ptr<FbxObject3d> player;
 
 	std::unique_ptr<FbxModel> enemyModel;
-	std::unique_ptr<BaseEnemy> enemy;
+	//std::unique_ptr<BaseEnemy> enemy;
+	std::list<std::unique_ptr<BaseEnemy>> enemy;
 
 	std::unique_ptr<FbxModel> elementModel;
-	std::unique_ptr<FbxObject3d> element;
+	std::unique_ptr<ElementObject> element;
 
 	std::unique_ptr<Model> groundModel;
 	std::unique_ptr<Object3d> groundObj;
@@ -129,27 +131,17 @@ private: // メンバ変数
 	std::unique_ptr<LightGroup> lightGroup;
 
 	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };
-	float enemyPos[3] = { 0,-5.0f,20.0f };
 	float elementPos[3] = { 10.0f,0,20.0f };
 	float cameraEye[3] = { 0.0f,20.0f,-50.0f };
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 	float xMoveAmount = 0.0f;
 	float zMoveAmount = 0.0f;
-	XMFLOAT3 savePos;
+	//XMFLOAT3 savePos;
 
 	Sphere playerCollision;
-	Sphere enemyCollision;
 	Sphere elementCollision;
 
 	PlayerStatus playerStatus;
 
-	bool isEnemeyActive = true;
 	bool isElementActive = false;
-	int enemyHP = 3;
-	bool isDamageShake = false;
-	int damageShakeCount = 0;
-	float shakeObjectPos[3] = {0.0f,0.0f,0.0f};
-
-	float enemyMoveX = 0;
-	float enemyMoveZ = 0;
 };

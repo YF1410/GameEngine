@@ -81,12 +81,25 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	player->Initialize();
 	player->SetModel(playerModel.get());
 
-	enemy = std::make_unique<BaseEnemy>();
+	for (int i = 0; i < 20; i++) {
+		enemy.push_back(BaseEnemy::Create(enemyModel.get()));
+	}
+
+	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+		/*enemyObj->Initialize();
+		enemyObj->SetModel(enemyModel.get());*/
+		enemyObj->SetScale({0.3f,0.3f,0.3f});
+		enemyObj->SetDefaultPos();
+	}
+
+	//enemy.end()->get()->Initialize();
+
+	/*enemy = std::make_unique<BaseEnemy>();
 	enemy->Initialize();
 	enemy->SetModel(enemyModel.get());
-	enemy->SetScale({ 0.3f,0.3f,0.3f });
+	enemy->SetScale({ 0.3f,0.3f,0.3f });*/
 
-	element = std::make_unique<FbxObject3d>();
+	element = std::make_unique<ElementObject>();
 	element->Initialize();
 	element->SetModel(elementModel.get());
 	element->SetRotation({ 0,90.0f,0, });
@@ -99,7 +112,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	skydomeObj->SetScale(5.0f);
 
 	player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
-	enemy->SetPosition({ enemyPos[0] + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[1], enemyPos[2] + shakeObjectPos[2] });
+	//enemy->SetPosition({ enemyPos[0] + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[1], enemyPos[2] + shakeObjectPos[2] });
 	element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
 
 	srand(static_cast<unsigned int>(time(NULL)));
@@ -136,21 +149,21 @@ void GameScene::GameUpdate() {
 		}
 	}
 
-	DamageShake(isDamageShake, enemy.get());
+	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+		enemyObj->Damage(player->GetPosition(), playerStatus.attackPowor);
+	}
+
+	enemy.remove_if([](std::unique_ptr<BaseEnemy>& enemyObj) {return !enemyObj->GetIsActive(); });
 
 	cameraObject->SetEye({ cameraEye[0] + xMoveAmount, cameraEye[1],cameraEye[2] + zMoveAmount });
 	cameraObject->SetTarget({ cameraTarget.x + xMoveAmount, cameraTarget.y,cameraTarget.z + zMoveAmount });
 
 	player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
-	enemy->SetPosition({ enemyMoveX + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[1], enemyMoveZ + shakeObjectPos[2] });
 	element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
 
 	playerCollision.center = XMLoadFloat3(&player->GetPosition());
 	playerCollision.radius = 3.0f;
 	playerStatus.isAttack = false;
-
-	enemyCollision.center = XMLoadFloat3(&enemy->GetPosition());
-	enemyCollision.radius = 3.0f;
 
 	elementCollision.center = XMLoadFloat3(&element->GetPosition());
 	elementCollision.radius = 1.0f;
@@ -171,33 +184,30 @@ void GameScene::GameUpdate() {
 		player->PlayAnimation();
 	}
 
-	if (Collision::CheckSphere2Sphere(playerCollision, enemyCollision) && isEnemeyActive && playerStatus.isAttack) {
-		enemyHP -= playerStatus.attackPowor;
-		enemy->SetColor({ 1,0,0,1 });
-		isDamageShake = true;
-		playerStatus.isAttack = false;
+	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+		if (Collision::CheckSphere2Sphere(playerCollision, enemyObj->GetCollision()) && enemyObj->GetIsActive() && playerStatus.isAttack) {
+			enemyObj->SetColor({ 1,0,0,1 });
+			enemyObj->SetIsDamage(true);
+		}
+		else if (Collision::CheckSphere2Sphere(playerCollision, enemyObj->GetCollision()) && enemyObj->GetIsActive() && !playerStatus.isAttack && !playerStatus.isReceivedDamage) {
+			playerStatus.HP--;
+			//player->SetColor({ 1,0,0,1 });
+			playerStatus.isReceivedDamage = true;
+		}
 	}
-	else if (Collision::CheckSphere2Sphere(playerCollision, enemyCollision) && isEnemeyActive && !playerStatus.isAttack) {
-		playerStatus.HP--;
-		enemy->SetColor({ 1,0,0,1 });
-		isDamageShake = true;
-	}
+
 
 	if (Collision::CheckSphere2Sphere(playerCollision, elementCollision) && isElementActive && !player->GetIsPlay()) {
 		isElementActive = false;
 
-		enemyPos[0] = 0;
-		enemyPos[1] = -5.0f;
-		enemyPos[2] = 20.0f;
-		enemy->SetPosition({ enemyPos[0],enemyPos[1],enemyPos[2]});
-		savePos = enemy->GetPosition();
+		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+			enemyObj->RestartInitialize();
+		}
 		elementPos[0] = 10.0f;
 		elementPos[1] = 0;
 		elementPos[2] = 20.0f;
-		isEnemeyActive = true;
 		isElementActive = false;
 		player->SetColor({ 0,0,1,1 });
-		enemyHP = 3;
 		playerStatus.isAttack = false;
 		playerStatus.isHaveElement = true;
 		player->StopAnimation();
@@ -209,8 +219,8 @@ void GameScene::GameUpdate() {
 
 	cameraObject->Update();
 	player->Update();
-	if (isEnemeyActive) {
-		enemy->Update();
+	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+		enemyObj->Update();
 	}
 
 	if (isElementActive) {
@@ -225,9 +235,6 @@ void GameScene::GameUpdate() {
 void GameScene::EndUpdate() {
 	if (input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) {
 		playerPos = { 0.0f,0.0f,0.0f };
-		enemyPos[0] = 0;
-		enemyPos[1] = -5.0f;
-		enemyPos[2] = 20.0f;
 		elementPos[0] = 10.0f;
 		elementPos[1] = 0;
 		elementPos[2] = 20.0f;
@@ -237,9 +244,9 @@ void GameScene::EndUpdate() {
 		cameraTarget = { 0.0f,0.0f,0.0f };
 		xMoveAmount = 0.0f;
 		zMoveAmount = 0.0f;
-		isEnemeyActive = true;
-		isElementActive = false;
-		enemyHP = 3;
+		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+			enemyObj->RestartInitialize();
+		}
 		playerStatus.HP = 3;
 		playerStatus.isHaveElement = false;
 		playerStatus.isDash = false;
@@ -322,9 +329,10 @@ void GameScene::GameDraw() {
 	Object3d::PostDraw();
 
 	player->Draw(cmdList);
-	if (isEnemeyActive) {
-		enemy->Draw(cmdList);
+	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+		enemyObj->Draw(cmdList);
 	}
+
 
 	if (isElementActive) {
 		element->Draw(cmdList);
@@ -415,30 +423,30 @@ void GameScene::Move(float moveAmount) {
 	}
 }
 
-void GameScene::DamageShake(bool isDamage,FbxObject3d* enemy) {
-	float rad = atan2(player->GetPosition().z - enemy->GetPosition().z, player->GetPosition().x - enemy->GetPosition().x);
-	if (isDamageShake) {
-		damageShakeCount++;
-		enemy->SetPosition(savePos);
-		for (int i = 0; i < 3; i++) {
-			shakeObjectPos[i] = static_cast<float>(rand() % 4 - 2);
-		}
-		if (damageShakeCount >= 10) {
-			damageShakeCount = 0;
-			for (int i = 0; i < 3; i++) {
-				shakeObjectPos[i] = 0;
-			}
-			isDamageShake = false;
-			enemy->SetColor({ 1,1,1,1 });
-		}
-	}
-	else {
-		savePos = enemy->GetPosition();
-		enemyMoveX = (float)(cos(rad) * 0.1f + enemy->GetPosition().x);
-		enemyMoveZ = (float)(sin(rad) * 0.1f + enemy->GetPosition().z);
-		if (enemyHP <= 0) {
-			isEnemeyActive = false;
-			isElementActive = true;
-		}
-	}
-}
+//void GameScene::DamageShake(bool isDamage,FbxObject3d* enemy) {
+//	float rad = atan2(player->GetPosition().z - enemy->GetPosition().z, player->GetPosition().x - enemy->GetPosition().x);
+//	if (isDamageShake) {
+//		damageShakeCount++;
+//		enemy->SetPosition(savePos);
+//		for (int i = 0; i < 3; i++) {
+//			shakeObjectPos[i] = static_cast<float>(rand() % 4 - 2);
+//		}
+//		if (damageShakeCount >= 10) {
+//			damageShakeCount = 0;
+//			for (int i = 0; i < 3; i++) {
+//				shakeObjectPos[i] = 0;
+//			}
+//			isDamageShake = false;
+//			enemy->SetColor({ 1,1,1,1 });
+//		}
+//	}
+//	else {
+//		savePos = enemy->GetPosition();
+//		enemyMoveX = (float)(cos(rad) * 0.1f + enemy->GetPosition().x);
+//		enemyMoveZ = (float)(sin(rad) * 0.1f + enemy->GetPosition().z);
+//		if (enemyHP <= 0) {
+//			isEnemeyActive = false;
+//			isElementActive = true;
+//		}
+//	}
+//}

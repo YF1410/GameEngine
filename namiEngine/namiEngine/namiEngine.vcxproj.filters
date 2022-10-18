@@ -132,6 +132,9 @@
     <ClCompile Include="gameObject\enemy\BaseEnemy.cpp">
       <Filter>Application\GameObject\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="gameObject\element\ElementObject.cpp">
+      <Filter>Application\GameObject\Element</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\DebugText.h">
@@ -260,6 +263,9 @@
     <ClInclude Include="gameObject\enemy\BaseEnemy.h">
       <Filter>Application\GameObject\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="gameObject\element\ElementObject.h">
+      <Filter>Application\GameObject\Element</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
@@ -344,6 +350,9 @@
     </Filter>
     <Filter Include="Application\GameObject\Enemy">
       <UniqueIdentifier>{c76144e0-eeba-4c53-bcc2-07e952537562}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\GameObject\Element">
+      <UniqueIdentifier>{c09d6788-f868-4ed0-ae2d-b7db9c97c2fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
