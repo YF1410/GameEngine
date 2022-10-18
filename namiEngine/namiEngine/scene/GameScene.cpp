@@ -89,7 +89,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 		/*enemyObj->Initialize();
 		enemyObj->SetModel(enemyModel.get());*/
 		enemyObj->SetScale({0.3f,0.3f,0.3f});
-		enemyObj->SetDefaultPos();
+		enemyObj->SetPosition({ static_cast<float>(rand() % 100 - 50),-5,static_cast<float>(rand() % 100 - 50) });
 	}
 
 	//enemy.end()->get()->Initialize();

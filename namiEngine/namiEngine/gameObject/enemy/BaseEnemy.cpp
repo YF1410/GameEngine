@@ -83,27 +83,27 @@ void BaseEnemy::Damage(XMFLOAT3 pos, int DamageQuantity) {
 	position = { moveX + shakeObjectPos[0], position.y + shakeObjectPos[1], moveZ + shakeObjectPos[2] };
 }
 
-void BaseEnemy::SelectAction()
-{
-	/*if () {
-		Sweep();
-	}
-	else if () {
-		Stab();
-	}
-	else if () {
-		Tackle();
-	}*/
-}
-
-void BaseEnemy::Sweep()
-{
-}
-
-void BaseEnemy::Stab()
-{
-}
-
-void BaseEnemy::Tackle()
-{
-}
+//void BaseEnemy::SelectAction()
+//{
+//	/*if () {
+//		Sweep();
+//	}
+//	else if () {
+//		Stab();
+//	}
+//	else if () {
+//		Tackle();
+//	}*/
+//}
+//
+//void BaseEnemy::Sweep()
+//{
+//}
+//
+//void BaseEnemy::Stab()
+//{
+//}
+//
+//void BaseEnemy::Tackle()
+//{
+//}

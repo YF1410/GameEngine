@@ -16,24 +16,28 @@ protected: // エイリアス
 public:
 	static std::unique_ptr<BaseEnemy> Create(FbxModel* fbxmodel);
 public:
+	//コンストラクタ
 	BaseEnemy();
+	//デストラクタ
 	~BaseEnemy();
+	//初期化
 	void Initialize();
+	//再初期化
 	void RestartInitialize();
+	//更新
 	void Update();
-	void SelectAction();
+	/*void SelectAction();
 	void Sweep();
 	void Stab();
-	void Tackle();
-	void SetSavePos() { savePos = position; }
-	void SetShakePos() { position = savePos; }
-	void SetDefaultPos() { position = defaultPos; }
+	void Tackle();*/
+	//セッター
 	void SetIsDamage(bool isDamage) { this->isDamage = isDamage; }
+	//ゲッター
 	XMFLOAT3 GetSavePos() { return savePos; }
 	bool GetIsActive() { return isActive; }
 	Sphere GetCollision() { return collision; }
+	//ダメージ処理
 	void Damage(XMFLOAT3 pos,int DamageQuantity);
-	void SetHP(int HP) { this->HP = HP; }
 private:
 	int HP = 3;
 	XMFLOAT3 savePos;
