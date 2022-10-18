@@ -111,9 +111,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="3d\gameObj\Player.cpp">
-      <Filter>Application\GameObject\Player</Filter>
-    </ClCompile>
     <ClCompile Include="3d\collider\TouchableObject.cpp">
       <Filter>Engine\3D\Collider</Filter>
     </ClCompile>
@@ -123,14 +120,17 @@
     <ClCompile Include="utility\Easing.cpp">
       <Filter>Engine\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="BaseEnemy.cpp">
-      <Filter>Application\GameObject\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="NamiGame.cpp">
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="Framework.cpp">
       <Filter>Engine\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject\player\Player.cpp">
+      <Filter>Application\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject\enemy\BaseEnemy.cpp">
+      <Filter>Application\GameObject\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,9 +236,6 @@
     <ClInclude Include="scene\GameScene.h">
       <Filter>Application\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="3d\gameObj\Player.h">
-      <Filter>Application\GameObject\Player</Filter>
-    </ClInclude>
     <ClInclude Include="3d\collider\TouchableObject.h">
       <Filter>Engine\3D\Collider</Filter>
     </ClInclude>
@@ -251,14 +248,17 @@
     <ClInclude Include="utility\Vector3.h">
       <Filter>Engine\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="BaseEnemy.h">
-      <Filter>Application\GameObject\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="NamiGame.h">
       <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="Framework.h">
       <Filter>Engine\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject\player\Player.h">
+      <Filter>Application\GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject\enemy\BaseEnemy.h">
+      <Filter>Application\GameObject\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

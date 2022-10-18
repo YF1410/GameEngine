@@ -12,6 +12,7 @@
 #include "Object3d.h"
 #include "FbxObject3d.h"
 #include "CollisionPrimitive.h"
+#include "BaseEnemy.h"
 
 #include <vector>
 
@@ -33,13 +34,15 @@ private: // 静的メンバ変数
 	static const int debugTextTexNumber = 0;
 public:
 	struct PlayerStatus {
-		float defMoveAmount = 1.0f;
-		float dashMoveAmount = 3.0f;
+		int HP = 3;
+		const float defMoveAmount = 1.0f;
+		const float dashMoveAmount = 3.0f;
 		int dashTimer = 8;
 		int attackPowor = 1;
 		bool isHaveElement = false;
 		bool isDash = false;
 		bool isAttack = false;
+		bool isReceivedDamage = false;
 	};
 public: // メンバ関数
 
@@ -88,7 +91,7 @@ public: // メンバ関数
 
 	void Move(float moveAmount);
 
-	void DamageShake();
+	void DamageShake(bool isDamageShake,FbxObject3d* enemy);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
@@ -113,7 +116,7 @@ private: // メンバ変数
 	std::unique_ptr<FbxObject3d> player;
 
 	std::unique_ptr<FbxModel> enemyModel;
-	std::unique_ptr<FbxObject3d> enemy;
+	std::unique_ptr<BaseEnemy> enemy;
 
 	std::unique_ptr<FbxModel> elementModel;
 	std::unique_ptr<FbxObject3d> element;
@@ -147,6 +150,6 @@ private: // メンバ変数
 	int damageShakeCount = 0;
 	float shakeObjectPos[3] = {0.0f,0.0f,0.0f};
 
-	float x = 0;
-	float z = 0;
+	float enemyMoveX = 0;
+	float enemyMoveZ = 0;
 };
