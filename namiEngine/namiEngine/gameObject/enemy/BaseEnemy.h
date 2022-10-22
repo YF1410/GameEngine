@@ -30,12 +30,11 @@ public:
 	void Sweep();
 	void Stab();
 	void Tackle();*/
-	//セッター
-	void SetIsDamage(bool isDamage) { this->isDamage = isDamage; }
 	//ゲッター
-	XMFLOAT3 GetSavePos() { return savePos; }
 	bool GetIsActive() { return isActive; }
 	Sphere GetCollision() { return collision; }
+	//セッター
+	void SetIsDamage(bool isDamage) { this->isDamage = isDamage; }
 	//ダメージ処理
 	void Damage(XMFLOAT3 pos,int DamageQuantity);
 private:

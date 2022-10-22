@@ -88,7 +88,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 		/*enemyObj->Initialize();
 		enemyObj->SetModel(enemyModel.get());*/
-		enemyObj->SetScale({0.3f,0.3f,0.3f});
+		enemyObj->SetScale({ 0.3f,0.3f,0.3f });
 		enemyObj->SetPosition({ static_cast<float>(rand() % 100 - 50),-5,static_cast<float>(rand() % 100 - 50) });
 	}
 
@@ -99,12 +99,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	enemy->SetModel(enemyModel.get());
 	enemy->SetScale({ 0.3f,0.3f,0.3f });*/
 
-	element = std::make_unique<ElementObject>();
-	element->Initialize();
-	element->SetModel(elementModel.get());
-	element->SetRotation({ 0,90.0f,0, });
-	element->SetColor({ 0,0,1,1 });
-	element->LoopAnimation();
+	//element = std::make_unique<ElementObject>();
+	//element->Initialize();
+	//element->SetModel(elementModel.get());
+	//element->SetRotation({ 0,90.0f,0, });
+	//element->SetColor({ 0,0,1,1 });
+	//element->LoopAnimation();
 
 	groundObj = Object3d::Create(groundModel.get());
 	groundObj->SetScale({ 2.0f,2.0f,2.0f });
@@ -113,7 +113,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 
 	player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
 	//enemy->SetPosition({ enemyPos[0] + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[1], enemyPos[2] + shakeObjectPos[2] });
-	element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
+	//element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
 
 	srand(static_cast<unsigned int>(time(NULL)));
 }
@@ -151,22 +151,22 @@ void GameScene::GameUpdate() {
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 		enemyObj->Damage(player->GetPosition(), playerStatus.attackPowor);
+		if (!enemyObj->GetIsActive()) {
+			element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
+		}
 	}
 
 	enemy.remove_if([](std::unique_ptr<BaseEnemy>& enemyObj) {return !enemyObj->GetIsActive(); });
+	element.remove_if([](std::unique_ptr<ElementObject>& elementObj) {return !elementObj->GetIsActive(); });
 
 	cameraObject->SetEye({ cameraEye[0] + xMoveAmount, cameraEye[1],cameraEye[2] + zMoveAmount });
 	cameraObject->SetTarget({ cameraTarget.x + xMoveAmount, cameraTarget.y,cameraTarget.z + zMoveAmount });
 
 	player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
-	element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
 
 	playerCollision.center = XMLoadFloat3(&player->GetPosition());
 	playerCollision.radius = 3.0f;
 	playerStatus.isAttack = false;
-
-	elementCollision.center = XMLoadFloat3(&element->GetPosition());
-	elementCollision.radius = 1.0f;
 
 	if (input->TriggerKey(DIK_1) && !player->GetIsPlay()) {
 		playerCollision.radius = 15.0f;
@@ -196,25 +196,19 @@ void GameScene::GameUpdate() {
 		}
 	}
 
+	for (std::unique_ptr<ElementObject>& elementObj : element) {
+		elementObj->GetIsActive();
+		if (Collision::CheckSphere2Sphere(playerCollision, elementObj->GetCollision()) && elementObj->GetIsActive() && !player->GetIsPlay()) {
+			elementObj->SetIsActive(false);
 
-	if (Collision::CheckSphere2Sphere(playerCollision, elementCollision) && isElementActive && !player->GetIsPlay()) {
-		isElementActive = false;
+			player->SetColor({ 0,0,1,1 });
+			playerStatus.isAttack = false;
+			playerStatus.isHaveElement = true;
+			player->StopAnimation();
 
-		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-			enemyObj->RestartInitialize();
+			/*isNowEnd = true;
+			isNowGame = false;*/
 		}
-		elementPos[0] = 10.0f;
-		elementPos[1] = 0;
-		elementPos[2] = 20.0f;
-		isElementActive = false;
-		player->SetColor({ 0,0,1,1 });
-		playerStatus.isAttack = false;
-		playerStatus.isHaveElement = true;
-		player->StopAnimation();
-
-
-		/*isNowEnd = true;
-		isNowGame = false;*/
 	}
 
 	cameraObject->Update();
@@ -223,8 +217,8 @@ void GameScene::GameUpdate() {
 		enemyObj->Update();
 	}
 
-	if (isElementActive) {
-		element->Update();
+	for (std::unique_ptr<ElementObject>& elementObj : element) {
+		elementObj->Update();
 	}
 
 	groundObj->Update();
@@ -235,9 +229,6 @@ void GameScene::GameUpdate() {
 void GameScene::EndUpdate() {
 	if (input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) {
 		playerPos = { 0.0f,0.0f,0.0f };
-		elementPos[0] = 10.0f;
-		elementPos[1] = 0;
-		elementPos[2] = 20.0f;
 		cameraEye[0] = 0.0f;
 		cameraEye[1] = 20.0f;
 		cameraEye[2] = -50.0f;
@@ -334,8 +325,8 @@ void GameScene::GameDraw() {
 	}
 
 
-	if (isElementActive) {
-		element->Draw(cmdList);
+	for (std::unique_ptr<ElementObject>& elementObj : element) {
+		elementObj->Draw(cmdList);
 	}
 
 	// パーティクルの描画

@@ -9,11 +9,11 @@ BaseEnemy::~BaseEnemy()
 {
 }
 
-std::unique_ptr<BaseEnemy> BaseEnemy::Create(FbxModel* fbxModel) {
+std::unique_ptr<BaseEnemy> BaseEnemy::Create(FbxModel* fbxmodel) {
 	std::unique_ptr<BaseEnemy> enemy = std::make_unique<BaseEnemy>();
 
 	enemy->Initialize();
-	enemy->SetModel(fbxModel);
+	enemy->SetModel(fbxmodel);
 
 	return enemy;
 }
