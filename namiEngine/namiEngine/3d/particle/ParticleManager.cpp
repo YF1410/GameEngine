@@ -6,7 +6,7 @@
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
-std::unique_ptr<ParticleManager> ParticleManager::instance;
+ParticleManager ParticleManager::instance;
 
 static const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs) {
 	XMFLOAT3 result;
@@ -33,10 +33,7 @@ const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, const float rhs)
 }
 
 ParticleManager* ParticleManager::GetInstance() {
-	if (!instance) {
-		instance = std::make_unique<ParticleManager>();
-	}
-	return instance.get();
+	return &instance;
 }
 
 void ParticleManager::Initialize(ComPtr<ID3D12Device> device) {
@@ -80,7 +77,6 @@ void ParticleManager::Finalize() {
 	vertBuff.Reset();
 	texbuff.Reset();
 	constBuff.Reset();
-	instance.release();
 }
 
 void ParticleManager::Update() {

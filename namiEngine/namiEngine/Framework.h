@@ -20,7 +20,7 @@ protected:
 	bool isEnd_ = false;
 	std::unique_ptr<WinApp> win;
 	std::unique_ptr<DirectXCommon> dxCommon;
-	std::unique_ptr<Input> input;
+	Input* input = nullptr;
 	std::unique_ptr<Audio> audio;
 };
 

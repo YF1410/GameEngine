@@ -23,7 +23,7 @@ void NamiGame::Initialize() {
 #pragma endregion 汎用機能初期化
 
 	// ゲームシーンの初期化
-	gameScene->Initialize(dxCommon.get(), input.get(), audio.get());
+	gameScene->Initialize(dxCommon.get(), audio.get());
 
 	//ポストエフェクト用のテクスチャの読み込み
 	//Sprite::LoadTexture(100, L"Resources/white1x1.png");

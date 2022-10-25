@@ -8,6 +8,7 @@
 
 #include <DirectXMath.h>
 #include "WinApp.h"
+#include <memory>
 
 using namespace DirectX;
 
@@ -61,6 +62,8 @@ public:
 private:
 	//namespaceÈ—ª
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+public:// Ã“Iƒƒ“ƒoŠÖ”
+	static Input* GetInstance();
 
 public: //ƒƒ“ƒoŠÖ”
 	//‰Šú‰»
@@ -141,4 +144,12 @@ private:
 	static DIJOYSTATE currentPadState;
 	static DIJOYSTATE prevPadState;
 	static XMFLOAT2 mousePos;
+
+private:
+	static Input instance;
+private:
+	Input() = default;
+	Input(const Input&) = delete;
+	~Input() = default;
+	Input& operator=(const Input&) = delete;
 };

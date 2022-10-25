@@ -167,11 +167,7 @@ private: // ƒƒ“ƒo•Ï”
 	// ƒJƒƒ‰
 	Camera* cameraObject = nullptr;
 private:
-	static std::unique_ptr<ParticleManager> instance;
-	//friend decltype(instance)::deleter_type;
-	//friend decltype(instance)::deleter_type  std::make_unique<decltype(instance)>();
-	friend std::unique_ptr<ParticleManager>::deleter_type;
-	friend std::unique_ptr<ParticleManager> std::make_unique<ParticleManager>();
+	static ParticleManager instance;
 private:
 	ParticleManager() = default;
 	ParticleManager(const ParticleManager&) = delete;

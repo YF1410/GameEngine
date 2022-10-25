@@ -15,6 +15,7 @@
 
 #include "BaseEnemy.h"
 #include "ElementObject.h"
+#include "Player.h"
 
 #include <vector>
 
@@ -34,18 +35,6 @@ private: // エイリアス
 
 private: // 静的メンバ変数
 	static const int debugTextTexNumber = 0;
-public:
-	struct PlayerStatus {
-		int HP = 3;
-		const float defMoveAmount = 1.0f;
-		const float dashMoveAmount = 3.0f;
-		int dashTimer = 8;
-		int attackPowor = 1;
-		bool isHaveElement = false;
-		bool isDash = false;
-		bool isAttack = false;
-		bool isReceivedDamage = false;
-	};
 public: // メンバ関数
 
 	/// <summary>
@@ -61,7 +50,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio);
+	void Initialize(DirectXCommon* dxCommon, Audio* audio);
 
 	//タイトル
 	void TitleUpdate();
@@ -91,8 +80,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	void Move(float moveAmount);
-
 	//void DamageShake(bool isDamageShake,BaseEnemy* enemy);
 
 private: // メンバ変数
@@ -115,7 +102,7 @@ private: // メンバ変数
 	ParticleManager* particleMan;
 
 	std::unique_ptr<FbxModel> playerModel;
-	std::unique_ptr<FbxObject3d> player;
+	std::unique_ptr<Player> player;
 
 	std::unique_ptr<FbxModel> enemyModel;
 	//std::unique_ptr<BaseEnemy> enemy;
@@ -131,14 +118,6 @@ private: // メンバ変数
 	std::unique_ptr<Object3d> skydomeObj;
 	std::unique_ptr<LightGroup> lightGroup;
 
-	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };
 	float cameraEye[3] = { 0.0f,20.0f,-50.0f };
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
-	float xMoveAmount = 0.0f;
-	float zMoveAmount = 0.0f;
-	//XMFLOAT3 savePos;
-
-	Sphere playerCollision;
-
-	PlayerStatus playerStatus;
 };

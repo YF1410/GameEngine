@@ -17,14 +17,12 @@ GameScene::GameScene() {
 GameScene::~GameScene() {
 }
 
-void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) {
+void GameScene::Initialize(DirectXCommon* dxCommon, Audio* audio) {
 	// nullptrチェック
 	assert(dxCommon);
-	assert(input);
 	assert(audio);
 
 	this->dxCommon = dxCommon;
-	this->input = input;
 	this->audio = audio;
 
 	// カメラ生成
@@ -38,6 +36,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	// デバッグテキスト初期化
 	debugText = DebugText::GetInstance();
 	debugText->Initialize(debugTextTexNumber);
+
+	input = Input::GetInstance();
 
 	// テクスチャ読み込み
 	if (!Sprite::LoadTexture(1, L"Resources/title.png")) {
@@ -77,9 +77,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	FbxObject3d::SetCamera(cameraObject.get());
 
 	//object1 = new FbxObject3d;
-	player = std::make_unique<FbxObject3d>();
-	player->Initialize();
-	player->SetModel(playerModel.get());
+	player = Player::Create(playerModel.get());
 
 	for (int i = 0; i < 20; i++) {
 		enemy.push_back(BaseEnemy::Create(enemyModel.get()));
@@ -111,7 +109,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) 
 	skydomeObj = Object3d::Create(skydomeModel.get());
 	skydomeObj->SetScale(5.0f);
 
-	player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
+	//player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
 	//enemy->SetPosition({ enemyPos[0] + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[1], enemyPos[2] + shakeObjectPos[2] });
 	//element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
 
@@ -126,31 +124,13 @@ void GameScene::TitleUpdate() {
 }
 
 void GameScene::GameUpdate() {
-	if (input->PushPad(ButtonA) || input->TriggerKey(DIK_P)) {
-		player->PlayAnimation();
-	}
-	if (input->PushPad(ButtonB) || input->TriggerKey(DIK_L)) {
-		player->StopAnimation();
-	}
 
-	if (input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D))) {
-		playerStatus.isDash = true;
-	}
-
-	if (!playerStatus.isDash) {
-		Move(playerStatus.defMoveAmount);
-	}
-	else if (playerStatus.isDash) {
-		Move(playerStatus.dashMoveAmount);
-		playerStatus.dashTimer--;
-		if (playerStatus.dashTimer <= 0) {
-			playerStatus.dashTimer = 8;
-			playerStatus.isDash = false;
-		}
+	if (input->TriggerKey(DIK_0)) {
+		element.push_back(ElementObject::Create(playerModel.get(),{0,0,-50}));
 	}
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		enemyObj->Damage(player->GetPosition(), playerStatus.attackPowor);
+		enemyObj->Damage(player->GetPosition(), player->GetAttackPowor());
 		if (!enemyObj->GetIsActive()) {
 			element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
 		}
@@ -159,51 +139,30 @@ void GameScene::GameUpdate() {
 	enemy.remove_if([](std::unique_ptr<BaseEnemy>& enemyObj) {return !enemyObj->GetIsActive(); });
 	element.remove_if([](std::unique_ptr<ElementObject>& elementObj) {return !elementObj->GetIsActive(); });
 
-	cameraObject->SetEye({ cameraEye[0] + xMoveAmount, cameraEye[1],cameraEye[2] + zMoveAmount });
-	cameraObject->SetTarget({ cameraTarget.x + xMoveAmount, cameraTarget.y,cameraTarget.z + zMoveAmount });
+	cameraObject->SetEye({ cameraEye[0] + player->GetXMoveAmount(), cameraEye[1],cameraEye[2] + player->GetZMoveAmount()});
+	cameraObject->SetTarget({ cameraTarget.x + player->GetXMoveAmount(), cameraTarget.y,cameraTarget.z + player->GetZMoveAmount() });
 
-	player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
-
-	playerCollision.center = XMLoadFloat3(&player->GetPosition());
-	playerCollision.radius = 3.0f;
-	playerStatus.isAttack = false;
-
-	if (input->TriggerKey(DIK_1) && !player->GetIsPlay()) {
-		playerCollision.radius = 15.0f;
-		playerStatus.attackPowor = 1;
-		playerStatus.isAttack = true;
-		player->PlayAnimation();
-	}
-
-	if (input->TriggerKey(DIK_2) && !player->GetIsPlay() && playerStatus.isHaveElement) {
-		playerCollision.radius = 50.0f;
-		player->SetColor({ 1,1,1,1 });
-		playerStatus.attackPowor = 2;
-		playerStatus.isAttack = true;
-		playerStatus.isHaveElement = false;
-		player->PlayAnimation();
-	}
+	player->Attack();
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		if (Collision::CheckSphere2Sphere(playerCollision, enemyObj->GetCollision()) && enemyObj->GetIsActive() && playerStatus.isAttack) {
+		if (Collision::CheckSphere2Sphere(player->GetCollision(), enemyObj->GetCollision()) && enemyObj->GetIsActive() && player->GetIsAttack()) {
 			enemyObj->SetColor({ 1,0,0,1 });
 			enemyObj->SetIsDamage(true);
 		}
-		else if (Collision::CheckSphere2Sphere(playerCollision, enemyObj->GetCollision()) && enemyObj->GetIsActive() && !playerStatus.isAttack && !playerStatus.isReceivedDamage) {
-			playerStatus.HP--;
+		else if (Collision::CheckSphere2Sphere(player->GetCollision(), enemyObj->GetCollision()) && enemyObj->GetIsActive() && !player->GetIsAttack() && !player->GetIsReceivedDamage()) {
+			player->Damage(1);
 			//player->SetColor({ 1,0,0,1 });
-			playerStatus.isReceivedDamage = true;
+			player->SetIsReceivedDamage(true);
 		}
 	}
 
 	for (std::unique_ptr<ElementObject>& elementObj : element) {
 		elementObj->GetIsActive();
-		if (Collision::CheckSphere2Sphere(playerCollision, elementObj->GetCollision()) && elementObj->GetIsActive() && !player->GetIsPlay()) {
+		if (Collision::CheckSphere2Sphere(player->GetCollision(), elementObj->GetCollision()) && elementObj->GetIsActive() && !player->GetIsPlay()) {
 			elementObj->SetIsActive(false);
 
 			player->SetColor({ 0,0,1,1 });
-			playerStatus.isAttack = false;
-			playerStatus.isHaveElement = true;
+			player->SetIsHaveElement(true);
 			player->StopAnimation();
 
 			/*isNowEnd = true;
@@ -227,7 +186,7 @@ void GameScene::GameUpdate() {
 }
 
 void GameScene::EndUpdate() {
-	if (input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) {
+	/*if (input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) {
 		playerPos = { 0.0f,0.0f,0.0f };
 		cameraEye[0] = 0.0f;
 		cameraEye[1] = 20.0f;
@@ -246,7 +205,7 @@ void GameScene::EndUpdate() {
 
 		isNowEnd = false;
 		isNowTitle = true;
-	}
+	}*/
 }
 
 void GameScene::Update() {
@@ -376,41 +335,6 @@ void GameScene::Draw() {
 	}
 	else if (isNowEnd) {
 		EndDraw();
-	}
-}
-
-void GameScene::Move(float moveAmount) {
-	if (input->PushKey(DIK_W)) {
-		zMoveAmount += moveAmount;
-		player->SetRotation({ 0.0f,0.0f,0.0f });
-		if (input->PushKey(DIK_A)) {
-			xMoveAmount -= moveAmount;
-			player->SetRotation({ 0.0f,315.0f,0.0f });
-		}
-		else if (input->PushKey(DIK_D)) {
-			xMoveAmount += moveAmount;
-			player->SetRotation({ 0.0f,45.0f,0.0f });
-		}
-	}
-	else if (input->PushKey(DIK_S)) {
-		zMoveAmount -= moveAmount;
-		player->SetRotation({ 0.0f,180.0f,0.0f });
-		if (input->PushKey(DIK_A)) {
-			xMoveAmount -= moveAmount;
-			player->SetRotation({ 0.0f,235.0f,0.0f });
-		}
-		else if (input->PushKey(DIK_D)) {
-			xMoveAmount += moveAmount;
-			player->SetRotation({ 0.0f,135.0f,0.0f });
-		}
-	}
-	else if (input->PushKey(DIK_A)) {
-		xMoveAmount -= moveAmount;
-		player->SetRotation({ 0.0f,270.0f,0.0f });
-	}
-	else if (input->PushKey(DIK_D)) {
-		xMoveAmount += moveAmount;
-		player->SetRotation({ 0.0f,90.0f,0.0f });
 	}
 }
 

@@ -22,7 +22,6 @@ void Framework::Run()
 void Framework::Initialize() {
 	win = std::make_unique<WinApp>();
 	dxCommon = std::make_unique<DirectXCommon>();
-	input = std::make_unique<Input>();
 	audio = std::make_unique<Audio>();
 	// ゲームウィンドウの作成
 	win->CreateGameWindow();
@@ -31,6 +30,7 @@ void Framework::Initialize() {
 	dxCommon->Initialize(win->GetHwnd());
 
 	//入力の初期化
+	input = Input::GetInstance();
 	input->Initialize(win->GetInstance(), win->GetHwnd());
 
 	// オーディオの初期化

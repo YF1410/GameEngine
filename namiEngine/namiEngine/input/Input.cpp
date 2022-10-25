@@ -5,11 +5,17 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+Input Input::instance;
+
 DIMOUSESTATE Input::currentMouseState;
 DIMOUSESTATE Input::prevMouseState;
 XMFLOAT2 Input::mousePos;
 DIJOYSTATE Input::currentPadState;
 DIJOYSTATE Input::prevPadState;
+
+Input* Input::GetInstance() {
+	return &instance;
+}
 
 bool Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 	HRESULT result = S_FALSE;
