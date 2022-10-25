@@ -147,6 +147,7 @@ private:
 
 private:
 	static Input instance;
+
 private:
 	Input() = default;
 	Input(const Input&) = delete;

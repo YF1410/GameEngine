@@ -17,13 +17,11 @@ GameScene::GameScene() {
 GameScene::~GameScene() {
 }
 
-void GameScene::Initialize(DirectXCommon* dxCommon, Audio* audio) {
+void GameScene::Initialize() {
 	// nullptrチェック
-	assert(dxCommon);
-	assert(audio);
-
-	this->dxCommon = dxCommon;
-	this->audio = audio;
+	dxCommon = DirectXCommon::GetInstance();
+	input = Input::GetInstance();
+	audio = Audio::GetInstance();
 
 	// カメラ生成
 	cameraObject = std::make_unique<Camera>(WinApp::window_width, WinApp::window_height);
@@ -37,8 +35,6 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Audio* audio) {
 	debugText = DebugText::GetInstance();
 	debugText->Initialize(debugTextTexNumber);
 
-	input = Input::GetInstance();
-
 	// テクスチャ読み込み
 	if (!Sprite::LoadTexture(1, L"Resources/title.png")) {
 		assert(0);
@@ -50,8 +46,6 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Audio* audio) {
 	}
 	// 背景スプライト生成
 
-	spriteBG1 = Sprite::Create(1, { 0.0f,0.0f });
-	spriteBG2 = Sprite::Create(2, { 0.0f,0.0f });
 	// パーティクルマネージャ生成
 	particleMan = ParticleManager::GetInstance();
 	particleMan->SetCamera(cameraObject.get());
@@ -116,17 +110,14 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Audio* audio) {
 	srand(static_cast<unsigned int>(time(NULL)));
 }
 
-void GameScene::TitleUpdate() {
-	if (input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) {
-		isNowTitle = false;
-		isNowGame = true;
-	}
+void GameScene::Finalize()
+{
 }
 
-void GameScene::GameUpdate() {
 
+void GameScene::Update() {
 	if (input->TriggerKey(DIK_0)) {
-		element.push_back(ElementObject::Create(playerModel.get(),{0,0,-50}));
+		element.push_back(ElementObject::Create(playerModel.get(), { 0,0,-50 }));
 	}
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
@@ -139,7 +130,7 @@ void GameScene::GameUpdate() {
 	enemy.remove_if([](std::unique_ptr<BaseEnemy>& enemyObj) {return !enemyObj->GetIsActive(); });
 	element.remove_if([](std::unique_ptr<ElementObject>& elementObj) {return !elementObj->GetIsActive(); });
 
-	cameraObject->SetEye({ cameraEye[0] + player->GetXMoveAmount(), cameraEye[1],cameraEye[2] + player->GetZMoveAmount()});
+	cameraObject->SetEye({ cameraEye[0] + player->GetXMoveAmount(), cameraEye[1],cameraEye[2] + player->GetZMoveAmount() });
 	cameraObject->SetTarget({ cameraTarget.x + player->GetXMoveAmount(), cameraTarget.y,cameraTarget.z + player->GetZMoveAmount() });
 
 	player->Attack();
@@ -185,60 +176,9 @@ void GameScene::GameUpdate() {
 	particleMan->Update();
 }
 
-void GameScene::EndUpdate() {
-	/*if (input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) {
-		playerPos = { 0.0f,0.0f,0.0f };
-		cameraEye[0] = 0.0f;
-		cameraEye[1] = 20.0f;
-		cameraEye[2] = -50.0f;
-		cameraTarget = { 0.0f,0.0f,0.0f };
-		xMoveAmount = 0.0f;
-		zMoveAmount = 0.0f;
-		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-			enemyObj->RestartInitialize();
-		}
-		playerStatus.HP = 3;
-		playerStatus.isHaveElement = false;
-		playerStatus.isDash = false;
-		playerStatus.isAttack = false;
-		player->StopAnimation();
 
-		isNowEnd = false;
-		isNowTitle = true;
-	}*/
-}
 
-void GameScene::Update() {
-	if (isNowTitle) {
-		TitleUpdate();
-	}
-	else if (isNowGame) {
-		GameUpdate();
-	}
-	else if (isNowEnd) {
-		EndUpdate();
-	}
-}
-
-void GameScene::TitleDraw() {
-	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
-	// 背景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
-	// 背景スプライト描画
-	spriteBG1->Draw();
-
-	/// <summary>
-	/// ここに背景スプライトの描画処理を追加できる
-	/// </summary>
-
-	// スプライト描画後処理
-	Sprite::PostDraw();
-	// 深度バッファクリア
-	dxCommon->ClearDepthBuffer();
-};
-
-void GameScene::GameDraw() {
-
+void GameScene::Draw() {
 	/*object2Pos[0] = object2->GetPosition().x;
 	object2Pos[1] = object2->GetPosition().y;
 	object2Pos[2] = object2->GetPosition().z;*/
@@ -308,60 +248,3 @@ void GameScene::GameDraw() {
 	Sprite::PostDraw();
 #pragma endregion
 }
-
-void GameScene::EndDraw() {
-	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
-	// 背景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
-	// 背景スプライト描画
-	spriteBG2->Draw();
-
-	/// <summary>
-	/// ここに背景スプライトの描画処理を追加できる
-	/// </summary>
-
-	// スプライト描画後処理
-	Sprite::PostDraw();
-	// 深度バッファクリア
-	dxCommon->ClearDepthBuffer();
-};
-
-void GameScene::Draw() {
-	if (isNowTitle) {
-		TitleDraw();
-	}
-	else if (isNowGame) {
-		GameDraw();
-	}
-	else if (isNowEnd) {
-		EndDraw();
-	}
-}
-
-//void GameScene::DamageShake(bool isDamage,FbxObject3d* enemy) {
-//	float rad = atan2(player->GetPosition().z - enemy->GetPosition().z, player->GetPosition().x - enemy->GetPosition().x);
-//	if (isDamageShake) {
-//		damageShakeCount++;
-//		enemy->SetPosition(savePos);
-//		for (int i = 0; i < 3; i++) {
-//			shakeObjectPos[i] = static_cast<float>(rand() % 4 - 2);
-//		}
-//		if (damageShakeCount >= 10) {
-//			damageShakeCount = 0;
-//			for (int i = 0; i < 3; i++) {
-//				shakeObjectPos[i] = 0;
-//			}
-//			isDamageShake = false;
-//			enemy->SetColor({ 1,1,1,1 });
-//		}
-//	}
-//	else {
-//		savePos = enemy->GetPosition();
-//		enemyMoveX = (float)(cos(rad) * 0.1f + enemy->GetPosition().x);
-//		enemyMoveZ = (float)(sin(rad) * 0.1f + enemy->GetPosition().z);
-//		if (enemyHP <= 0) {
-//			isEnemeyActive = false;
-//			isElementActive = true;
-//		}
-//	}
-//}

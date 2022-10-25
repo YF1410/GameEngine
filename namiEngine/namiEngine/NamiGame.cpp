@@ -1,29 +1,30 @@
 #include "NamiGame.h"
+#include "GameScene.h"
 
 void NamiGame::Initialize() {
 	Framework::Initialize();
-	gameScene = std::make_unique<GameScene>();
+	scene_ = std::make_unique<SceneManager>();
 	postEffect = std::make_unique<PostEffect>();
 	// スプライト静的初期化
-	if (!Sprite::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height)) {
+	if (!Sprite::StaticInitialize(WinApp::window_width, WinApp::window_height)) {
 		assert(0);
 	}
 
 	// 3Dオブジェクト静的初期化
-	Object3d::StaticInitialize(dxCommon->GetDevice());
+	Object3d::StaticInitialize();
 	// FBXオブジェクトグラフィックスパイプライン生成
-	FbxObject3d::CreateGraphicsPipeline(dxCommon->GetDevice());
+	FbxObject3d::CreateGraphicsPipeline();
 	// ライト静的初期化
-	LightGroup::StaticInitialize(dxCommon->GetDevice());
+	LightGroup::StaticInitialize();
 	// パーティクルマネージャ初期化
-	ParticleManager::GetInstance()->Initialize(dxCommon->GetDevice());
+	ParticleManager::GetInstance()->Initialize();
 	//FBX初期化
-	FbxLoader::GetInstance()->Initialize(dxCommon->GetDevice());
+	FbxLoader::GetInstance()->Initialize();
 
 #pragma endregion 汎用機能初期化
 
 	// ゲームシーンの初期化
-	gameScene->Initialize(dxCommon.get(), audio.get());
+	scene_->Initialize();
 
 	//ポストエフェクト用のテクスチャの読み込み
 	//Sprite::LoadTexture(100, L"Resources/white1x1.png");
@@ -42,14 +43,14 @@ void NamiGame::Finalize() {
 	Object3d::StaticFinalize();
 	Sprite::StaticFinalize();
 	postEffect.reset();
-	gameScene.reset();
+	scene_.reset();
 	Framework::Finalize();
 }
 
 void NamiGame::Update() {
 	Framework::Update();
 	// ゲームシーンの毎フレーム処理
-	gameScene->Update();
+	scene_->Update();
 }
 
 void NamiGame::Draw() {
@@ -59,16 +60,16 @@ void NamiGame::Draw() {
 	//postEffect->PostDrawScene(dxCommon->GetCommandList());
 #pragma region グラフィックスコマンド
 	// 描画開始
-	dxCommon->PreDraw();
+	DirectXCommon::GetInstance()->PreDraw();
 
 	//ポストエフェクトの描画
 	//postEffect->Draw(dxCommon->GetCommandList());
 
 	// ゲームシーンの描画
-	gameScene->Draw();
+	scene_->Draw();
 
 	// 描画終了
-	dxCommon->PostDraw();
+	DirectXCommon::GetInstance()->PostDraw();
 
 #pragma endregion グラフィックスコマンド
 }

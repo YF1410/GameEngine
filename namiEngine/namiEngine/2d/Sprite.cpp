@@ -19,11 +19,9 @@ XMMATRIX Sprite::matProjection;
 ComPtr<ID3D12DescriptorHeap> Sprite::descHeap;
 ComPtr<ID3D12Resource> Sprite::texBuff[srvCount];
 
-bool Sprite::StaticInitialize(ComPtr<ID3D12Device> device, int window_width, int window_height) {
-	// nullptrチェック
-	assert(device);
+bool Sprite::StaticInitialize( int window_width, int window_height) {
 
-	Sprite::device = device;
+	Sprite::device = DirectXCommon::GetInstance()->GetDevice();
 
 	// デスクリプタサイズを取得
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);

@@ -135,6 +135,15 @@
     <ClCompile Include="gameObject\element\ElementObject.cpp">
       <Filter>Application\GameObject\Element</Filter>
     </ClCompile>
+    <ClCompile Include="scene\GameEndScene.cpp">
+      <Filter>Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\SceneManager.cpp">
+      <Filter>Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\TitleScene.cpp">
+      <Filter>Application\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\DebugText.h">
@@ -265,6 +274,18 @@
     </ClInclude>
     <ClInclude Include="gameObject\element\ElementObject.h">
       <Filter>Application\GameObject\Element</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\GameEndScene.h">
+      <Filter>Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\SceneInterface.h">
+      <Filter>Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\SceneManager.h">
+      <Filter>Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\TitleScene.h">
+      <Filter>Application\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,10 @@
 #pragma once
 #include "Framework.h"
 
-#include "GameScene.h"
+#include "Object3d.h"
+#include "FbxObject3d.h"
+#include "ParticleManager.h"
+#include "SceneManager.h"
 #include "PostEffect.h"
 
 class NamiGame : public Framework {
@@ -15,6 +18,6 @@ public:
 	//•`‰æ
 	void Draw() override;
 private:
-	std::unique_ptr<GameScene> gameScene;
+	std::unique_ptr<SceneManager> scene_;
 	std::unique_ptr<PostEffect> postEffect;
 };

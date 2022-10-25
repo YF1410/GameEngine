@@ -24,11 +24,11 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& s
 	}
 }
 
-void FbxLoader::Initialize(ComPtr<ID3D12Device> device) {
+void FbxLoader::Initialize() {
 	//再初期化チェック
 	assert(fbxManager == nullptr);
 	//引数からメンバ変数に代入
-	this->device = device;
+	this->device = DirectXCommon::GetInstance()->GetDevice();
 	//FBXマネージャの生成
 	fbxManager = FbxManager::Create();
 	//FBXマネージャの入出力設定

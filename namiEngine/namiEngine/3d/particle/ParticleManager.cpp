@@ -36,11 +36,8 @@ ParticleManager* ParticleManager::GetInstance() {
 	return &instance;
 }
 
-void ParticleManager::Initialize(ComPtr<ID3D12Device> device) {
-	// nullptrチェック
-	assert(device);
-
-	this->device = device;
+void ParticleManager::Initialize() {
+	this->device = DirectXCommon::GetInstance()->GetDevice();
 
 	HRESULT result;
 

@@ -7,6 +7,7 @@
 #include <d3dx12.h>
 #include <string>
 
+#include "DirectXCommon.h"
 #include "Model.h"
 #include "Camera.h"
 #include "LightGroup.h"
@@ -49,7 +50,7 @@ public: // 静的メンバ関数
 	/// 静的初期化
 	/// </summary>
 	/// <param name="device">デバイス</param>
-	static void StaticInitialize(ComPtr<ID3D12Device> device, Camera* camera = nullptr);
+	static void StaticInitialize(Camera* camera = nullptr);
 
 	/// <summary>
 	/// 静的解放

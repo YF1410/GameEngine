@@ -14,14 +14,13 @@ Camera* FbxObject3d::cameraObject = nullptr;
 ComPtr<ID3D12RootSignature> FbxObject3d::rootsignature;
 ComPtr<ID3D12PipelineState> FbxObject3d::pipelinestate;
 
-void FbxObject3d::CreateGraphicsPipeline(ComPtr<ID3D12Device> device) {
+void FbxObject3d::CreateGraphicsPipeline() {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob;    // ピクセルシェーダオブジェクト
 	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
 
-	assert(device);
-	FbxObject3d::device = device;
+	FbxObject3d::device = DirectXCommon::GetInstance()->GetDevice();
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(

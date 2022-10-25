@@ -11,28 +11,35 @@
 
 using namespace Microsoft::WRL;
 
-DirectXCommon::~DirectXCommon() {
-	dxgiFactory.Reset();
-	commandList.Reset();
-	commandAllocator.Reset();
-	commandQueue.Reset();
-	swapchain.Reset();
-	backBuffers.clear();
-	depthBuffer.Reset();
-	rtvHeaps.Reset();
-	dsvHeap.Reset();
-	fence.Reset();
-	imguiHeap.Reset();
-	ImGui_ImplDX12_Shutdown();
-	ID3D12DebugDevice* debugInterface;
+DirectXCommon DirectXCommon::instance;
 
-	if (SUCCEEDED(device->QueryInterface(&debugInterface)))
-	{
-		debugInterface->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
-		debugInterface->Release();
-	}
+//DirectXCommon::~DirectXCommon() {
+//	dxgiFactory.Reset();
+//	commandList.Reset();
+//	commandAllocator.Reset();
+//	commandQueue.Reset();
+//	swapchain.Reset();
+//	backBuffers.clear();
+//	depthBuffer.Reset();
+//	rtvHeaps.Reset();
+//	dsvHeap.Reset();
+//	fence.Reset();
+//	imguiHeap.Reset();
+//	ImGui_ImplDX12_Shutdown();
+//	ID3D12DebugDevice* debugInterface;
+//
+//	if (SUCCEEDED(device->QueryInterface(&debugInterface)))
+//	{
+//		debugInterface->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
+//		debugInterface->Release();
+//	}
+//
+//	device.Reset();
+//}
 
-	device.Reset();
+DirectXCommon* DirectXCommon::GetInstance()
+{
+	return &instance;
 }
 
 void DirectXCommon::Initialize(HWND hwnd) {

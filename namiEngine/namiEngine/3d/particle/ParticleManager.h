@@ -8,6 +8,7 @@
 #include <forward_list>
 
 #include "Camera.h"
+#include "DirectXCommon.h"
 
 /// <summary>
 /// パーティクルマネージャ
@@ -83,7 +84,7 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <returns></returns>
-	void Initialize(ComPtr<ID3D12Device> device);
+	void Initialize();
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>

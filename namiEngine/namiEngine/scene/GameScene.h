@@ -16,13 +16,14 @@
 #include "BaseEnemy.h"
 #include "ElementObject.h"
 #include "Player.h"
+#include "SceneInterface.h"
 
 #include <vector>
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class GameScene {
+class GameScene : public SceneInterface {
 private: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -50,35 +51,19 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, Audio* audio);
+	void Initialize() override;
 
-	//タイトル
-	void TitleUpdate();
-
-	//ゲームシーン
-	void GameUpdate();
-
-	//終了画面
-	void EndUpdate();
+	void Finalize() override;
 
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
-
-	//タイトル
-	void TitleDraw();
-
-	//ゲームシーン
-	void GameDraw();
-
-	//終了画面
-	void EndDraw();
+	void Update() override;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw() override;
 
 	//void DamageShake(bool isDamageShake,BaseEnemy* enemy);
 
@@ -97,8 +82,6 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 	std::unique_ptr <Camera> cameraObject;
-	std::unique_ptr<Sprite> spriteBG1;
-	std::unique_ptr<Sprite> spriteBG2;
 	ParticleManager* particleMan;
 
 	std::unique_ptr<FbxModel> playerModel;

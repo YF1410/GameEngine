@@ -9,15 +9,12 @@ using namespace DirectX;
 /// </summary>
 ComPtr<ID3D12Device> LightGroup::device;
 
-void LightGroup::StaticInitialize(ComPtr<ID3D12Device> device)
+void LightGroup::StaticInitialize()
 {
 	// 再初期化チェック
 	assert(!LightGroup::device);
 
-	// nullptrチェック
-	assert(device);
-
-	LightGroup::device = device;
+	LightGroup::device = DirectXCommon::GetInstance()->GetDevice();
 }
 
 void LightGroup::StaticFinalize()

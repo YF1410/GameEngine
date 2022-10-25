@@ -10,6 +10,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "CircleShadow.h"
+#include "DirectXCommon.h"
 
 /// <summary>
 /// ライト
@@ -59,7 +60,7 @@ public: // 静的メンバ関数
 	/// 静的初期化
 	/// </summary>
 	/// <param name="device">デバイス</param>
-	static void StaticInitialize(ComPtr<ID3D12Device> device);
+	static void StaticInitialize();
 
 	/// <summary>
 	/// 静的解放

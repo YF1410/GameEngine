@@ -22,14 +22,11 @@ Object3d::PipelineSet Object3d::pipelineSet;
 Camera* Object3d::cameraObject = nullptr;
 LightGroup* Object3d::lightGroup = nullptr;
 
-void Object3d::StaticInitialize(ComPtr<ID3D12Device> device, Camera* cameraObject) {
+void Object3d::StaticInitialize(Camera* cameraObject) {
 	// 再初期化チェック
 	assert(!Object3d::device);
 
-	// nullptrチェック
-	assert(device);
-
-	Object3d::device = device;
+	Object3d::device = DirectXCommon::GetInstance()->GetDevice();
 	Object3d::cameraObject = cameraObject;
 
 	// グラフィックパイプラインの生成

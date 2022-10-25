@@ -3,6 +3,7 @@
 #include "FbxModel.h"
 #include "Camera.h"
 #include "FbxLoader.h"
+#include "DirectXCommon.h"
 
 #include <Windows.h>
 #include <wrl.h>
@@ -45,7 +46,7 @@ public: // 静的メンバ関数
 	/// <summary>
 	/// グラフィックパイプラインの生成
 	/// </summary>
-	static void CreateGraphicsPipeline(ComPtr<ID3D12Device> device);
+	static void CreateGraphicsPipeline();
 	static void StaticFinalize();
 	// setter
 	static void SetCamera(Camera* cameraObject) { FbxObject3d::cameraObject = cameraObject; }

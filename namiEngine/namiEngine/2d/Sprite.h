@@ -6,6 +6,8 @@
 #include <DirectXMath.h>
 #include <memory>
 
+#include "DirectXCommon.h"
+
 class Sprite {
 public: // エイリアス
 // Microsoft::WRL::を省略
@@ -30,7 +32,7 @@ public: // サブクラス
 
 public: // 静的メンバ関数
 	// 静的初期化
-	static bool StaticInitialize(ComPtr<ID3D12Device> device, int window_width, int window_height);
+	static bool StaticInitialize(int window_width, int window_height);
 	//静的解放
 	static void StaticFinalize();
 	// テクスチャ読み込み

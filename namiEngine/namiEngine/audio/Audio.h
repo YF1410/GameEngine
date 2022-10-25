@@ -49,6 +49,9 @@ public: // サブクラス
 		WAVEFORMAT fmt; // 波形フォーマット
 	};
 
+public:// 静的メンバ関数
+	static Audio* GetInstance();
+
 public: // メンバ関数
 	// 初期化
 	bool Initialize();
@@ -62,4 +65,13 @@ private: // メンバ変数
 	IXAudio2MasteringVoice* masterVoice;
 	XAudio2VoiceCallback voiceCallback;
 	IXAudio2SourceVoice* pSourceVoice = nullptr;
+
+private:
+	static Audio instance;
+
+private:
+	Audio() = default;
+	Audio(const Audio&) = delete;
+	~Audio() = default;
+	Audio& operator=(const Audio&) = delete;
 };

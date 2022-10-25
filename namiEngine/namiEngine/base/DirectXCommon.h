@@ -14,9 +14,12 @@ class DirectXCommon {
 private: // エイリアス
 // Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+	
+public:
+	static DirectXCommon* GetInstance();
 
 public: // メンバ関数
-	~DirectXCommon();
+	/*~DirectXCommon();*/
 	// 初期化
 	void Initialize(HWND hwnd);
 	// 描画前処理
@@ -98,4 +101,13 @@ private: // メンバ関数
 	/// </summary>
 	/// <returns>成否</returns>
 	bool InitImgui();
+
+private:
+	static DirectXCommon instance;
+
+private:
+	DirectXCommon() = default;
+	DirectXCommon(const DirectXCommon&) = delete;
+	~DirectXCommon() = default;
+	DirectXCommon& operator=(const DirectXCommon&) = delete;
 };

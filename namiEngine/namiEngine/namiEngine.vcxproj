@@ -188,7 +188,10 @@
     <ClCompile Include="input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NamiGame.cpp" />
+    <ClCompile Include="scene\GameEndScene.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="scene\SceneManager.cpp" />
+    <ClCompile Include="scene\TitleScene.cpp" />
     <ClCompile Include="utility\Angle.cpp" />
     <ClCompile Include="utility\Easing.cpp" />
   </ItemGroup>
@@ -232,7 +235,11 @@
     <ClInclude Include="gameObject\player\Player.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="NamiGame.h" />
+    <ClInclude Include="scene\GameEndScene.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="scene\SceneInterface.h" />
+    <ClInclude Include="scene\SceneManager.h" />
+    <ClInclude Include="scene\TitleScene.h" />
     <ClInclude Include="utility\Angle.h" />
     <ClInclude Include="utility\Easing.h" />
     <ClInclude Include="utility\Vector3.h" />

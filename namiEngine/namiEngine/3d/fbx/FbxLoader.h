@@ -7,6 +7,7 @@
 #include <cassert>
 #include <string>
 #include "FbxModel.h"
+#include "DirectXCommon.h"
 
 using namespace Microsoft::WRL;
 
@@ -39,7 +40,7 @@ public:
 	/// 初期化
 	/// </summary>
 	/// <param name = "device">D3D12デバイス</param>
-	void Initialize(ComPtr<ID3D12Device> device);
+	void Initialize();
 
 	/// <summary>
 	/// 後始末

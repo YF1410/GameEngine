@@ -21,20 +21,17 @@ void Framework::Run()
 
 void Framework::Initialize() {
 	win = std::make_unique<WinApp>();
-	dxCommon = std::make_unique<DirectXCommon>();
-	audio = std::make_unique<Audio>();
 	// ゲームウィンドウの作成
 	win->CreateGameWindow();
 
 	//DirectX初期化処理
-	dxCommon->Initialize(win->GetHwnd());
+	DirectXCommon::GetInstance()->Initialize(win->GetHwnd());
 
 	//入力の初期化
-	input = Input::GetInstance();
-	input->Initialize(win->GetInstance(), win->GetHwnd());
+	Input::GetInstance()->Initialize(win->GetInstance(), win->GetHwnd());
 
 	// オーディオの初期化
-	if (!audio->Initialize()) {
+	if (!Audio::GetInstance()->Initialize()) {
 		assert(0);
 	}
 }
@@ -52,5 +49,5 @@ void Framework::Update() {
 	}
 
 	// 入力関連の毎フレーム処理
-	input->Update();
+	Input::GetInstance()->Update();
 }
