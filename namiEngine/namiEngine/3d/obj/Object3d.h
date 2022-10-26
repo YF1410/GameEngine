@@ -43,6 +43,8 @@ public: // サブクラス
 		XMMATRIX viewproj;    // ビュープロジェクション行列
 		XMMATRIX world; // ワールド行列
 		XMFLOAT3 cameraPos; // カメラ座標（ワールド座標）
+		float pad;
+		XMFLOAT4 color;
 	};
 
 public: // 静的メンバ関数
@@ -151,6 +153,8 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>ワールド行列</returns>
 	const XMMATRIX& GetMatWorld() { return matWorld; }
+	
+	void SetColor(XMFLOAT4 color) { objColor = color; }
 
 	/// <summary>
 	/// 座標の設定

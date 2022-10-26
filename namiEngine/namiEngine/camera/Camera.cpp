@@ -1,4 +1,6 @@
 #include "Camera.h"
+#include <cstdlib>
+#include <time.h>
 
 using namespace DirectX;
 
@@ -13,6 +15,7 @@ Camera::Camera(int window_width, int window_height) {
 
 	// ビュープロジェクションの合成
 	matViewProjection = matView * matProjection;
+	srand(time(NULL));
 }
 
 void Camera::Update() {
@@ -179,4 +182,48 @@ void Camera::MoveVector(const XMVECTOR& move) {
 
 	SetEye(eye_moved);
 	SetTarget(target_moved);
+}
+
+void Camera::CameraShake()
+{
+	if (!shakeFlag)
+	{
+		saveEye = cameraEye;
+		saveTarget = cameraTarget;
+		shakeTimer = 0;
+		attenuation = 0;
+		SetEye(saveEye);
+		SetTarget(saveTarget);
+	}
+	if (shakeFlag)
+	{
+		XMFLOAT3 shake = { 0.0f, 0.0f, 0.0f };
+		XMFLOAT3 shakeEye = { 0.0f, 0.0f, 0.0f };
+		XMFLOAT3 shakeTarget = { 0.0f, 0.0f, 0.0f };
+
+		SetEye(saveEye);
+		SetTarget(saveTarget);
+
+		shakeTimer++;
+		if (shakeTimer > 0)
+		{
+			shake.x = (rand() % (shakeCount - attenuation) - (shakeCount / 2));//(rand() % (int)(Ease(In,Quad,(float)(shakeTimer /20),100,1)));
+			shake.y = (rand() % (shakeCount - attenuation) - (shakeCount / 2));
+			//shake.z = (rand() % (shakeCount - attenuation) - (shakeCount / 2));//(rand() % (int)Ease(In, Quad, (float)(shakeTimer / 20), 100, 1));
+			shakeEye = { shake.x + cameraEye.x,shake.y + cameraEye.y,shake.z + cameraEye.z };
+			shakeTarget = { shake.x + cameraTarget.x ,shake.y + cameraTarget.y ,shake.z + cameraTarget.z };
+		}
+
+		if (shakeTimer >= attenuation * 4)
+		{
+			attenuation += 1;
+		}
+		else if (attenuation > 3)
+		{
+			shakeFlag = false;
+		}
+
+		SetEye(shakeEye);
+		SetTarget(shakeTarget);
+	}
 }

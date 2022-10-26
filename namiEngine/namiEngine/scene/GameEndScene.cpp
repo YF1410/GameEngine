@@ -2,6 +2,10 @@
 
 void GameEndScene::Initialize()
 {
+	if (!Sprite::LoadTexture(2, L"Resources/gameend.png")) {
+		assert(0);
+		return;
+	}
 	spriteBG2 = Sprite::Create(2, { 0.0f,0.0f });
 }
 

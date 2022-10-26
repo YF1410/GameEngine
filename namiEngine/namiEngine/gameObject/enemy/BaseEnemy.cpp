@@ -29,8 +29,15 @@ void BaseEnemy::Initialize() {
 	moveZ = 0;
 	defaultPos = { 0,-5.0f,-20.0f };
 	position = defaultPos;
-	collision.center = XMLoadFloat3(&position);
+	XMFLOAT3 fixCollisionPos = { position.x,0,position.z };
+	collision.center = XMLoadFloat3(&fixCollisionPos);
 	collision.radius = 3.0f;
+
+	colliderVisualizationModel = Model::CreateFromObject("SphereCollider");
+	colliderVisualizationObject = Object3d::Create(colliderVisualizationModel.get());
+	colliderVisualizationObject->SetPosition(fixCollisionPos);
+	colliderVisualizationObject->SetScale(collision.radius);
+	colliderVisualizationObject->SetColor({ 1,1,1,0.1f });
 }
 
 void BaseEnemy::RestartInitialize() {
@@ -48,8 +55,19 @@ void BaseEnemy::RestartInitialize() {
 }
 
 void BaseEnemy::Update() {
+	XMFLOAT3 fixCollisionPos = { position.x,0,position.z };
+	collision.center = XMLoadFloat3(&fixCollisionPos);
+	colliderVisualizationObject->SetPosition(fixCollisionPos);
+	colliderVisualizationObject->SetScale(collision.radius);
+	colliderVisualizationObject->Update();
 	FbxObject3d::Update();
-	collision.center = XMLoadFloat3(&position);
+}
+
+void BaseEnemy::Draw(ID3D12GraphicsCommandList* cmdList) {
+	//FbxObject3d::Draw(cmdList);
+	Object3d::PreDraw(cmdList);
+	colliderVisualizationObject->Draw();
+	Object3d::PostDraw();
 }
 
 void BaseEnemy::Damage(XMFLOAT3 pos, int DamageQuantity) {

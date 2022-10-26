@@ -1,4 +1,5 @@
 #pragma once
+#include "Object3d.h"
 #include "FbxObject3d.h"
 #include "CollisionPrimitive.h"
 #include "input.h"
@@ -26,6 +27,8 @@ public:
 	/// </summary>
 	void Update();
 
+	void Draw(ID3D12GraphicsCommandList* cmdList);
+
 	void Attack();
 
 	void Move(float moveAmount);
@@ -49,7 +52,9 @@ private:
 	const float defMoveAmount = 1.0f;
 	const float dashMoveAmount = 3.0f;
 	int dashTimer = 8;
+	int damageTimer = 60;
 	int attackPowor = 1;
+	bool isActive = true;
 	bool isHaveElement = false;
 	bool isDash = false;
 	bool isAttack = false;
@@ -57,4 +62,6 @@ private:
 	Sphere collision;
 	float xMoveAmount = 0.0f;
 	float zMoveAmount = 0.0f;
+	std::unique_ptr<Model> colliderVisualizationModel;
+	std::unique_ptr<Object3d> colliderVisualizationObject;
 };

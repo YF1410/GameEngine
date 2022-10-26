@@ -23,3 +23,27 @@ std::unique_ptr<ElementObject> ElementObject::Create(FbxModel* fbxmodel, XMFLOAT
 
 	return element;
 }
+
+void ElementObject::Initialize() {
+	FbxObject3d::Initialize();
+	colliderVisualizationModel = Model::CreateFromObject("SphereCollider");
+	colliderVisualizationObject = Object3d::Create(colliderVisualizationModel.get());
+	colliderVisualizationObject->SetPosition(position);
+	colliderVisualizationObject->SetScale(collision.radius);
+	colliderVisualizationObject->SetColor({ 1,1,1,0.1f });
+}
+
+void ElementObject::Update() {
+	collision.center = XMLoadFloat3(&position);
+	colliderVisualizationObject->SetPosition(position);
+	colliderVisualizationObject->SetScale(collision.radius);
+	colliderVisualizationObject->Update();
+	FbxObject3d::Update();
+}
+
+void ElementObject::Draw(ID3D12GraphicsCommandList* cmdList) {
+	FbxObject3d::Draw(cmdList);
+	Object3d::PreDraw(cmdList);
+	colliderVisualizationObject->Draw();
+	Object3d::PostDraw();
+}

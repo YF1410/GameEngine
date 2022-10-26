@@ -1,15 +1,12 @@
 #pragma once
-
-#include "TitleScene.h"
-#include "GameScene.h"
-#include "GameEndScene.h"
+#include "SceneInterface.h"
 
 class SceneManager
 {
 public:
 	SceneManager();
 
-	void Initialize();
+	void Initialize(SceneInterface* scene);
 
 	void Finalize();
 

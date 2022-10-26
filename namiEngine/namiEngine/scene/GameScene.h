@@ -17,6 +17,7 @@
 #include "ElementObject.h"
 #include "Player.h"
 #include "SceneInterface.h"
+#include "BaseCollider.h"
 
 #include <vector>
 
@@ -103,4 +104,6 @@ private: // メンバ変数
 
 	float cameraEye[3] = { 0.0f,20.0f,-50.0f };
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
+	Sphere cameraCollider;
+	Sphere skydomeCollider;
 };

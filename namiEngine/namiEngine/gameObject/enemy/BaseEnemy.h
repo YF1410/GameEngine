@@ -1,4 +1,5 @@
 #pragma once
+#include "Object3d.h"
 #include "FbxObject3d.h"
 #include "CollisionPrimitive.h"
 
@@ -26,6 +27,8 @@ public:
 	void RestartInitialize();
 	//çXêV
 	void Update();
+
+	void Draw(ID3D12GraphicsCommandList* cmdList);
 	/*void SelectAction();
 	void Sweep();
 	void Stab();
@@ -48,5 +51,7 @@ private:
 	float moveZ = 0;
 	XMFLOAT3 defaultPos = {0,-5.0f,20.0f};
 	Sphere collision;
+	std::unique_ptr<Model> colliderVisualizationModel;
+	std::unique_ptr<Object3d> colliderVisualizationObject;
 };
 

@@ -14,18 +14,27 @@ std::unique_ptr<Player> Player::Create(FbxModel* fbxmodel) {
 
 void Player::Initialize() {
 	FbxObject3d::Initialize();
-	input=Input::GetInstance();
+	input = Input::GetInstance();
 	collision.center = XMLoadFloat3(&position);
 	collision.radius = 3.0f;
+
+	colliderVisualizationModel = Model::CreateFromObject("SphereCollider");
+	colliderVisualizationObject = Object3d::Create(colliderVisualizationModel.get());
+	colliderVisualizationObject->SetPosition(position);
+	colliderVisualizationObject->SetScale(collision.radius);
+	colliderVisualizationObject->SetColor({ 1,1,1,0.1f });
 }
 
 void Player::Update() {
-	FbxObject3d::Update();
-
-	SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
-
 	collision.center = XMLoadFloat3(&position);
-	collision.radius = 3.0f;
+	if (!isAttack) {
+		collision.radius = 3.0f;
+	}
+	colliderVisualizationObject->SetPosition(position);
+	colliderVisualizationObject->SetScale(collision.radius);
+	colliderVisualizationObject->Update();
+	FbxObject3d::Update();	
+
 	isAttack = false;
 
 	if (input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D))) {
@@ -43,6 +52,27 @@ void Player::Update() {
 			isDash = false;
 		}
 	}
+
+	SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
+
+	if (isReceivedDamage) {
+		damageTimer--;
+		if (damageTimer <= 0) {
+			damageTimer = 60;
+			isReceivedDamage = false;
+		}
+	}
+
+	if (HP <= 0) {
+		isActive = false;
+	}
+}
+
+void Player::Draw(ID3D12GraphicsCommandList* cmdList) {
+	FbxObject3d::Draw(cmdList);
+	Object3d::PreDraw(cmdList);
+	colliderVisualizationObject->Draw();
+	Object3d::PostDraw();
 }
 
 void Player::Attack()
@@ -62,6 +92,10 @@ void Player::Attack()
 		isHaveElement = false;
 		PlayAnimation();
 	}
+
+	colliderVisualizationObject->SetPosition({ position.x,position.y - collision.radius,position.z });
+	colliderVisualizationObject->SetScale(collision.radius);
+	colliderVisualizationObject->Update();
 }
 
 void Player::Move(float moveAmount) {

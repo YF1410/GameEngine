@@ -36,14 +36,7 @@ void GameScene::Initialize() {
 	debugText->Initialize(debugTextTexNumber);
 
 	// テクスチャ読み込み
-	if (!Sprite::LoadTexture(1, L"Resources/title.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(2, L"Resources/gameend.png")) {
-		assert(0);
-		return;
-	}
+
 	// 背景スプライト生成
 
 	// パーティクルマネージャ生成
@@ -99,9 +92,15 @@ void GameScene::Initialize() {
 	//element->LoopAnimation();
 
 	groundObj = Object3d::Create(groundModel.get());
-	groundObj->SetScale({ 2.0f,2.0f,2.0f });
+	groundObj->SetScale(8.5f);
 	skydomeObj = Object3d::Create(skydomeModel.get());
 	skydomeObj->SetScale(5.0f);
+
+	cameraCollider.center = XMLoadFloat3(&cameraObject->GetEye());
+	cameraCollider.radius = 5.0f;
+
+	skydomeCollider.center = { 0,0,0 };
+	skydomeCollider.radius = 400.0f;
 
 	//player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
 	//enemy->SetPosition({ enemyPos[0] + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[1], enemyPos[2] + shakeObjectPos[2] });
@@ -116,9 +115,15 @@ void GameScene::Finalize()
 
 
 void GameScene::Update() {
-	if (input->TriggerKey(DIK_0)) {
-		element.push_back(ElementObject::Create(playerModel.get(), { 0,0,-50 }));
-	}
+	XMFLOAT3 pPos = player->GetPosition();
+	XMFLOAT3 cPos = cameraObject->GetEye();
+	XMFLOAT3 colliderCenter = { (pPos.x + cPos.x) / 2,(pPos.y + cPos.y) / 2 ,(pPos.z + cPos.z) / 2 };
+	cameraCollider.center = XMLoadFloat3(&colliderCenter);
+
+
+		if (input->TriggerKey(DIK_0)) {
+			element.push_back(ElementObject::Create(playerModel.get(), { 0,0,-50 }));
+		}
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 		enemyObj->Damage(player->GetPosition(), player->GetAttackPowor());
@@ -142,6 +147,7 @@ void GameScene::Update() {
 		}
 		else if (Collision::CheckSphere2Sphere(player->GetCollision(), enemyObj->GetCollision()) && enemyObj->GetIsActive() && !player->GetIsAttack() && !player->GetIsReceivedDamage()) {
 			player->Damage(1);
+			cameraObject->SetShakeFlag(true, 6);
 			//player->SetColor({ 1,0,0,1 });
 			player->SetIsReceivedDamage(true);
 		}
@@ -161,6 +167,15 @@ void GameScene::Update() {
 		}
 	}
 
+	cameraObject->CameraShake();
+
+	if (Collision::CheckSphere2Sphere(cameraCollider, skydomeCollider)) {
+		//player->Update();
+	}
+	else {
+		
+	}
+
 	cameraObject->Update();
 	player->Update();
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
@@ -173,6 +188,7 @@ void GameScene::Update() {
 
 	groundObj->Update();
 	skydomeObj->Update();
+	//skydomeCollider.Update();
 	particleMan->Update();
 }
 

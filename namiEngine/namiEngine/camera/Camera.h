@@ -135,6 +135,10 @@ public: // メンバ関数
 	void MoveVector(const XMFLOAT3& move);
 	void MoveVector(const XMVECTOR& move);
 
+	void CameraShake();
+
+	void SetShakeFlag(bool _shakeFlag, int count) { shakeFlag = _shakeFlag; shakeCount = count; }
+
 protected: // メンバ変数
 	// ビュー行列
 	XMMATRIX matView = DirectX::XMMatrixIdentity();
@@ -158,5 +162,12 @@ protected: // メンバ変数
 	XMFLOAT3 cameraUp = { 0, 1, 0 };
 	// アスペクト比
 	float aspectRatio = 1.0f;
+
+	bool shakeFlag = false;
+	XMFLOAT3 saveEye = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 saveTarget = { 0.0f, 0.0f, 0.0f };
+	int shakeTimer = 0;
+	int attenuation = 0;
+	int shakeCount = 0;
 };
 

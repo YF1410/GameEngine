@@ -2,6 +2,10 @@
 
 void TitleScene::Initialize()
 {
+	if (!Sprite::LoadTexture(1, L"Resources/title.png")) {
+		assert(0);
+		return;
+	}
 	spriteBG1 = Sprite::Create(1, { 0.0f,0.0f });
 }
 
