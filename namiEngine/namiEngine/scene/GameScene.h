@@ -89,7 +89,6 @@ private: // メンバ変数
 	std::unique_ptr<Player> player;
 
 	std::unique_ptr<FbxModel> enemyModel;
-	//std::unique_ptr<BaseEnemy> enemy;
 	std::list<std::unique_ptr<BaseEnemy>> enemy;
 
 	std::unique_ptr<FbxModel> elementModel;

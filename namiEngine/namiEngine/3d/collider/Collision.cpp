@@ -89,6 +89,31 @@ bool Collision::CheckSphere2Sphere(const Sphere& sphereA, const Sphere& sphereB,
 	return false;
 }
 
+bool Collision::CheckSphereInside2Sphere(const Sphere& sphereA, const Sphere& sphereB, DirectX::XMVECTOR* inter) {
+	float dist = XMVector3LengthSq(sphereA.center - sphereB.center).m128_f32[0];
+
+	float radius2;
+	if (sphereA.radius > sphereB.radius) {
+		radius2 = sphereA.radius - sphereB.radius;
+	}
+	else {
+		radius2 = sphereB.radius - sphereA.radius;
+	}
+
+	radius2 *= radius2;
+
+	if (dist <= radius2) {
+		if (inter) {
+			// Aの半径が0の時座標はBの中心　Bの半径が0の時座標はAの中心　となるよう補完
+			float t = sphereB.radius / (sphereA.radius + sphereB.radius);
+			*inter = XMVectorLerp(sphereA.center, sphereB.center, t);
+		}
+		return true;
+	}
+
+	return false;
+}
+
 bool Collision::CheckSphere2Plane(const Sphere& sphere, const Plane& plane, DirectX::XMVECTOR* inter) {
 	// 座標系の原点から球の中心座標への距離から
 	// 平面の原点距離を減算することで、平面と球の中心との距離が出る

@@ -66,7 +66,7 @@ void GameScene::Initialize() {
 	//object1 = new FbxObject3d;
 	player = Player::Create(playerModel.get());
 
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < 2; i++) {
 		enemy.push_back(BaseEnemy::Create(enemyModel.get()));
 	}
 
@@ -169,11 +169,11 @@ void GameScene::Update() {
 
 	cameraObject->CameraShake();
 
-	if (Collision::CheckSphere2Sphere(cameraCollider, skydomeCollider)) {
-		//player->Update();
+	if (Collision::CheckSphereInside2Sphere(cameraCollider, skydomeCollider)) {
+		player->SetIsMapEnd(false);
 	}
 	else {
-		
+		player->SetIsMapEnd(true);
 	}
 
 	cameraObject->Update();

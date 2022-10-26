@@ -30,7 +30,7 @@ void ElementObject::Initialize() {
 	colliderVisualizationObject = Object3d::Create(colliderVisualizationModel.get());
 	colliderVisualizationObject->SetPosition(position);
 	colliderVisualizationObject->SetScale(collision.radius);
-	colliderVisualizationObject->SetColor({ 1,1,1,0.1f });
+	colliderVisualizationObject->SetColor({ 0,0,1,0.3f });
 }
 
 void ElementObject::Update() {

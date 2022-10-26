@@ -37,7 +37,7 @@ void BaseEnemy::Initialize() {
 	colliderVisualizationObject = Object3d::Create(colliderVisualizationModel.get());
 	colliderVisualizationObject->SetPosition(fixCollisionPos);
 	colliderVisualizationObject->SetScale(collision.radius);
-	colliderVisualizationObject->SetColor({ 1,1,1,0.1f });
+	colliderVisualizationObject->SetColor({ 1,0,0,0.3f });
 }
 
 void BaseEnemy::RestartInitialize() {
@@ -64,7 +64,7 @@ void BaseEnemy::Update() {
 }
 
 void BaseEnemy::Draw(ID3D12GraphicsCommandList* cmdList) {
-	//FbxObject3d::Draw(cmdList);
+	FbxObject3d::Draw(cmdList);
 	Object3d::PreDraw(cmdList);
 	colliderVisualizationObject->Draw();
 	Object3d::PostDraw();

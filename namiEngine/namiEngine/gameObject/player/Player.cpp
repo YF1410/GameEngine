@@ -22,7 +22,7 @@ void Player::Initialize() {
 	colliderVisualizationObject = Object3d::Create(colliderVisualizationModel.get());
 	colliderVisualizationObject->SetPosition(position);
 	colliderVisualizationObject->SetScale(collision.radius);
-	colliderVisualizationObject->SetColor({ 1,1,1,0.1f });
+	colliderVisualizationObject->SetColor({ 0,1,0,0.3f });
 }
 
 void Player::Update() {
@@ -56,9 +56,11 @@ void Player::Update() {
 	SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
 
 	if (isReceivedDamage) {
+		SetColor({ 1,0,0,1 });
 		damageTimer--;
 		if (damageTimer <= 0) {
 			damageTimer = 60;
+			SetColor({ 1,1,1,1 });
 			isReceivedDamage = false;
 		}
 	}
@@ -84,7 +86,7 @@ void Player::Attack()
 		PlayAnimation();
 	}
 
-	if (input->TriggerKey(DIK_2) && !isPlay && isHaveElement) {
+	if (input->TriggerKey(DIK_2) && !isPlay && isHaveElement && !isReceivedDamage) {
 		collision.radius = 50.0f;
 		SetColor({ 1,1,1,1 });
 		attackPowor = 2;
@@ -99,36 +101,72 @@ void Player::Attack()
 }
 
 void Player::Move(float moveAmount) {
-	if (input->PushKey(DIK_W)) {
-		zMoveAmount += moveAmount;
-		rotation = { 0.0f,0.0f,0.0f };
-		if (input->PushKey(DIK_A)) {
+	if (!isMapEnd) {
+		if (input->PushKey(DIK_W)) {
+			zMoveAmount += moveAmount;
+			rotation = { 0.0f,0.0f,0.0f };
+			if (input->PushKey(DIK_A)) {
+				xMoveAmount -= moveAmount;
+				rotation = { 0.0f,315.0f,0.0f };
+			}
+			else if (input->PushKey(DIK_D)) {
+				xMoveAmount += moveAmount;
+				rotation = { 0.0f,45.0f,0.0f };
+			}
+		}
+		else if (input->PushKey(DIK_S)) {
+			zMoveAmount -= moveAmount;
+			rotation = { 0.0f,180.0f,0.0f };
+			if (input->PushKey(DIK_A)) {
+				xMoveAmount -= moveAmount;
+				rotation = { 0.0f,235.0f,0.0f };
+			}
+			else if (input->PushKey(DIK_D)) {
+				xMoveAmount += moveAmount;
+				rotation = { 0.0f,135.0f,0.0f };
+			}
+		}
+		else if (input->PushKey(DIK_A)) {
 			xMoveAmount -= moveAmount;
-			rotation = { 0.0f,315.0f,0.0f };
+			rotation = { 0.0f,270.0f,0.0f };
 		}
 		else if (input->PushKey(DIK_D)) {
 			xMoveAmount += moveAmount;
-			rotation = { 0.0f,45.0f,0.0f };
+			rotation = { 0.0f,90.0f,0.0f };
 		}
 	}
-	else if (input->PushKey(DIK_S)) {
-		zMoveAmount -= moveAmount;
-		rotation = { 0.0f,180.0f,0.0f };
-		if (input->PushKey(DIK_A)) {
-			xMoveAmount -= moveAmount;
-			rotation = { 0.0f,235.0f,0.0f };
+	else {
+		if (input->PushKey(DIK_W)) {
+			zMoveAmount -= moveAmount;
+			rotation = { 0.0f,180.0f,0.0f };
+			if (input->PushKey(DIK_A)) {
+				xMoveAmount += moveAmount;
+				rotation = { 0.0f,135.0f,0.0f };
+			}
+			else if (input->PushKey(DIK_D)) {
+				xMoveAmount -= moveAmount;
+				rotation = { 0.0f,235.0f,0.0f };
+			}
+		}
+		else if (input->PushKey(DIK_S)) {
+			zMoveAmount += moveAmount;
+			rotation = { 0.0f,0.0f,0.0f };
+			if (input->PushKey(DIK_A)) {
+				xMoveAmount += moveAmount;
+				rotation = { 0.0f,45.0f,0.0f };
+			}
+			else if (input->PushKey(DIK_D)) {
+				xMoveAmount -= moveAmount;
+				rotation = { 0.0f,315.0f,0.0f };
+			}
+		}
+		else if (input->PushKey(DIK_A)) {
+			xMoveAmount += moveAmount;
+			rotation = { 0.0f,90.0f,0.0f };
 		}
 		else if (input->PushKey(DIK_D)) {
-			xMoveAmount += moveAmount;
-			rotation = { 0.0f,135.0f,0.0f };
+			xMoveAmount -= moveAmount;
+			rotation = { 0.0f,270.0f,0.0f };
 		}
-	}
-	else if (input->PushKey(DIK_A)) {
-		xMoveAmount -= moveAmount;
-		rotation = { 0.0f,270.0f,0.0f };
-	}
-	else if (input->PushKey(DIK_D)) {
-		xMoveAmount += moveAmount;
-		rotation = { 0.0f,90.0f,0.0f };
 	}
 }

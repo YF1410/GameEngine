@@ -45,6 +45,7 @@ public:
 
 	void SetIsReceivedDamage(bool isReceivedDamage) { this->isReceivedDamage = isReceivedDamage; }
 	void SetIsHaveElement(bool isHaveElement) { this->isHaveElement = isHaveElement; }
+	void SetIsMapEnd(bool isMapEnd) { this->isMapEnd = isMapEnd; }
 private:
 	Input* input = nullptr;
 	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };
@@ -59,6 +60,7 @@ private:
 	bool isDash = false;
 	bool isAttack = false;
 	bool isReceivedDamage = false;
+	bool isMapEnd = false;
 	Sphere collision;
 	float xMoveAmount = 0.0f;
 	float zMoveAmount = 0.0f;
