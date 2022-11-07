@@ -4,8 +4,6 @@
 class SceneManager
 {
 public:
-	SceneManager();
-
 	void Initialize(SceneInterface* scene);
 
 	void Finalize();
@@ -18,9 +16,22 @@ public:
 
 	void ToGameScene();
 
+	void ToGameEndScene();
+
 private:
 	void changeScene(SceneInterface* scene);
 private:
 	SceneInterface* scene_;
+
+public:
+	static SceneManager* GetInstance();
+private:
+	static SceneManager instance;
+
+private:
+	SceneManager() = default;
+	SceneManager(const SceneManager&) = delete;
+	~SceneManager() = default;
+	SceneManager& operator=(const SceneManager&) = delete;
 };
 

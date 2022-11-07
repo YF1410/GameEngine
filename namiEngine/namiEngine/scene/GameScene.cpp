@@ -141,11 +141,11 @@ void GameScene::Update() {
 	player->Attack();
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		if (Collision::CheckSphere2Sphere(player->GetCollision(), enemyObj->GetCollision()) && enemyObj->GetIsActive() && player->GetIsAttack()) {
+		if (Collision::CheckSphere2Sphere(player->GetInflictDamageCollision(), enemyObj->GetCollision()) && enemyObj->GetIsActive() && player->GetIsAttack()) {
 			enemyObj->SetColor({ 1,0,0,1 });
 			enemyObj->SetIsDamage(true);
 		}
-		else if (Collision::CheckSphere2Sphere(player->GetCollision(), enemyObj->GetCollision()) && enemyObj->GetIsActive() && !player->GetIsAttack() && !player->GetIsReceivedDamage()) {
+		else if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), enemyObj->GetCollision()) && enemyObj->GetIsActive() && !player->GetIsAttack() && !player->GetIsReceivedDamage()) {
 			player->Damage(1);
 			cameraObject->SetShakeFlag(true, 6);
 			//player->SetColor({ 1,0,0,1 });
@@ -155,7 +155,7 @@ void GameScene::Update() {
 
 	for (std::unique_ptr<ElementObject>& elementObj : element) {
 		elementObj->GetIsActive();
-		if (Collision::CheckSphere2Sphere(player->GetCollision(), elementObj->GetCollision()) && elementObj->GetIsActive() && !player->GetIsPlay()) {
+		if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), elementObj->GetCollision()) && elementObj->GetIsActive() && !player->GetIsPlay()) {
 			elementObj->SetIsActive(false);
 
 			player->SetColor({ 0,0,1,1 });

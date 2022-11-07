@@ -18,6 +18,7 @@ private: // エイリアス
 public:
 	static DirectXCommon* GetInstance();
 
+
 public: // メンバ関数
 	/*~DirectXCommon();*/
 	// 初期化

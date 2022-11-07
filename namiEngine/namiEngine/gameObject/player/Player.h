@@ -39,7 +39,8 @@ public:
 
 	float GetXMoveAmount() { return xMoveAmount; }
 	float GetZMoveAmount() { return zMoveAmount; }
-	Sphere GetCollision() { return collision; }
+	Sphere GetReceiveDamageCollision() { return receiveDamageCollision; }
+	Sphere GetInflictDamageCollision() { return inflictDamageCollision; }
 	bool GetIsAttack() { return isAttack; }
 	bool GetIsReceivedDamage() { return isReceivedDamage; }
 
@@ -61,9 +62,12 @@ private:
 	bool isAttack = false;
 	bool isReceivedDamage = false;
 	bool isMapEnd = false;
-	Sphere collision;
+	Sphere receiveDamageCollision;
+	Sphere inflictDamageCollision;
 	float xMoveAmount = 0.0f;
 	float zMoveAmount = 0.0f;
-	std::unique_ptr<Model> colliderVisualizationModel;
-	std::unique_ptr<Object3d> colliderVisualizationObject;
+	std::unique_ptr<Model> receiveDamageColliderVisualizationModel;
+	std::unique_ptr<Object3d> receiveDamageColliderVisualizationObject;
+	std::unique_ptr<Model> inflictDamageColliderVisualizationModel;
+	std::unique_ptr<Object3d> inflictDamageColliderVisualizationObject;
 };

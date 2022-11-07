@@ -15,27 +15,26 @@ std::unique_ptr<Player> Player::Create(FbxModel* fbxmodel) {
 void Player::Initialize() {
 	FbxObject3d::Initialize();
 	input = Input::GetInstance();
-	collision.center = XMLoadFloat3(&position);
-	collision.radius = 3.0f;
+	receiveDamageCollision.center = XMLoadFloat3(&position);
+	receiveDamageCollision.radius = 3.0f;
+	inflictDamageCollision.center = XMLoadFloat3(&position);
+	inflictDamageCollision.radius = 15.0f;
 
-	colliderVisualizationModel = Model::CreateFromObject("SphereCollider");
-	colliderVisualizationObject = Object3d::Create(colliderVisualizationModel.get());
-	colliderVisualizationObject->SetPosition(position);
-	colliderVisualizationObject->SetScale(collision.radius);
-	colliderVisualizationObject->SetColor({ 0,1,0,0.3f });
+	receiveDamageColliderVisualizationModel = Model::CreateFromObject("SphereCollider");
+	receiveDamageColliderVisualizationObject = Object3d::Create(receiveDamageColliderVisualizationModel.get());
+	receiveDamageColliderVisualizationObject->SetPosition(position);
+	receiveDamageColliderVisualizationObject->SetScale(receiveDamageCollision.radius);
+	receiveDamageColliderVisualizationObject->SetColor({ 1,0,0,0.3f });
+
+	inflictDamageColliderVisualizationModel = Model::CreateFromObject("SphereCollider");
+	inflictDamageColliderVisualizationObject = Object3d::Create(inflictDamageColliderVisualizationModel.get());
+	inflictDamageColliderVisualizationObject->SetPosition(position);
+	inflictDamageColliderVisualizationObject->SetScale(inflictDamageCollision.radius);
+	inflictDamageColliderVisualizationObject->SetColor({ 0,1,0,0.1f });
 }
 
 void Player::Update() {
-	collision.center = XMLoadFloat3(&position);
-	if (!isAttack) {
-		collision.radius = 3.0f;
-	}
-	colliderVisualizationObject->SetPosition(position);
-	colliderVisualizationObject->SetScale(collision.radius);
-	colliderVisualizationObject->Update();
 	FbxObject3d::Update();	
-
-	isAttack = false;
 
 	if (input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D))) {
 		isDash = true;
@@ -68,26 +67,36 @@ void Player::Update() {
 	if (HP <= 0) {
 		isActive = false;
 	}
+	receiveDamageCollision.center = XMLoadFloat3(&position);
+	inflictDamageCollision.center = XMLoadFloat3(&position);
+	receiveDamageColliderVisualizationObject->SetPosition(position);
+	receiveDamageColliderVisualizationObject->SetScale(receiveDamageCollision.radius);
+	receiveDamageColliderVisualizationObject->Update();
 }
 
 void Player::Draw(ID3D12GraphicsCommandList* cmdList) {
 	FbxObject3d::Draw(cmdList);
 	Object3d::PreDraw(cmdList);
-	colliderVisualizationObject->Draw();
+	receiveDamageColliderVisualizationObject->Draw();
+	if (isAttack) {
+		inflictDamageColliderVisualizationObject->Draw();
+	}
 	Object3d::PostDraw();
 }
 
 void Player::Attack()
 {
+	isAttack = false;
+
 	if (input->TriggerKey(DIK_1) && !isPlay) {
-		collision.radius = 15.0f;
+		inflictDamageCollision.radius = 15.0f;
 		attackPowor = 1;
 		isAttack = true;
 		PlayAnimation();
 	}
 
 	if (input->TriggerKey(DIK_2) && !isPlay && isHaveElement && !isReceivedDamage) {
-		collision.radius = 50.0f;
+		inflictDamageCollision.radius = 50.0f;
 		SetColor({ 1,1,1,1 });
 		attackPowor = 2;
 		isAttack = true;
@@ -95,9 +104,9 @@ void Player::Attack()
 		PlayAnimation();
 	}
 
-	colliderVisualizationObject->SetPosition({ position.x,position.y - collision.radius,position.z });
-	colliderVisualizationObject->SetScale(collision.radius);
-	colliderVisualizationObject->Update();
+	inflictDamageColliderVisualizationObject->SetPosition({ position.x,position.y,position.z });
+	inflictDamageColliderVisualizationObject->SetScale(inflictDamageCollision.radius);
+	inflictDamageColliderVisualizationObject->Update();
 }
 
 void Player::Move(float moveAmount) {

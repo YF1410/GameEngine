@@ -18,6 +18,6 @@ public:
 	//•`‰æ
 	void Draw() override;
 private:
-	std::unique_ptr<SceneManager> scene_;
+	SceneManager* scene_;
 	std::unique_ptr<PostEffect> postEffect;
 };

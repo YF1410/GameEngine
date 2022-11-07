@@ -1,4 +1,5 @@
 #include "TitleScene.h"
+#include "SceneManager.h"
 
 void TitleScene::Initialize()
 {
@@ -16,7 +17,7 @@ void TitleScene::Finalize()
 void TitleScene::Update()
 {
 	if (Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		
+		SceneManager::GetInstance()->ToGameScene();
 	}
 }
 

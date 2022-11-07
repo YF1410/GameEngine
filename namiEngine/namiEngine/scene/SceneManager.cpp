@@ -3,9 +3,7 @@
 #include "GameScene.h"
 #include "GameEndScene.h"
 
-SceneManager::SceneManager()
-{
-}
+SceneManager SceneManager::instance;
 
 void SceneManager::Initialize(SceneInterface* scene)
 {
@@ -25,12 +23,17 @@ void SceneManager::Draw()
 
 void SceneManager::ToTitleScene()
 {
-
+	Initialize(new TitleScene);
 }
 
 void SceneManager::ToGameScene()
 {
-	changeScene(new GameEndScene);
+	Initialize(new GameScene);
+}
+
+void SceneManager::ToGameEndScene()
+{
+	Initialize(new GameEndScene);
 }
 
 void SceneManager::changeScene(SceneInterface* scene)
@@ -39,4 +42,9 @@ void SceneManager::changeScene(SceneInterface* scene)
 		delete scene_;
 	}
 	scene_ = scene;
+}
+
+SceneManager* SceneManager::GetInstance()
+{
+	return &instance;
 }
