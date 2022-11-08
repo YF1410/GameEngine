@@ -40,6 +40,11 @@ void Player::Update() {
 		isDash = true;
 	}
 
+	if (isCharging) {
+		inflictDamageCollision.radius += 0.1f;
+		attackPowor += 0.01;
+	}
+
 	if (!isDash) {
 		Move(defMoveAmount);
 	}
@@ -78,9 +83,9 @@ void Player::Draw(ID3D12GraphicsCommandList* cmdList) {
 	FbxObject3d::Draw(cmdList);
 	Object3d::PreDraw(cmdList);
 	receiveDamageColliderVisualizationObject->Draw();
-	if (isAttack) {
+	//if (isAttack) {
 		inflictDamageColliderVisualizationObject->Draw();
-	}
+	//}
 	Object3d::PostDraw();
 }
 
@@ -93,6 +98,14 @@ void Player::Attack()
 		attackPowor = 1;
 		isAttack = true;
 		PlayAnimation();
+	}
+
+	if (input->PushKey(DIK_1)) {
+		isCharging = true;
+	}
+	else if(input->ReleaseKey(DIK_1)) {
+		isAttack = true;
+		isCharging = false;
 	}
 
 	if (input->TriggerKey(DIK_2) && !isPlay && isHaveElement && !isReceivedDamage) {

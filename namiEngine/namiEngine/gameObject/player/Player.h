@@ -55,13 +55,14 @@ private:
 	const float dashMoveAmount = 3.0f;
 	int dashTimer = 8;
 	int damageTimer = 60;
-	int attackPowor = 1;
+	float attackPowor = 1;
 	bool isActive = true;
 	bool isHaveElement = false;
 	bool isDash = false;
 	bool isAttack = false;
 	bool isReceivedDamage = false;
 	bool isMapEnd = false;
+	bool isCharging = false;
 	Sphere receiveDamageCollision;
 	Sphere inflictDamageCollision;
 	float xMoveAmount = 0.0f;

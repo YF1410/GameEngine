@@ -74,6 +74,8 @@ public: //メンバ関数
 	bool PushKey(BYTE keyNumber);
 	// キーのトリガーをチェック
 	bool TriggerKey(BYTE keyNumber);
+	// キーのリリースをチェック
+	bool ReleaseKey(BYTE keyNumber);
 
 	//キーボードデバイス生成
 	bool CreateKeyDevice(HINSTANCE hInstance, HWND hwnd);
