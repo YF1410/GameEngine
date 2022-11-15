@@ -16,7 +16,7 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	if (Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+	if (Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE) || Input::GetInstance()->TriggerMouse(MouseButton::LeftButton)) {
 		SceneManager::GetInstance()->ToGameScene();
 	}
 }

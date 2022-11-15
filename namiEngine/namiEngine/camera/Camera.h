@@ -137,6 +137,8 @@ public: // メンバ関数
 
 	void CameraShake();
 
+	bool GetShakeFlag() { return shakeFlag; }
+
 	void SetShakeFlag(bool _shakeFlag, int count) { shakeFlag = _shakeFlag; shakeCount = count; }
 
 protected: // メンバ変数
@@ -162,6 +164,14 @@ protected: // メンバ変数
 	XMFLOAT3 cameraUp = { 0, 1, 0 };
 	// アスペクト比
 	float aspectRatio = 1.0f;
+
+	float scaleY = 1.0f;
+
+	// 回転行列
+	XMMATRIX matRot = DirectX::XMMatrixIdentity();
+
+	// カメラ注視点までの距離
+	float cameraDistance = 50;
 
 	bool shakeFlag = false;
 	XMFLOAT3 saveEye = { 0.0f, 0.0f, 0.0f };

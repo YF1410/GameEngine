@@ -1,12 +1,13 @@
 #include "Camera.h"
 #include <cstdlib>
 #include <time.h>
+#include "Input.h"
 
 using namespace DirectX;
 
 Camera::Camera(int window_width, int window_height) {
 	aspectRatio = (float)window_width / window_height;
-
+	scaleY = 1.0f / (float)window_height;
 	//ビュー行列の計算
 	UpdateViewMatrix();
 
@@ -19,6 +20,44 @@ Camera::Camera(int window_width, int window_height) {
 }
 
 void Camera::Update() {
+	bool dirty = false;
+	float angleY = 0;
+
+	Input::MouseMove mouseMove = Input::GetInstance()->GetMouseMove();
+
+	float dy = mouseMove.lX * scaleY;
+	angleY = -dy * XM_PI;
+
+	// ホイール入力で距離を変更
+	if (mouseMove.lZ != 0) {
+		cameraDistance -= mouseMove.lZ / 100.0f;
+		cameraDistance = max(cameraDistance, 1.0f);
+		dirty = true;
+	}
+
+	if (dirty || viewDirty) {
+		// 追加回転分の回転行列を生成
+		XMMATRIX matRotNew = XMMatrixIdentity();
+		matRotNew *= XMMatrixRotationY(-angleY);
+		// 累積の回転行列を合成
+		// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
+		// クォータニオンを使用する方が望ましい
+		matRot = matRotNew * matRot;
+
+		// 注視点から視点へのベクトルと、上方向ベクトル
+		XMVECTOR vTargetEye = { 0.0f, 0.0f, -cameraDistance, 1.0f };
+		XMVECTOR vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+		// ベクトルを回転
+		vTargetEye = XMVector3Transform(vTargetEye, matRot);
+		vUp = XMVector3Transform(vUp, matRot);
+
+		// 注視点からずらした位置に視点座標を決定
+		const XMFLOAT3& cameraTarget = GetTarget();
+		SetEye({ cameraTarget.x + vTargetEye.m128_f32[0], cameraTarget.y + vTargetEye.m128_f32[1] + 20.0f, cameraTarget.z + vTargetEye.m128_f32[2] });
+		SetUp({ vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2] });
+	}
+
 	if (viewDirty || projectionDirty) {
 		// 再計算必要なら
 		if (viewDirty) {

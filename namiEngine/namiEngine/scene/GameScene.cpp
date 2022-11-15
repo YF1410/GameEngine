@@ -1,5 +1,7 @@
 ﻿#include "GameScene.h"
 #include "FbxLoader.h"
+#include "SceneManager.h"
+#include "Vector3.h"
 
 #include <cassert>
 #include <sstream>
@@ -18,6 +20,7 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
+	srand(static_cast<unsigned int>(time(NULL)));
 	// nullptrチェック
 	dxCommon = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
@@ -66,30 +69,14 @@ void GameScene::Initialize() {
 	//object1 = new FbxObject3d;
 	player = Player::Create(playerModel.get());
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 20; i++) {
 		enemy.push_back(BaseEnemy::Create(enemyModel.get()));
 	}
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		/*enemyObj->Initialize();
-		enemyObj->SetModel(enemyModel.get());*/
 		enemyObj->SetScale({ 0.3f,0.3f,0.3f });
 		enemyObj->SetPosition({ static_cast<float>(rand() % 100 - 50),-5,static_cast<float>(rand() % 100 - 50) });
 	}
-
-	//enemy.end()->get()->Initialize();
-
-	/*enemy = std::make_unique<BaseEnemy>();
-	enemy->Initialize();
-	enemy->SetModel(enemyModel.get());
-	enemy->SetScale({ 0.3f,0.3f,0.3f });*/
-
-	//element = std::make_unique<ElementObject>();
-	//element->Initialize();
-	//element->SetModel(elementModel.get());
-	//element->SetRotation({ 0,90.0f,0, });
-	//element->SetColor({ 0,0,1,1 });
-	//element->LoopAnimation();
 
 	groundObj = Object3d::Create(groundModel.get());
 	groundObj->SetScale(8.5f);
@@ -101,12 +88,6 @@ void GameScene::Initialize() {
 
 	skydomeCollider.center = { 0,0,0 };
 	skydomeCollider.radius = 400.0f;
-
-	//player->SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
-	//enemy->SetPosition({ enemyPos[0] + shakeObjectPos[0], enemyPos[1] + shakeObjectPos[1], enemyPos[2] + shakeObjectPos[2] });
-	//element->SetPosition({ elementPos[0], elementPos[1], elementPos[2] });
-
-	srand(static_cast<unsigned int>(time(NULL)));
 }
 
 void GameScene::Finalize()
@@ -120,10 +101,11 @@ void GameScene::Update() {
 	XMFLOAT3 colliderCenter = { (pPos.x + cPos.x) / 2,(pPos.y + cPos.y) / 2 ,(pPos.z + cPos.z) / 2 };
 	cameraCollider.center = XMLoadFloat3(&colliderCenter);
 
+	Vector3 a = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
 
-		if (input->TriggerKey(DIK_0)) {
-			element.push_back(ElementObject::Create(playerModel.get(), { 0,0,-50 }));
-		}
+	if (input->TriggerKey(DIK_0)) {
+		element.push_back(ElementObject::Create(playerModel.get(), { 0,0,-50 }));
+	}
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 		enemyObj->Damage(player->GetPosition(), player->GetAttackPowor());
@@ -134,9 +116,6 @@ void GameScene::Update() {
 
 	enemy.remove_if([](std::unique_ptr<BaseEnemy>& enemyObj) {return !enemyObj->GetIsActive(); });
 	element.remove_if([](std::unique_ptr<ElementObject>& elementObj) {return !elementObj->GetIsActive(); });
-
-	cameraObject->SetEye({ cameraEye[0] + player->GetXMoveAmount(), cameraEye[1],cameraEye[2] + player->GetZMoveAmount() });
-	cameraObject->SetTarget({ cameraTarget.x + player->GetXMoveAmount(), cameraTarget.y,cameraTarget.z + player->GetZMoveAmount() });
 
 	player->Attack();
 
@@ -167,13 +146,28 @@ void GameScene::Update() {
 		}
 	}
 
-	cameraObject->CameraShake();
+	player->Move(a);
 
 	if (Collision::CheckSphereInside2Sphere(cameraCollider, skydomeCollider)) {
 		player->SetIsMapEnd(false);
+		cameraObject->SetEye({ cameraEye[0] + player->GetXMoveAmount(), cameraEye[1],cameraEye[2] + player->GetZMoveAmount() });
+		cameraObject->SetTarget({ cameraTarget.x + player->GetXMoveAmount(), cameraTarget.y,cameraTarget.z + player->GetZMoveAmount() });
 	}
 	else {
 		player->SetIsMapEnd(true);
+	}
+
+	if (cameraObject->GetShakeFlag()) {
+		player->SetIsNowCameraShake(true);
+	}
+	else if (!cameraObject->GetShakeFlag()) {
+		player->SetIsNowCameraShake(false);
+	}
+
+	cameraObject->CameraShake();
+
+	if (enemy.empty() || !player->GetIsActive()) {
+		SceneManager::GetInstance()->ToGameEndScene();
 	}
 
 	cameraObject->Update();
@@ -234,7 +228,6 @@ void GameScene::Draw() {
 	skydomeObj->Draw();
 	Object3d::PostDraw();
 
-	player->Draw(cmdList);
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 		enemyObj->Draw(cmdList);
 	}
@@ -243,6 +236,8 @@ void GameScene::Draw() {
 	for (std::unique_ptr<ElementObject>& elementObj : element) {
 		elementObj->Draw(cmdList);
 	}
+
+	player->Draw(cmdList);
 
 	// パーティクルの描画
 	particleMan->Draw(cmdList);

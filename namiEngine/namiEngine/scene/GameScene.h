@@ -101,7 +101,7 @@ private: // メンバ変数
 	std::unique_ptr<Object3d> skydomeObj;
 	std::unique_ptr<LightGroup> lightGroup;
 
-	float cameraEye[3] = { 0.0f,20.0f,-50.0f };
+	float cameraEye[3] = { 0.0f,25.0f,-50.0f };
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 	Sphere cameraCollider;
 	Sphere skydomeCollider;

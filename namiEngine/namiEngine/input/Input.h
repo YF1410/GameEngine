@@ -88,6 +88,8 @@ public: //メンバ関数
 	bool PushMouse(MouseButton mouseButtonType);
 	// マウスのトリガーをチェック
 	bool TriggerMouse(MouseButton mouseButtonType);
+	//マウスのリリースをチェック
+	bool ReleaseMouse(MouseButton mouseButtonType);
 	/// <summary>
 	/// マウス移動量を取得
 	/// </summary>
@@ -130,6 +132,7 @@ public: //メンバ関数
 
 private: //メンバ変数
 	HWND hwnd;
+	RECT rcClient;
 	ComPtr<IDirectInput8> dinput;
 	ComPtr<IDirectInputDevice8> devkeyboard;
 	ComPtr<IDirectInputDevice8> devmouse;

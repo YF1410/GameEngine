@@ -74,7 +74,31 @@ void Input::Update() {
 	// 変換した座標を保存
 	mousePos.x = (float)p.x;
 	mousePos.y = (float)p.y;
-	//ShowCursor(false);
+
+	GetClientRect(hwnd, &rcClient);
+	POINT ptClientUL;
+	ptClientUL.x = rcClient.left - 1;
+	ptClientUL.y = rcClient.top-1;
+
+	POINT ptClientLR;
+	ptClientLR.x = rcClient.right - 1;
+	ptClientLR.y = rcClient.bottom - 1;
+	ClientToScreen(hwnd, &ptClientUL);
+	ClientToScreen(hwnd, &ptClientLR);
+
+
+	SetRect(&rcClient, ptClientUL.x, ptClientUL.y,
+		ptClientLR.x, ptClientLR.y);
+
+	if (GetActiveWindow()) {
+		ClipCursor(&rcClient);
+		ShowCursor(false);
+	}
+	else if (!GetActiveWindow()) {
+		ClipCursor(nullptr);
+		ShowCursor(true);
+	}
+
 }
 
 Input::MouseMove Input::GetMouseMove() {
@@ -121,7 +145,7 @@ bool Input::ReleaseKey(BYTE keyNumber)
 	// 異常な引数を検出
 	assert(0 <= keyNumber && keyNumber <= 256);
 
-	// 前回が1で、今回が0でなければリリース
+	// 前回が1で、今回が0ならリリース
 	if (prevKeyState[keyNumber] && !keyState[keyNumber]) {
 		return true;
 	}
@@ -147,6 +171,19 @@ bool Input::TriggerMouse(MouseButton buttonType) {
 	assert(LeftButton <= buttonType && buttonType <= CenterButton);
 
 	// 前回が0で、今回が0でなければトリガー
+	if (currentMouseState.rgbButtons[buttonType] && !prevMouseState.rgbButtons[buttonType]) {
+		return true;
+	}
+
+	// トリガーでない
+	return false;
+}
+
+bool Input::ReleaseMouse(MouseButton buttonType) {
+	// 異常な引数を検出
+	assert(LeftButton <= buttonType && buttonType <= CenterButton);
+
+	// 前回が1で、今回が0ならリリース
 	if (!currentMouseState.rgbButtons[buttonType] && prevMouseState.rgbButtons[buttonType]) {
 		return true;
 	}
