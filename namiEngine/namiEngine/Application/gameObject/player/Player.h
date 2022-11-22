@@ -36,7 +36,7 @@ public:
 
 	void Damage(int damageQuantity) { HP -= damageQuantity; }
 
-	int GetAttackPowor() { return attackPowor; }
+	float GetAttackPowor() { return attackPowor; }
 
 	float GetXMoveAmount() { return xMoveAmount; }
 	float GetZMoveAmount() { return zMoveAmount; }

@@ -16,7 +16,7 @@ Camera::Camera(int window_width, int window_height) {
 
 	// ビュープロジェクションの合成
 	matViewProjection = matView * matProjection;
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 }
 
 void Camera::Update() {
@@ -246,8 +246,8 @@ void Camera::CameraShake()
 		shakeTimer++;
 		if (shakeTimer > 0)
 		{
-			shake.x = (rand() % (shakeCount - attenuation) - (shakeCount / 2));//(rand() % (int)(Ease(In,Quad,(float)(shakeTimer /20),100,1)));
-			shake.y = (rand() % (shakeCount - attenuation) - (shakeCount / 2));
+			shake.x = static_cast<float>((rand() % (shakeCount - attenuation) - (shakeCount / 2)));//(rand() % (int)(Ease(In,Quad,(float)(shakeTimer /20),100,1)));
+			shake.y = static_cast<float>((rand() % (shakeCount - attenuation) - (shakeCount / 2)));
 			//shake.z = (rand() % (shakeCount - attenuation) - (shakeCount / 2));//(rand() % (int)Ease(In, Quad, (float)(shakeTimer / 20), 100, 1));
 			shakeEye = { shake.x + cameraEye.x,shake.y + cameraEye.y,shake.z + cameraEye.z };
 			shakeTarget = { shake.x + cameraTarget.x ,shake.y + cameraTarget.y ,shake.z + cameraTarget.z };

@@ -43,7 +43,7 @@ void Framework::Finalize() {
 
 void Framework::Update() {
 	// メッセージ処理
-	if (win->ProcessMessage()) {
+	if (win->ProcessMessage() || Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 		isEnd_ = true;
 		return;
 	}

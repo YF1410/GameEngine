@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+
 using namespace DirectX;
 
 GameScene::GameScene() {
@@ -52,7 +53,7 @@ void GameScene::Initialize() {
 
 	// モデル名を指定してファイル読み込み
 	playerModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
-	enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
 	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 	groundModel = Model::CreateFromObject("stage1");
 	skydomeModel = Model::CreateFromObject("skydome");
@@ -69,13 +70,15 @@ void GameScene::Initialize() {
 	//object1 = new FbxObject3d;
 	player = Player::Create(playerModel.get());
 
-	for (int i = 0; i < 20; i++) {
-		enemy.push_back(BaseEnemy::Create(enemyModel.get()));
+	for (int i = 0; i < 5; i++) {
+		//enemy.push_back(BaseEnemy::Create(enemyModel.get(),player.get()));
 	}
+	//enemy.push_back(ElementEnemy::Create(enemyModel.get()));
+	enemy.push_back(BulletEnemy::Create(enemyModel.get(), player.get()));
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		enemyObj->SetScale({ 0.3f,0.3f,0.3f });
-		enemyObj->SetPosition({ static_cast<float>(rand() % 100 - 50),-5,static_cast<float>(rand() % 100 - 50) });
+		//enemyObj->SetScale({ 0.3f,0.3f,0.3f });
+		enemyObj->SetPosition({ static_cast<float>(rand() % 100 - 50),0,static_cast<float>(rand() % 100 - 50) });
 	}
 
 	groundObj = Object3d::Create(groundModel.get());
@@ -108,8 +111,9 @@ void GameScene::Update() {
 	}
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		enemyObj->Damage(player->GetPosition(), player->GetAttackPowor());
-		if (!enemyObj->GetIsActive()) {
+		enemyObj->Move();
+		enemyObj->Damage();
+		if (!enemyObj->GetIsActive() && enemyObj->GetHaveElement()) {
 			element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
 		}
 	}
@@ -120,16 +124,7 @@ void GameScene::Update() {
 	player->Attack();
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		if (Collision::CheckSphere2Sphere(player->GetInflictDamageCollision(), enemyObj->GetCollision()) && enemyObj->GetIsActive() && player->GetIsAttack()) {
-			enemyObj->SetColor({ 1,0,0,1 });
-			enemyObj->SetIsDamage(true);
-		}
-		else if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), enemyObj->GetCollision()) && enemyObj->GetIsActive() && !player->GetIsAttack() && !player->GetIsReceivedDamage()) {
-			player->Damage(1);
-			cameraObject->SetShakeFlag(true, 6);
-			//player->SetColor({ 1,0,0,1 });
-			player->SetIsReceivedDamage(true);
-		}
+		enemyObj->CheckCollisionToPlayer(cameraObject.get());
 	}
 
 	for (std::unique_ptr<ElementObject>& elementObj : element) {
@@ -140,9 +135,6 @@ void GameScene::Update() {
 			player->SetColor({ 0,0,1,1 });
 			player->SetIsHaveElement(true);
 			player->StopAnimation();
-
-			/*isNowEnd = true;
-			isNowGame = false;*/
 		}
 	}
 

@@ -2,6 +2,8 @@
 #include "Object3d.h"
 #include "FbxObject3d.h"
 #include "CollisionPrimitive.h"
+#include "Player.h"
+#include "Collision.h"
 
 
 class BaseEnemy : public FbxObject3d
@@ -15,18 +17,16 @@ protected: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 public:
-	static std::unique_ptr<BaseEnemy> Create(FbxModel* fbxmodel);
+	static std::unique_ptr<BaseEnemy> Create(FbxModel* fbxmodel, Player* player);
 public:
 	//コンストラクタ
 	BaseEnemy();
 	//デストラクタ
 	~BaseEnemy();
 	//初期化
-	void Initialize();
-	//再初期化
-	void RestartInitialize();
+	void Initialize(Player*player);
 	//更新
-	void Update();
+	virtual void Update();
 
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 	/*void SelectAction();
@@ -36,15 +36,23 @@ public:
 	//ゲッター
 	bool GetIsActive() { return isActive; }
 	Sphere GetCollision() { return collision; }
+	bool GetHaveElement() { return haveElement; }
 	//セッター
 	void SetIsDamage(bool isDamage) { this->isDamage = isDamage; }
 	//ダメージ処理
-	void Damage(XMFLOAT3 pos,int DamageQuantity);
-private:
-	int HP = 3;
+	virtual void Damage();
+
+	void CheckCollisionToPlayer(Camera*camera);
+
+	virtual void Move();
+protected:
+	Player* player;
+	float HP = 3;
 	XMFLOAT3 savePos;
+	XMFLOAT4 defaultColor = { 1,1,1,1 };
 	bool isDamage = false;
 	bool isActive = true;
+	bool haveElement = false;
 	int damageShakeCount = 0;
 	float shakeObjectPos[3];
 	float moveX = 0;

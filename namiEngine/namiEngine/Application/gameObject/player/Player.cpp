@@ -46,7 +46,7 @@ void Player::Update() {
 
 	if (chargeTimer <= 0) {
 		inflictDamageCollision.radius += 0.1f;
-		attackPowor += 0.01;
+		attackPowor += 0.01f;
 	}
 
 	if (isDash) {

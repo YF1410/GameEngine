@@ -78,12 +78,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)gameObject\player\;$(ProjectDir)gameObject\element\;$(ProjectDir)gameObject\enemy\;$(ProjectDir)3d\particle\;$(ProjectDir)3d\obj\;$(ProjectDir)3d\light\;$(ProjectDir)3d\gameObj;$(ProjectDir)3d\fbx\;$(ProjectDir)3d\collider\raycast\;$(ProjectDir)3d\collider\sphere\;$(ProjectDir)3d\collider\mesh\;$(ProjectDir)3d\collider\;$(ProjectDir)input\;$(ProjectDir)base\;$(ProjectDir)camera\;$(ProjectDir)scene\;$(ProjectDir)audio\;$(ProjectDir)3d\;$(ProjectDir)2d\;$(ProjectDir)utility\;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)lib\imgui\include;$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Application\;$(ProjectDir)Application\gameObject\player\;$(ProjectDir)Application\gameObject\element\;$(ProjectDir)Application\gameObject\enemy\;$(ProjectDir)Application\scene\;$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d\collider\mesh\;$(ProjectDir)Engine\3d\collider\raycast\;$(ProjectDir)Engine\3d\collider\sphere\;$(ProjectDir)Engine\3d\collider\;$(ProjectDir)Engine\3d\fbx\;$(ProjectDir)Engine\3d\light\;$(ProjectDir)Engine\3d\obj\;$(ProjectDir)Engine\3d\particle\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\camera\;$(ProjectDir)Engine\input\;$(ProjectDir)Engine\utility;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)lib\imgui\include;$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\fbx_sdk\lib\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)gameObject\player\;$(ProjectDir)gameObject\element\;$(ProjectDir)gameObject\enemy\;$(ProjectDir)3d\particle\;$(ProjectDir)3d\obj\;$(ProjectDir)3d\light\;$(ProjectDir)3d\gameObj;$(ProjectDir)3d\fbx\;$(ProjectDir)3d\collider\raycast\;$(ProjectDir)3d\collider\sphere\;$(ProjectDir)3d\collider\mesh\;$(ProjectDir)3d\collider\;$(ProjectDir)input\;$(ProjectDir)base\;$(ProjectDir)camera\;$(ProjectDir)scene\;$(ProjectDir)audio\;$(ProjectDir)3d\;$(ProjectDir)2d\;$(ProjectDir)utility\;$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Application\;$(ProjectDir)Application\gameObject\player\;$(ProjectDir)Application\gameObject\element\;$(ProjectDir)Application\gameObject\enemy\;$(ProjectDir)Application\scene\;$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d\collider\mesh\;$(ProjectDir)Engine\3d\collider\raycast\;$(ProjectDir)Engine\3d\collider\sphere\;$(ProjectDir)Engine\3d\collider\;$(ProjectDir)Engine\3d\fbx\;$(ProjectDir)Engine\3d\light\;$(ProjectDir)Engine\3d\obj\;$(ProjectDir)Engine\3d\particle\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\camera\;$(ProjectDir)Engine\input\;$(ProjectDir)Engine\utility;$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\fbx_sdk\lib\release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -158,91 +158,95 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="2d\DebugText.cpp" />
-    <ClCompile Include="2d\PostEffect.cpp" />
-    <ClCompile Include="2d\Sprite.cpp" />
-    <ClCompile Include="3d\collider\Collision.cpp" />
-    <ClCompile Include="3d\collider\CollisionManager.cpp" />
-    <ClCompile Include="3d\collider\CollisionPrimitive.cpp" />
-    <ClCompile Include="3d\collider\mesh\MeshCollider.cpp" />
-    <ClCompile Include="3d\collider\sphere\SphereCollider.cpp" />
-    <ClCompile Include="3d\collider\TouchableObject.cpp" />
-    <ClCompile Include="3d\fbx\FbxLoader.cpp" />
-    <ClCompile Include="3d\fbx\FbxModel.cpp" />
-    <ClCompile Include="3d\fbx\FbxObject3d.cpp" />
-    <ClCompile Include="3d\light\LightGroup.cpp" />
-    <ClCompile Include="3d\obj\Material.cpp" />
-    <ClCompile Include="3d\obj\Mesh.cpp" />
-    <ClCompile Include="3d\obj\Model.cpp" />
-    <ClCompile Include="3d\obj\Object3d.cpp" />
-    <ClCompile Include="3d\particle\ParticleManager.cpp" />
-    <ClCompile Include="audio\Audio.cpp" />
-    <ClCompile Include="base\DirectXCommon.cpp" />
-    <ClCompile Include="base\WinApp.cpp" />
-    <ClCompile Include="camera\Camera.cpp" />
-    <ClCompile Include="camera\DebugCamera.cpp" />
-    <ClCompile Include="Framework.cpp" />
-    <ClCompile Include="gameObject\element\ElementObject.cpp" />
-    <ClCompile Include="gameObject\enemy\BaseEnemy.cpp" />
-    <ClCompile Include="gameObject\player\Player.cpp" />
-    <ClCompile Include="input\Input.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="NamiGame.cpp" />
-    <ClCompile Include="scene\GameEndScene.cpp" />
-    <ClCompile Include="scene\GameScene.cpp" />
-    <ClCompile Include="scene\SceneManager.cpp" />
-    <ClCompile Include="scene\TitleScene.cpp" />
-    <ClCompile Include="utility\Angle.cpp" />
-    <ClCompile Include="utility\Easing.cpp" />
+    <ClCompile Include="Application\gameObject\element\ElementObject.cpp" />
+    <ClCompile Include="Application\gameObject\enemy\BaseEnemy.cpp" />
+    <ClCompile Include="Application\gameObject\enemy\BulletEnemy.cpp" />
+    <ClCompile Include="Application\gameObject\enemy\ElementEnemy.cpp" />
+    <ClCompile Include="Application\gameObject\player\Player.cpp" />
+    <ClCompile Include="Application\main.cpp" />
+    <ClCompile Include="Application\NamiGame.cpp" />
+    <ClCompile Include="Application\scene\GameEndScene.cpp" />
+    <ClCompile Include="Application\scene\GameScene.cpp" />
+    <ClCompile Include="Application\scene\SceneManager.cpp" />
+    <ClCompile Include="Application\scene\TitleScene.cpp" />
+    <ClCompile Include="Engine\2d\DebugText.cpp" />
+    <ClCompile Include="Engine\2d\PostEffect.cpp" />
+    <ClCompile Include="Engine\2d\Sprite.cpp" />
+    <ClCompile Include="Engine\3d\collider\Collision.cpp" />
+    <ClCompile Include="Engine\3d\collider\CollisionManager.cpp" />
+    <ClCompile Include="Engine\3d\collider\CollisionPrimitive.cpp" />
+    <ClCompile Include="Engine\3d\collider\mesh\MeshCollider.cpp" />
+    <ClCompile Include="Engine\3d\collider\sphere\SphereCollider.cpp" />
+    <ClCompile Include="Engine\3d\collider\TouchableObject.cpp" />
+    <ClCompile Include="Engine\3d\fbx\FbxLoader.cpp" />
+    <ClCompile Include="Engine\3d\fbx\FbxModel.cpp" />
+    <ClCompile Include="Engine\3d\fbx\FbxObject3d.cpp" />
+    <ClCompile Include="Engine\3d\light\LightGroup.cpp" />
+    <ClCompile Include="Engine\3d\obj\Material.cpp" />
+    <ClCompile Include="Engine\3d\obj\Mesh.cpp" />
+    <ClCompile Include="Engine\3d\obj\Model.cpp" />
+    <ClCompile Include="Engine\3d\obj\Object3d.cpp" />
+    <ClCompile Include="Engine\3d\particle\ParticleManager.cpp" />
+    <ClCompile Include="Engine\audio\Audio.cpp" />
+    <ClCompile Include="Engine\base\DirectXCommon.cpp" />
+    <ClCompile Include="Engine\base\Framework.cpp" />
+    <ClCompile Include="Engine\base\WinApp.cpp" />
+    <ClCompile Include="Engine\camera\Camera.cpp" />
+    <ClCompile Include="Engine\camera\DebugCamera.cpp" />
+    <ClCompile Include="Engine\input\Input.cpp" />
+    <ClCompile Include="Engine\utility\Angle.cpp" />
+    <ClCompile Include="Engine\utility\Easing.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="2d\DebugText.h" />
-    <ClInclude Include="2d\PostEffect.h" />
-    <ClInclude Include="2d\Sprite.h" />
-    <ClInclude Include="3d\collider\BaseCollider.h" />
-    <ClInclude Include="3d\collider\Collision.h" />
-    <ClInclude Include="3d\collider\CollisionAttribute.h" />
-    <ClInclude Include="3d\collider\CollisionInfo.h" />
-    <ClInclude Include="3d\collider\CollisionManager.h" />
-    <ClInclude Include="3d\collider\CollisionPrimitive.h" />
-    <ClInclude Include="3d\collider\CollisionTypes.h" />
-    <ClInclude Include="3d\collider\mesh\MeshCollider.h" />
-    <ClInclude Include="3d\collider\raycast\RaycastHit.h" />
-    <ClInclude Include="3d\collider\sphere\SphereCollider.h" />
-    <ClInclude Include="3d\collider\TouchableObject.h" />
-    <ClInclude Include="3d\fbx\FbxLoader.h" />
-    <ClInclude Include="3d\fbx\FbxModel.h" />
-    <ClInclude Include="3d\fbx\FbxObject3d.h" />
-    <ClInclude Include="3d\light\CircleShadow.h" />
-    <ClInclude Include="3d\light\DirectionalLight.h" />
-    <ClInclude Include="3d\light\LightGroup.h" />
-    <ClInclude Include="3d\light\PointLight.h" />
-    <ClInclude Include="3d\light\SpotLight.h" />
-    <ClInclude Include="3d\obj\Material.h" />
-    <ClInclude Include="3d\obj\Mesh.h" />
-    <ClInclude Include="3d\obj\Model.h" />
-    <ClInclude Include="3d\obj\Object3d.h" />
-    <ClInclude Include="3d\particle\ParticleManager.h" />
-    <ClInclude Include="audio\Audio.h" />
-    <ClInclude Include="base\DirectXCommon.h" />
-    <ClInclude Include="base\SafeDelete.h" />
-    <ClInclude Include="base\WinApp.h" />
-    <ClInclude Include="camera\Camera.h" />
-    <ClInclude Include="camera\DebugCamera.h" />
-    <ClInclude Include="Framework.h" />
-    <ClInclude Include="gameObject\element\ElementObject.h" />
-    <ClInclude Include="gameObject\enemy\BaseEnemy.h" />
-    <ClInclude Include="gameObject\player\Player.h" />
-    <ClInclude Include="input\Input.h" />
-    <ClInclude Include="NamiGame.h" />
-    <ClInclude Include="scene\GameEndScene.h" />
-    <ClInclude Include="scene\GameScene.h" />
-    <ClInclude Include="scene\SceneInterface.h" />
-    <ClInclude Include="scene\SceneManager.h" />
-    <ClInclude Include="scene\TitleScene.h" />
-    <ClInclude Include="utility\Angle.h" />
-    <ClInclude Include="utility\Easing.h" />
-    <ClInclude Include="utility\Vector3.h" />
+    <ClInclude Include="Application\gameObject\element\ElementObject.h" />
+    <ClInclude Include="Application\gameObject\enemy\BaseEnemy.h" />
+    <ClInclude Include="Application\gameObject\enemy\BulletEnemy.h" />
+    <ClInclude Include="Application\gameObject\enemy\ElementEnemy.h" />
+    <ClInclude Include="Application\gameObject\player\Player.h" />
+    <ClInclude Include="Application\NamiGame.h" />
+    <ClInclude Include="Application\scene\GameEndScene.h" />
+    <ClInclude Include="Application\scene\GameScene.h" />
+    <ClInclude Include="Application\scene\SceneInterface.h" />
+    <ClInclude Include="Application\scene\SceneManager.h" />
+    <ClInclude Include="Application\scene\TitleScene.h" />
+    <ClInclude Include="Engine\2d\DebugText.h" />
+    <ClInclude Include="Engine\2d\PostEffect.h" />
+    <ClInclude Include="Engine\2d\Sprite.h" />
+    <ClInclude Include="Engine\3d\collider\BaseCollider.h" />
+    <ClInclude Include="Engine\3d\collider\Collision.h" />
+    <ClInclude Include="Engine\3d\collider\CollisionAttribute.h" />
+    <ClInclude Include="Engine\3d\collider\CollisionInfo.h" />
+    <ClInclude Include="Engine\3d\collider\CollisionManager.h" />
+    <ClInclude Include="Engine\3d\collider\CollisionPrimitive.h" />
+    <ClInclude Include="Engine\3d\collider\CollisionTypes.h" />
+    <ClInclude Include="Engine\3d\collider\mesh\MeshCollider.h" />
+    <ClInclude Include="Engine\3d\collider\raycast\RaycastHit.h" />
+    <ClInclude Include="Engine\3d\collider\sphere\SphereCollider.h" />
+    <ClInclude Include="Engine\3d\collider\TouchableObject.h" />
+    <ClInclude Include="Engine\3d\fbx\FbxLoader.h" />
+    <ClInclude Include="Engine\3d\fbx\FbxModel.h" />
+    <ClInclude Include="Engine\3d\fbx\FbxObject3d.h" />
+    <ClInclude Include="Engine\3d\light\CircleShadow.h" />
+    <ClInclude Include="Engine\3d\light\DirectionalLight.h" />
+    <ClInclude Include="Engine\3d\light\LightGroup.h" />
+    <ClInclude Include="Engine\3d\light\PointLight.h" />
+    <ClInclude Include="Engine\3d\light\SpotLight.h" />
+    <ClInclude Include="Engine\3d\obj\Material.h" />
+    <ClInclude Include="Engine\3d\obj\Mesh.h" />
+    <ClInclude Include="Engine\3d\obj\Model.h" />
+    <ClInclude Include="Engine\3d\obj\Object3d.h" />
+    <ClInclude Include="Engine\3d\particle\ParticleManager.h" />
+    <ClInclude Include="Engine\audio\Audio.h" />
+    <ClInclude Include="Engine\base\DirectXCommon.h" />
+    <ClInclude Include="Engine\base\Framework.h" />
+    <ClInclude Include="Engine\base\SafeDelete.h" />
+    <ClInclude Include="Engine\base\WinApp.h" />
+    <ClInclude Include="Engine\camera\Camera.h" />
+    <ClInclude Include="Engine\camera\DebugCamera.h" />
+    <ClInclude Include="Engine\input\Input.h" />
+    <ClInclude Include="Engine\utility\Angle.h" />
+    <ClInclude Include="Engine\utility\Easing.h" />
+    <ClInclude Include="Engine\utility\Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli" />

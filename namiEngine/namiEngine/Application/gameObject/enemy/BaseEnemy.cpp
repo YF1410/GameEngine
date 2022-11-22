@@ -9,17 +9,18 @@ BaseEnemy::~BaseEnemy()
 {
 }
 
-std::unique_ptr<BaseEnemy> BaseEnemy::Create(FbxModel* fbxmodel) {
+std::unique_ptr<BaseEnemy> BaseEnemy::Create(FbxModel* fbxmodel, Player* player) {
 	std::unique_ptr<BaseEnemy> enemy = std::make_unique<BaseEnemy>();
 
-	enemy->Initialize();
 	enemy->SetModel(fbxmodel);
+	enemy->Initialize(player);
 
 	return enemy;
 }
 
-void BaseEnemy::Initialize() {
+void BaseEnemy::Initialize(Player*player) {
 	FbxObject3d::Initialize();
+	this->player = player;
 	HP = 3;
 	savePos = position;
 	isDamage = false;
@@ -38,20 +39,7 @@ void BaseEnemy::Initialize() {
 	colliderVisualizationObject->SetPosition(fixCollisionPos);
 	colliderVisualizationObject->SetScale(collision.radius);
 	colliderVisualizationObject->SetColor({ 1,0,0,0.3f });
-}
-
-void BaseEnemy::RestartInitialize() {
-	HP = 3;
-	position = defaultPos;
-	savePos = position;
-	isDamage = false;
-	isActive = true;
-	damageShakeCount = 0;
-	for (int i = 0; i < 3; i++) {
-		shakeObjectPos[i] = 0;
-	}
-	moveX = position.x;
-	moveZ = position.z;
+	LoopAnimation();
 }
 
 void BaseEnemy::Update() {
@@ -70,8 +58,20 @@ void BaseEnemy::Draw(ID3D12GraphicsCommandList* cmdList) {
 	Object3d::PostDraw();
 }
 
-void BaseEnemy::Damage(XMFLOAT3 pos, int DamageQuantity) {
+void BaseEnemy::Move()
+{
+	XMFLOAT3 pos = player->GetPosition();
 	float rad = atan2(pos.z - position.z, pos.x - position.x);
+	if (!isDamage) {
+		savePos = position;
+		moveX = (float)(cos(rad) * 0.1f + position.x);
+		moveZ = (float)(sin(rad) * 0.1f + position.z);
+	}
+	position = { moveX + shakeObjectPos[0], position.y + shakeObjectPos[1], moveZ + shakeObjectPos[2] };
+	rotation = { 0,-XMConvertToDegrees(rad) + 90.0f,0 };
+}
+
+void BaseEnemy::Damage() {
 	if (isDamage) {
 		damageShakeCount++;
 		position = savePos;
@@ -83,45 +83,26 @@ void BaseEnemy::Damage(XMFLOAT3 pos, int DamageQuantity) {
 			for (int i = 0; i < 3; i++) {
 				shakeObjectPos[i] = 0;
 			}
-			HP -= DamageQuantity;
+			HP -= player->GetAttackPowor();
 			isDamage = false;
-			SetColor({ 1,1,1,1 });
-		}
-	}
-	else {
-		savePos = position;
-		moveX = (float)(cos(rad) * 0.1f + position.x);
-		moveZ = (float)(sin(rad) * 0.1f + position.z);
-		if (HP <= 0) {
-			isActive = false;
-			/*isEnemeyActive = false;
-			isElementActive = true;*/
+			SetColor(defaultColor);
+			if (HP <= 0) {
+				isActive = false;
+			}
 		}
 	}
 	position = { moveX + shakeObjectPos[0], position.y + shakeObjectPos[1], moveZ + shakeObjectPos[2] };
 }
 
-//void BaseEnemy::SelectAction()
-//{
-//	/*if () {
-//		Sweep();
-//	}
-//	else if () {
-//		Stab();
-//	}
-//	else if () {
-//		Tackle();
-//	}*/
-//}
-//
-//void BaseEnemy::Sweep()
-//{
-//}
-//
-//void BaseEnemy::Stab()
-//{
-//}
-//
-//void BaseEnemy::Tackle()
-//{
-//}
+void BaseEnemy::CheckCollisionToPlayer(Camera*camera)
+{
+	if (Collision::CheckSphere2Sphere(player->GetInflictDamageCollision(), collision) && isActive && player->GetIsAttack()) {
+		SetColor({ 1,0,0,1 });
+		isDamage = true;
+	}
+	else if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), collision) && isActive && !player->GetIsAttack() && !player->GetIsReceivedDamage()) {
+		player->Damage(1);
+		camera->SetShakeFlag(true, 6);
+		player->SetIsReceivedDamage(true);
+	}
+}

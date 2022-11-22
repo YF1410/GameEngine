@@ -18,6 +18,8 @@
 #include "Player.h"
 #include "SceneInterface.h"
 #include "BaseCollider.h"
+#include "ElementEnemy.h"
+#include "BulletEnemy.h"
 
 #include <vector>
 
