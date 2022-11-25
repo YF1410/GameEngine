@@ -71,9 +71,9 @@ void GameScene::Initialize() {
 	player = Player::Create(playerModel.get());
 
 	for (int i = 0; i < 5; i++) {
-		//enemy.push_back(BaseEnemy::Create(enemyModel.get(),player.get()));
+		enemy.push_back(BaseEnemy::Create(enemyModel.get(),player.get()));
 	}
-	//enemy.push_back(ElementEnemy::Create(enemyModel.get()));
+	enemy.push_back(ElementEnemy::Create(enemyModel.get(), player.get()));
 	enemy.push_back(BulletEnemy::Create(enemyModel.get(), player.get()));
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
@@ -105,10 +105,6 @@ void GameScene::Update() {
 	cameraCollider.center = XMLoadFloat3(&colliderCenter);
 
 	Vector3 a = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
-
-	if (input->TriggerKey(DIK_0)) {
-		element.push_back(ElementObject::Create(playerModel.get(), { 0,0,-50 }));
-	}
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 		enemyObj->Move();

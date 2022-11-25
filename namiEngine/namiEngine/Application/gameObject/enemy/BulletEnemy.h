@@ -18,5 +18,7 @@ public:
 private:
 	bool isShotRange = false;
 	Sphere shotRange;
+	std::unique_ptr<Model> bulletModel;
+	std::unique_ptr<Object3d> bulletObject;
 };
 

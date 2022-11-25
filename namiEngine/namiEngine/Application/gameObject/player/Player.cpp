@@ -67,7 +67,7 @@ void Player::Update() {
 		}
 	}
 
-	if (HP <= 0) {
+	if (HP <= 0 && !isNowCameraShake) {
 		isActive = false;
 	}
 

@@ -2,6 +2,7 @@
 
 BulletEnemy::BulletEnemy()
 {
+	HP = 1.0f;
 	shotRange.center = XMLoadFloat3(&position);
 	shotRange.radius = 30.0f;
 }
@@ -34,6 +35,9 @@ void BulletEnemy::Move()
 	else {
 		isShotRange = false;
 	}
+
+	moveX = position.x;
+	moveZ = position.z;
 
 	float rad = atan2(pos.z - position.z, pos.x - position.x);
 	if (!isDamage && !isShotRange) {
