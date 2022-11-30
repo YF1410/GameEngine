@@ -2,17 +2,18 @@
 
 using namespace DirectX;
 
-std::unique_ptr<Player> Player::Create(FbxModel* fbxmodel) {
+std::unique_ptr<Player> Player::Create(FbxModel* fbxmodel, std::list<std::unique_ptr<BaseEnemy>>* enemy) {
 	//3Dオブジェクトのインスタンスを生成
 	std::unique_ptr<Player> player = std::make_unique<Player>();
 
-	player->Initialize();
+	player->Initialize(enemy);
 	player->SetModel(fbxmodel);
 
 	return player;
 }
 
-void Player::Initialize() {
+void Player::Initialize(std::list<std::unique_ptr<BaseEnemy>>* enemy) {
+	this->enemy = enemy;
 	FbxObject3d::Initialize();
 	input = Input::GetInstance();
 	receiveDamageCollision.center = XMLoadFloat3(&position);
@@ -35,6 +36,11 @@ void Player::Initialize() {
 }
 
 void Player::Update() {
+	bullet.remove_if([](std::unique_ptr<Bullet>& bulletObj) {return !bulletObj->GetIsActive(); });
+
+	for (std::unique_ptr<Bullet>& bulletObj : bullet) {
+		bulletObj->PlayerBulletUpdate();
+	}
 
 	if (!isCharging && input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D))) {
 		isDash = true;
@@ -62,7 +68,7 @@ void Player::Update() {
 		damageTimer--;
 		if (damageTimer <= 0) {
 			damageTimer = 60;
-			SetColor({ 1,1,1,1 });
+			SetColor(defColor);
 			isReceivedDamage = false;
 		}
 	}
@@ -93,10 +99,13 @@ void Player::Update() {
 void Player::Draw(ID3D12GraphicsCommandList* cmdList) {
 	FbxObject3d::Draw(cmdList);
 	Object3d::PreDraw(cmdList);
+	for (std::unique_ptr<Bullet>& bulletObj : bullet) {
+		bulletObj->Draw();
+	}
 	receiveDamageColliderVisualizationObject->Draw();
-	//if (isAttack) {
+	if (!isPlay) {
 	inflictDamageColliderVisualizationObject->Draw();
-	//}
+	}
 	Object3d::PostDraw();
 }
 
@@ -126,11 +135,19 @@ void Player::Attack()
 
 	if ((input->TriggerKey(DIK_2) || input->TriggerMouse(MouseButton::RightButton)) && !isPlay && isHaveElement && !isReceivedDamage) {
 		inflictDamageCollision.radius = 50.0f;
-		SetColor({ 1,1,1,1 });
+		defColor = { 1,1,1,1 };
+		SetColor(defColor);
 		attackPowor = 2;
 		isAttack = true;
 		isHaveElement = false;
 		PlayAnimation();
+	}
+
+	if (input->TriggerKey(DIK_3)) {
+		attackPowor = 3;
+		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
+			bullet.push_back(Bullet::Create(position,enemyObj.get()));
+		}
 	}
 
 	inflictDamageColliderVisualizationObject->SetPosition({ position.x,position.y,position.z });
@@ -173,7 +190,7 @@ void Player::Move(Vector3 vec) {
 		else if (input->PushKey(DIK_S)) {
 			xMoveAmount -= moveVec.x * moveAmount;
 			zMoveAmount -= moveVec.z * moveAmount;
-			rotation.y = -b -90.0f;
+			rotation.y = -b - 90.0f;
 			if (input->PushKey(DIK_A)) {
 				xMoveAmount -= moveVec.z * moveAmount;
 				zMoveAmount += moveVec.x * moveAmount;

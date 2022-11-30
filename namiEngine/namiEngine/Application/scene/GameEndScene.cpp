@@ -3,11 +3,12 @@
 
 void GameEndScene::Initialize()
 {
-	if (!Sprite::LoadTexture(2, L"Resources/gameend.png")) {
+	if (!Sprite::LoadTexture(3, L"Resources/gameend.png")) {
 		assert(0);
 		return;
 	}
-	spriteBG2 = Sprite::Create(2, { 0.0f,0.0f });
+	endBG = Sprite::Create(3, { 0.0f,0.0f });
+	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 }
 
 void GameEndScene::Finalize()
@@ -16,8 +17,26 @@ void GameEndScene::Finalize()
 
 void GameEndScene::Update()
 {
-	if (Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE) || Input::GetInstance()->TriggerMouse(MouseButton::LeftButton)) {
-		SceneManager::GetInstance()->ToTitleScene();
+	if (isFadeIn) {
+		fadeColor.w -= 0.05f;
+		fadeSprite->SetColor(fadeColor);
+		if (fadeColor.w <= 0.0f) {
+			isFadeIn = false;
+		}
+	}
+
+	if ((Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE)
+		|| Input::GetInstance()->TriggerMouse(MouseButton::LeftButton)) && !isFadeIn) {
+		isFadeOut = true;
+	}
+
+	if (isFadeOut) {
+		fadeColor.w += 0.02f;
+		fadeSprite->SetColor(fadeColor);
+		if (fadeColor.w >= 1.0f) {
+			isFadeOut = false;
+			SceneManager::GetInstance()->ToTitleScene();
+		}
 	}
 }
 
@@ -27,7 +46,8 @@ void GameEndScene::Draw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	spriteBG2->Draw();
+	endBG->Draw();
+	fadeSprite->Draw();
 
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる

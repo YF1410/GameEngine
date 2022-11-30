@@ -3,7 +3,8 @@
 ElementEnemy::ElementEnemy()
 {
 	haveElement = true;
-	defaultColor = { 0,0,1,1 };
+	defaultColor = { 1,0,0,1 };
+	moveAmount = 0.3f;
 	SetColor(defaultColor);
 }
 
@@ -11,11 +12,11 @@ ElementEnemy::~ElementEnemy()
 {
 }
 
-std::unique_ptr<ElementEnemy> ElementEnemy::Create(FbxModel* fbxmodel, Player* player) {
+std::unique_ptr<ElementEnemy> ElementEnemy::Create(FbxModel* fbxmodel, Player* player,Camera*camera) {
 	std::unique_ptr<ElementEnemy> enemy = std::make_unique<ElementEnemy>();
 
 	enemy->SetModel(fbxmodel);
-	enemy->Initialize(player);
+	enemy->Initialize(player,camera);
 
 	return enemy;
 }

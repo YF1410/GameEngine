@@ -41,6 +41,8 @@ void GameScene::Initialize() {
 
 	// テクスチャ読み込み
 
+	//スプライト生成
+	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 	// 背景スプライト生成
 
 	// パーティクルマネージャ生成
@@ -53,7 +55,7 @@ void GameScene::Initialize() {
 
 	// モデル名を指定してファイル読み込み
 	playerModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
-	enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
+	enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("ZR");
 	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 	groundModel = Model::CreateFromObject("stage1");
 	skydomeModel = Model::CreateFromObject("skydome");
@@ -68,16 +70,16 @@ void GameScene::Initialize() {
 	FbxObject3d::SetCamera(cameraObject.get());
 
 	//object1 = new FbxObject3d;
-	player = Player::Create(playerModel.get());
+
+	player = Player::Create(playerModel.get(), &enemy);
 
 	for (int i = 0; i < 5; i++) {
-		enemy.push_back(BaseEnemy::Create(enemyModel.get(),player.get()));
+		//enemy.push_back(BaseEnemy::Create(enemyModel.get(), player.get(),cameraObject.get()));
 	}
-	enemy.push_back(ElementEnemy::Create(enemyModel.get(), player.get()));
-	enemy.push_back(BulletEnemy::Create(enemyModel.get(), player.get()));
+	enemy.push_back(ElementEnemy::Create(enemyModel.get(), player.get(),cameraObject.get()));
+	//enemy.push_back(BulletEnemy::Create(enemyModel.get(), player.get(), cameraObject.get()));
 
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		//enemyObj->SetScale({ 0.3f,0.3f,0.3f });
 		enemyObj->SetPosition({ static_cast<float>(rand() % 100 - 50),0,static_cast<float>(rand() % 100 - 50) });
 	}
 
@@ -99,79 +101,114 @@ void GameScene::Finalize()
 
 
 void GameScene::Update() {
-	XMFLOAT3 pPos = player->GetPosition();
-	XMFLOAT3 cPos = cameraObject->GetEye();
-	XMFLOAT3 colliderCenter = { (pPos.x + cPos.x) / 2,(pPos.y + cPos.y) / 2 ,(pPos.z + cPos.z) / 2 };
-	cameraCollider.center = XMLoadFloat3(&colliderCenter);
+	if (isFadeIn) {
+		if (updateCount == 0) {
+			cameraObject->Update();
+			player->Update();
+			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+				enemyObj->Update();
+			}
 
-	Vector3 a = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
-
-	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		enemyObj->Move();
-		enemyObj->Damage();
-		if (!enemyObj->GetIsActive() && enemyObj->GetHaveElement()) {
-			element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
+			for (std::unique_ptr<ElementObject>& elementObj : element) {
+				elementObj->Update();
+			}
+			groundObj->Update();
+			skydomeObj->Update();
+			//skydomeCollider.Update();
+			particleMan->Update();
+			updateCount++;
+		}
+		fadeColor.w -= 0.01f;
+		fadeSprite->SetColor(fadeColor);
+		if (fadeColor.w <= 0.0f) {
+			isFadeIn = false;
 		}
 	}
+	else if (!isFadeIn && !isFadeOut) {
+		XMFLOAT3 pPos = player->GetPosition();
+		XMFLOAT3 cPos = cameraObject->GetEye();
+		XMFLOAT3 colliderCenter = { (pPos.x + cPos.x) / 2,(pPos.y + cPos.y) / 2 ,(pPos.z + cPos.z) / 2 };
+		cameraCollider.center = XMLoadFloat3(&colliderCenter);
 
-	enemy.remove_if([](std::unique_ptr<BaseEnemy>& enemyObj) {return !enemyObj->GetIsActive(); });
-	element.remove_if([](std::unique_ptr<ElementObject>& elementObj) {return !elementObj->GetIsActive(); });
+		Vector3 a = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
 
-	player->Attack();
+		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+			enemyObj->Move();
+			enemyObj->Damage();
+			if (!enemyObj->GetIsActive() && enemyObj->GetHaveElement()) {
+				element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
+			}
+		}
 
-	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		enemyObj->CheckCollisionToPlayer(cameraObject.get());
+		enemy.remove_if([](std::unique_ptr<BaseEnemy>& enemyObj) {return !enemyObj->GetIsActive(); });
+		element.remove_if([](std::unique_ptr<ElementObject>& elementObj) {return !elementObj->GetIsActive(); });
+
+		player->Attack();
+
+		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+			enemyObj->CheckCollisionToPlayer();
+		}
+
+		for (std::unique_ptr<ElementObject>& elementObj : element) {
+			elementObj->GetIsActive();
+			if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), elementObj->GetCollision()) && elementObj->GetIsActive() && !player->GetIsPlay()) {
+				elementObj->SetIsActive(false);
+
+				player->SetDefColor({ 0,0,1,1 });
+				player->SetIsHaveElement(true);
+				player->StopAnimation();
+			}
+		}
+
+		player->Move(a);
+
+		if (Collision::CheckSphereInside2Sphere(cameraCollider, skydomeCollider)) {
+			player->SetIsMapEnd(false);
+			cameraObject->SetEye({ cameraEye[0] + player->GetXMoveAmount(), cameraEye[1],cameraEye[2] + player->GetZMoveAmount() });
+			cameraObject->SetTarget({ cameraTarget.x + player->GetXMoveAmount(), cameraTarget.y,cameraTarget.z + player->GetZMoveAmount() });
+		}
+		else {
+			player->SetIsMapEnd(true);
+		}
+
+		if (cameraObject->GetShakeFlag()) {
+			player->SetIsNowCameraShake(true);
+		}
+		else if (!cameraObject->GetShakeFlag()) {
+			player->SetIsNowCameraShake(false);
+		}
+
+		cameraObject->CameraShake();
+
+		if (enemy.empty() || !player->GetIsActive()) {
+			isFadeOut = true;
+		}
+
+		cameraObject->Update();
+		player->Update();
+		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+			enemyObj->Update();
+		}
+
+		for (std::unique_ptr<ElementObject>& elementObj : element) {
+			elementObj->Update();
+		}
+
+		groundObj->Update();
+		skydomeObj->Update();
+		//skydomeCollider.Update();
+		particleMan->Update();
 	}
-
-	for (std::unique_ptr<ElementObject>& elementObj : element) {
-		elementObj->GetIsActive();
-		if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), elementObj->GetCollision()) && elementObj->GetIsActive() && !player->GetIsPlay()) {
-			elementObj->SetIsActive(false);
-
-			player->SetColor({ 0,0,1,1 });
-			player->SetIsHaveElement(true);
-			player->StopAnimation();
+	else if (isFadeOut) {
+		if (isFadeOut) {
+			fadeColor.w += 0.02f;
+			fadeSprite->SetColor(fadeColor);
+			if (fadeColor.w >= 1.0f) {
+				isFadeOut = false;
+				SceneManager::GetInstance()->ToGameEndScene();
+			}
 		}
 	}
-
-	player->Move(a);
-
-	if (Collision::CheckSphereInside2Sphere(cameraCollider, skydomeCollider)) {
-		player->SetIsMapEnd(false);
-		cameraObject->SetEye({ cameraEye[0] + player->GetXMoveAmount(), cameraEye[1],cameraEye[2] + player->GetZMoveAmount() });
-		cameraObject->SetTarget({ cameraTarget.x + player->GetXMoveAmount(), cameraTarget.y,cameraTarget.z + player->GetZMoveAmount() });
-	}
-	else {
-		player->SetIsMapEnd(true);
-	}
-
-	if (cameraObject->GetShakeFlag()) {
-		player->SetIsNowCameraShake(true);
-	}
-	else if (!cameraObject->GetShakeFlag()) {
-		player->SetIsNowCameraShake(false);
-	}
-
-	cameraObject->CameraShake();
-
-	if (enemy.empty() || !player->GetIsActive()) {
-		SceneManager::GetInstance()->ToGameEndScene();
-	}
-
-	cameraObject->Update();
-	player->Update();
-	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		enemyObj->Update();
-	}
-
-	for (std::unique_ptr<ElementObject>& elementObj : element) {
-		elementObj->Update();
-	}
-
-	groundObj->Update();
-	skydomeObj->Update();
-	//skydomeCollider.Update();
-	particleMan->Update();
 }
 
 
@@ -238,7 +275,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-
+	fadeSprite->Draw();
 
 	// デバッグテキストの描画
 	debugText->DrawAll();

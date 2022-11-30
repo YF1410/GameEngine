@@ -9,19 +9,19 @@ BaseEnemy::~BaseEnemy()
 {
 }
 
-std::unique_ptr<BaseEnemy> BaseEnemy::Create(FbxModel* fbxmodel, Player* player) {
+std::unique_ptr<BaseEnemy> BaseEnemy::Create(FbxModel* fbxmodel, Player* player,Camera*camera) {
 	std::unique_ptr<BaseEnemy> enemy = std::make_unique<BaseEnemy>();
 
 	enemy->SetModel(fbxmodel);
-	enemy->Initialize(player);
+	enemy->Initialize(player,camera);
 
 	return enemy;
 }
 
-void BaseEnemy::Initialize(Player*player) {
+void BaseEnemy::Initialize(Player*player,Camera*camera) {
 	FbxObject3d::Initialize();
 	this->player = player;
-	HP = 3;
+	this->camera = camera;
 	savePos = position;
 	isDamage = false;
 	isActive = true;
@@ -64,8 +64,8 @@ void BaseEnemy::Move()
 	float rad = atan2(pos.z - position.z, pos.x - position.x);
 	if (!isDamage) {
 		savePos = position;
-		moveX = (float)(cos(rad) * 0.1f + position.x);
-		moveZ = (float)(sin(rad) * 0.1f + position.z);
+		moveX = (float)(cos(rad) * moveAmount + position.x);
+		moveZ = (float)(sin(rad) * moveAmount + position.z);
 	}
 	position = { moveX + shakeObjectPos[0], position.y + shakeObjectPos[1], moveZ + shakeObjectPos[2] };
 	rotation = { 0,-XMConvertToDegrees(rad) + 90.0f,0 };
@@ -94,7 +94,7 @@ void BaseEnemy::Damage() {
 	position = { moveX + shakeObjectPos[0], position.y + shakeObjectPos[1], moveZ + shakeObjectPos[2] };
 }
 
-void BaseEnemy::CheckCollisionToPlayer(Camera*camera)
+void BaseEnemy::CheckCollisionToPlayer()
 {
 	if (Collision::CheckSphere2Sphere(player->GetInflictDamageCollision(), collision) && isActive && player->GetIsAttack()) {
 		SetColor({ 1,0,0,1 });

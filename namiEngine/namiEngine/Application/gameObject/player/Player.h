@@ -4,6 +4,12 @@
 #include "CollisionPrimitive.h"
 #include "input.h"
 #include "Vector3.h"
+#include "Bullet.h"
+#include "BaseEnemy.h"
+
+class BaseEnemy;
+class Bullet;
+class GameScene;
 
 class Player :
 	public FbxObject3d {
@@ -12,7 +18,7 @@ public:
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static std::unique_ptr<Player> Create(FbxModel* fbxmodel);
+	static std::unique_ptr<Player> Create(FbxModel* fbxmodel,std::list<std::unique_ptr<BaseEnemy>> *enemy);
 
 
 public:
@@ -21,7 +27,7 @@ public:
 	/// 初期化
 	/// </summary>
 	/// <returns>成否</returns>
-	void Initialize();
+	void Initialize(std::list<std::unique_ptr<BaseEnemy>> *enemy);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -50,7 +56,10 @@ public:
 	void SetIsHaveElement(bool isHaveElement) { this->isHaveElement = isHaveElement; }
 	void SetIsMapEnd(bool isMapEnd) { this->isMapEnd = isMapEnd; }
 	void SetIsNowCameraShake(bool isNowCameraShake) { this->isNowCameraShake = isNowCameraShake; }
+	void SetDefColor(XMFLOAT4 color) { defColor = color; }
 private:
+	std::list<std::unique_ptr<BaseEnemy>> *enemy;
+
 	Input* input = nullptr;
 	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };
 	XMFLOAT3 savePos = { 0.0f,0.0f,0.0f };
@@ -60,6 +69,8 @@ private:
 	const float dashMoveAmount = 3.0f;
 	int dashTimer = 8;
 	int damageTimer = 60;
+
+	XMFLOAT4 defColor = { 1,1,1,1 };
 
 	int chargeTimer = 60;
 	float attackPowor = 1;
@@ -81,4 +92,6 @@ private:
 	std::unique_ptr<Object3d> receiveDamageColliderVisualizationObject;
 	std::unique_ptr<Model> inflictDamageColliderVisualizationModel;
 	std::unique_ptr<Object3d> inflictDamageColliderVisualizationObject;
+	std::list<std::unique_ptr<Bullet>> bullet;
+	//Mediatorパターン
 };

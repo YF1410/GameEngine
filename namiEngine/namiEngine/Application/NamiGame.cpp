@@ -6,7 +6,7 @@
 void NamiGame::Initialize() {
 	Framework::Initialize();
 	scene_ = SceneManager::GetInstance();
-	postEffect = std::make_unique<PostEffect>();
+	//postEffect = std::make_unique<PostEffect>();
 	// スプライト静的初期化
 	if (!Sprite::StaticInitialize(WinApp::window_width, WinApp::window_height)) {
 		assert(0);
@@ -31,7 +31,7 @@ void NamiGame::Initialize() {
 	//ポストエフェクト用のテクスチャの読み込み
 	//Sprite::LoadTexture(100, L"Resources/white1x1.png");
 	//ポストエフェクトの初期化
-	postEffect->Initialize();
+	//postEffect->Initialize();
 
 }
 
@@ -44,7 +44,7 @@ void NamiGame::Finalize() {
 	FbxObject3d::StaticFinalize();
 	Object3d::StaticFinalize();
 	Sprite::StaticFinalize();
-	postEffect.reset();
+	//postEffect.reset();
 	Framework::Finalize();
 }
 

@@ -78,12 +78,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)Application\;$(ProjectDir)Application\gameObject\player\;$(ProjectDir)Application\gameObject\element\;$(ProjectDir)Application\gameObject\enemy\;$(ProjectDir)Application\scene\;$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d\collider\mesh\;$(ProjectDir)Engine\3d\collider\raycast\;$(ProjectDir)Engine\3d\collider\sphere\;$(ProjectDir)Engine\3d\collider\;$(ProjectDir)Engine\3d\fbx\;$(ProjectDir)Engine\3d\light\;$(ProjectDir)Engine\3d\obj\;$(ProjectDir)Engine\3d\particle\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\camera\;$(ProjectDir)Engine\input\;$(ProjectDir)Engine\utility;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)lib\imgui\include;$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Application\;$(ProjectDir)Application\gameObject\player\;$(ProjectDir)Application\gameObject\element\;$(ProjectDir)Application\gameObject\enemy\;$(ProjectDir)Application\gameObject\bullet\;$(ProjectDir)Application\scene\;$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d\collider\mesh\;$(ProjectDir)Engine\3d\collider\raycast\;$(ProjectDir)Engine\3d\collider\sphere\;$(ProjectDir)Engine\3d\collider\;$(ProjectDir)Engine\3d\fbx\;$(ProjectDir)Engine\3d\light\;$(ProjectDir)Engine\3d\obj\;$(ProjectDir)Engine\3d\particle\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\camera\;$(ProjectDir)Engine\input\;$(ProjectDir)Engine\utility;$(ProjectDir)lib\DirectXTex\include;$(ProjectDir)lib\imgui\include;$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\fbx_sdk\lib\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)Application\;$(ProjectDir)Application\gameObject\player\;$(ProjectDir)Application\gameObject\element\;$(ProjectDir)Application\gameObject\enemy\;$(ProjectDir)Application\scene\;$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d\collider\mesh\;$(ProjectDir)Engine\3d\collider\raycast\;$(ProjectDir)Engine\3d\collider\sphere\;$(ProjectDir)Engine\3d\collider\;$(ProjectDir)Engine\3d\fbx\;$(ProjectDir)Engine\3d\light\;$(ProjectDir)Engine\3d\obj\;$(ProjectDir)Engine\3d\particle\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\camera\;$(ProjectDir)Engine\input\;$(ProjectDir)Engine\utility;$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Application\;$(ProjectDir)Application\gameObject\player\;$(ProjectDir)Application\gameObject\element\;$(ProjectDir)Application\gameObject\enemy\;$(ProjectDir)Application\gameObject\bullet\;$(ProjectDir)Application\scene\;$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d\collider\mesh\;$(ProjectDir)Engine\3d\collider\raycast\;$(ProjectDir)Engine\3d\collider\sphere\;$(ProjectDir)Engine\3d\collider\;$(ProjectDir)Engine\3d\fbx\;$(ProjectDir)Engine\3d\light\;$(ProjectDir)Engine\3d\obj\;$(ProjectDir)Engine\3d\particle\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\camera\;$(ProjectDir)Engine\input\;$(ProjectDir)Engine\utility;$(ProjectDir)lib\fbx_sdk\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\fbx_sdk\lib\release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\gameObject\bullet\Bullet.cpp" />
     <ClCompile Include="Application\gameObject\element\ElementObject.cpp" />
     <ClCompile Include="Application\gameObject\enemy\BaseEnemy.cpp" />
     <ClCompile Include="Application\gameObject\enemy\BulletEnemy.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Engine\utility\Easing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\gameObject\bullet\Bullet.h" />
     <ClInclude Include="Application\gameObject\element\ElementObject.h" />
     <ClInclude Include="Application\gameObject\enemy\BaseEnemy.h" />
     <ClInclude Include="Application\gameObject\enemy\BulletEnemy.h" />

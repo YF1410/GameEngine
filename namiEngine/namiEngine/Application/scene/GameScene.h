@@ -23,6 +23,8 @@
 
 #include <vector>
 
+class Player;
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -76,10 +78,12 @@ private: // メンバ変数
 	Audio* audio = nullptr;
 	DebugText* debugText = nullptr;
 
-	bool isNowTitle = true;
-	bool isNowGame = false;
-	bool isNowEnd = false;
+	std::unique_ptr<Sprite> fadeSprite;
 
+	XMFLOAT4 fadeColor = { 1.0f,1.0f,1.0f,1.0f };
+	bool isFadeOut = false;
+	bool isFadeIn = true;
+	int updateCount = 0;
 
 	/// <summary>
 	/// ゲームシーン用

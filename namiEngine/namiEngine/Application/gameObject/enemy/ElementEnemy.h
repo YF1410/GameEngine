@@ -3,7 +3,7 @@
 class ElementEnemy : public BaseEnemy
 {
 public:
-	static std::unique_ptr<ElementEnemy> Create(FbxModel* fbxmodel, Player* player);
+	static std::unique_ptr<ElementEnemy> Create(FbxModel* fbxmodel, Player* player,Camera*camera);
 public:
 	//コンストラクタ
 	ElementEnemy();

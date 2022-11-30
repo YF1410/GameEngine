@@ -66,9 +66,6 @@
     <ClCompile Include="Application\gameObject\element\ElementObject.cpp">
       <Filter>Application\GameObject\Element</Filter>
     </ClCompile>
-    <ClCompile Include="Application\gameObject\player\Player.cpp">
-      <Filter>Application\GameObject\Player</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\2d\DebugText.cpp">
       <Filter>Engine\2D</Filter>
     </ClCompile>
@@ -149,6 +146,12 @@
     </ClCompile>
     <ClCompile Include="Engine\utility\Easing.cpp">
       <Filter>Engine\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\gameObject\bullet\Bullet.cpp">
+      <Filter>Application\GameObject\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\gameObject\player\Player.cpp">
+      <Filter>Application\GameObject\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -299,6 +302,9 @@
     <ClInclude Include="Engine\utility\Vector3.h">
       <Filter>Engine\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Application\gameObject\bullet\Bullet.h">
+      <Filter>Application\GameObject\Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli">
@@ -386,6 +392,9 @@
     </Filter>
     <Filter Include="Application\GameObject\Element">
       <UniqueIdentifier>{c09d6788-f868-4ed0-ae2d-b7db9c97c2fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\GameObject\Bullet">
+      <UniqueIdentifier>{675b727c-a840-42f9-a680-e42c194dd2dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

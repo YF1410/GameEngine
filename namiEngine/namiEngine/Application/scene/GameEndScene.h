@@ -14,6 +14,10 @@ public:
 	void Update();
 	void Draw();
 private:
-	std::unique_ptr<Sprite> spriteBG2;
+	std::unique_ptr<Sprite> endBG;
+	std::unique_ptr<Sprite> fadeSprite;
+	XMFLOAT4 fadeColor = { 1.0f,1.0f,1.0f,1.0f };
+	bool isFadeOut = false;
+	bool isFadeIn = true;
 };
 

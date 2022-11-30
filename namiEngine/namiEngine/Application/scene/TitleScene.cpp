@@ -7,7 +7,13 @@ void TitleScene::Initialize()
 		assert(0);
 		return;
 	}
-	spriteBG1 = Sprite::Create(1, { 0.0f,0.0f });
+	if (!Sprite::LoadTexture(2, L"Resources/fadeSprite.png")) {
+		assert(0);
+		return;
+	}
+
+	titleBG = Sprite::Create(1, { 0.0f,0.0f });
+	fadeSprite = Sprite::Create(2, { 0.0f,0.0f },fadeColor);
 }
 
 void TitleScene::Finalize()
@@ -16,9 +22,29 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	if (Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE) || Input::GetInstance()->TriggerMouse(MouseButton::LeftButton)) {
-		SceneManager::GetInstance()->ToGameScene();
+	if (isFadeIn) {
+		fadeColor.w -= 0.05f;
+		fadeSprite->SetColor(fadeColor);
+		if (fadeColor.w <= 0.0f) {
+			isFadeIn = false;
+		}
 	}
+
+	if ((Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE) 
+		|| Input::GetInstance()->TriggerMouse(MouseButton::LeftButton)) && !isFadeIn) {
+		isFadeOut = true;
+	}
+
+	if (isFadeOut) {
+		fadeColor.w += 0.02f;
+		fadeSprite->SetColor(fadeColor);
+		if (fadeColor.w >= 1.0f) {
+			isFadeOut = false;
+			SceneManager::GetInstance()->ToGameScene();
+		}
+	}
+
+	//SceneManager::GetInstance()->ToGameScene();
 }
 
 void TitleScene::Draw()
@@ -27,7 +53,8 @@ void TitleScene::Draw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	spriteBG1->Draw();
+	titleBG->Draw();
+	fadeSprite->Draw();
 
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる

@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Collision.h"
 
+class Player;
 
 class BaseEnemy : public FbxObject3d
 {
@@ -17,18 +18,18 @@ protected: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 public:
-	static std::unique_ptr<BaseEnemy> Create(FbxModel* fbxmodel, Player* player);
+	static std::unique_ptr<BaseEnemy> Create(FbxModel* fbxmodel, Player* player,Camera*camera);
 public:
 	//コンストラクタ
 	BaseEnemy();
 	//デストラクタ
 	~BaseEnemy();
 	//初期化
-	void Initialize(Player*player);
+	void Initialize(Player*player,Camera*camera);
 	//更新
 	virtual void Update();
 
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	virtual void Draw(ID3D12GraphicsCommandList* cmdList);
 	/*void SelectAction();
 	void Sweep();
 	void Stab();
@@ -42,11 +43,12 @@ public:
 	//ダメージ処理
 	virtual void Damage();
 
-	void CheckCollisionToPlayer(Camera*camera);
+	void CheckCollisionToPlayer();
 
 	virtual void Move();
 protected:
 	Player* player;
+	Camera* camera;
 	float HP = 3;
 	XMFLOAT3 savePos;
 	XMFLOAT4 defaultColor = { 1,1,1,1 };
@@ -57,6 +59,7 @@ protected:
 	float shakeObjectPos[3];
 	float moveX = 0;
 	float moveZ = 0;
+	float moveAmount = 0.1f;
 	XMFLOAT3 defaultPos = {0,-5.0f,20.0f};
 	Sphere collision;
 	std::unique_ptr<Model> colliderVisualizationModel;
