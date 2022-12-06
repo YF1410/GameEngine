@@ -70,6 +70,9 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
+	bool randEnemyPosX();
+	bool randEnemyPosZ();
+
 	//void DamageShake(bool isDamageShake,BaseEnemy* enemy);
 
 private: // メンバ変数
@@ -111,4 +114,10 @@ private: // メンバ変数
 	XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 	Sphere cameraCollider;
 	Sphere skydomeCollider;
+	float posX;
+	float posZ;
+
+	XMFLOAT3 circleShadowDir = {0,-1,0};
+	XMFLOAT3 circleShadowAtten = { 0.5f,0.6f,0.0f };
+	XMFLOAT2 circleShadowFactorAngle = { 0.0f,0.5f };
 };

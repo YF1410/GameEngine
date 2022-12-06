@@ -82,17 +82,20 @@ public: // メンバ関数
 	/// <summary>
 	/// アニメーション開始
 	/// </summary>
-	void PlayAnimation();
+	void PlayAnimation(bool isResetTime);
 
 	/// <summary>
-	/// アニメーションループ開始
+	/// ループアニメーション開始
 	/// </summary>
 	void LoopAnimation();
 
 	/// <summary>
 	/// アニメーション停止
 	/// </summary>
-	void StopAnimation();
+	void StopPlayAnimation();
+
+	//ループアニメーション停止
+	void StopLoopAnimation();
 
 	//	座標の取得
 	inline const XMFLOAT3& GetPosition() { return position; }
@@ -110,6 +113,8 @@ public: // メンバ関数
 	void SetColor(XMFLOAT4 color) { this->color = color; }
 
 	bool GetIsPlay() { return isPlay; }
+
+	void ResetAnimationTime();
 
 protected: // メンバ変数
 	// 定数バッファ（座標変換行列用）

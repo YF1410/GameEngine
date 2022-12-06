@@ -18,7 +18,7 @@ public:
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static std::unique_ptr<Player> Create(FbxModel* fbxmodel,std::list<std::unique_ptr<BaseEnemy>> *enemy);
+	static std::unique_ptr<Player> Create(FbxModel* fbxmodel, std::list<std::unique_ptr<BaseEnemy>>* enemy);
 
 
 public:
@@ -27,7 +27,7 @@ public:
 	/// 初期化
 	/// </summary>
 	/// <returns>成否</returns>
-	void Initialize(std::list<std::unique_ptr<BaseEnemy>> *enemy);
+	void Initialize(std::list<std::unique_ptr<BaseEnemy>>* enemy);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -58,16 +58,16 @@ public:
 	void SetIsNowCameraShake(bool isNowCameraShake) { this->isNowCameraShake = isNowCameraShake; }
 	void SetDefColor(XMFLOAT4 color) { defColor = color; }
 private:
-	std::list<std::unique_ptr<BaseEnemy>> *enemy;
+	std::list<std::unique_ptr<BaseEnemy>>* enemy;
 
 	Input* input = nullptr;
 	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };
 	XMFLOAT3 savePos = { 0.0f,0.0f,0.0f };
 	int HP = 3;
-	const float chargeMoveAmount = 0.5f;
-	const float defMoveAmount = 1.0f;
-	const float dashMoveAmount = 3.0f;
-	int dashTimer = 8;
+	const float chargeMoveAmount = 0.2f;
+	const float defMoveAmount = 0.7f;
+	const float dashMoveAmount = 1.5f;
+	int dashTimer = 16;
 	int damageTimer = 60;
 
 	XMFLOAT4 defColor = { 1,1,1,1 };
@@ -82,6 +82,8 @@ private:
 	bool isNowCameraShake = false;
 	bool isMapEnd = false;
 	bool isCharging = false;
+	bool isMove = false;
+	bool isIdle = false;
 	Sphere receiveDamageCollision;
 	Sphere inflictDamageCollision;
 	float xMoveAmount = 0.0f;
@@ -92,6 +94,10 @@ private:
 	std::unique_ptr<Object3d> receiveDamageColliderVisualizationObject;
 	std::unique_ptr<Model> inflictDamageColliderVisualizationModel;
 	std::unique_ptr<Object3d> inflictDamageColliderVisualizationObject;
+	std::unique_ptr<FbxModel> attackModel;
+	std::unique_ptr<FbxModel> moveModel;
+	std::unique_ptr<FbxModel> rollModel;
+	std::unique_ptr<FbxModel> idleModel;
 	std::list<std::unique_ptr<Bullet>> bullet;
 	//Mediatorパターン
 };

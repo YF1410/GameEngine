@@ -33,6 +33,11 @@ void Player::Initialize(std::list<std::unique_ptr<BaseEnemy>>* enemy) {
 	inflictDamageColliderVisualizationObject->SetScale(inflictDamageCollision.radius);
 	inflictDamageColliderVisualizationObject->SetColor({ 0,1,0,0.1f });
 	//inflictDamageColliderVisualizationObject->
+
+	attackModel = FbxLoader::GetInstance()->LoadModelFromFile("HurricaneKick");
+	moveModel = FbxLoader::GetInstance()->LoadModelFromFile("Running");
+	rollModel = FbxLoader::GetInstance()->LoadModelFromFile("Rolling");
+	idleModel = FbxLoader::GetInstance()->LoadModelFromFile("Idling");
 }
 
 void Player::Update() {
@@ -42,23 +47,42 @@ void Player::Update() {
 		bulletObj->PlayerBulletUpdate();
 	}
 
-	if (!isCharging && input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D))) {
+	if (!isPlay) {
+		if (isMove) {
+			SetModel(moveModel.get());
+			ResetAnimationTime();
+		}
+		else if (isIdle) {
+			SetModel(idleModel.get());
+			ResetAnimationTime();
+		}
+
+		if (!isLoop) {
+			LoopAnimation();
+		}
+	}
+
+	/*if (!isPlay && !isLoop && isMove) {
+		SetModel(moveModel.get());
+		LoopAnimation();
+	}
+	else if (!isMove) {
+		StopLoopAnimation();
+	}*/
+
+	isIdle = true;
+	isMove = false;
+
+	if (!isCharging && input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D)) && !isDash) {
 		isDash = true;
-	}
-
-	if (isCharging) {
-		chargeTimer--;
-	}
-
-	if (chargeTimer <= 0) {
-		inflictDamageCollision.radius += 0.1f;
-		attackPowor += 0.01f;
+		SetModel(rollModel.get());
+		PlayAnimation(true);
 	}
 
 	if (isDash) {
 		dashTimer--;
 		if (dashTimer <= 0) {
-			dashTimer = 8;
+			dashTimer = 16;
 			isDash = false;
 		}
 	}
@@ -117,18 +141,34 @@ void Player::Attack()
 		inflictDamageCollision.radius = 15.0f;
 		attackPowor = 1;
 		isAttack = true;
-		PlayAnimation();
+		SetModel(attackModel.get());
+		PlayAnimation(true);
 	}
 
 	if (input->PushKey(DIK_1) || input->PushMouse(MouseButton::LeftButton)) {
 		isCharging = true;
 	}
-	else if ((input->ReleaseKey(DIK_1) || input->ReleaseMouse(MouseButton::LeftButton)) && chargeTimer >= 1) {
+
+	if (isCharging) {
+		chargeTimer--;
+	}
+
+	if (chargeTimer <= 0) {
+		inflictDamageCollision.radius += 0.1f;
+		attackPowor += 0.01f;
+	}
+
+	if ((input->ReleaseKey(DIK_1) || input->ReleaseMouse(MouseButton::LeftButton)) && chargeTimer >= 1) {
 		isCharging = false;
 		chargeTimer = 60;
 	}
 	else if ((input->ReleaseKey(DIK_1) || input->ReleaseMouse(MouseButton::LeftButton)) && chargeTimer <= 0) {
-		isAttack = true;
+		//isAttack = true;
+		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
+			if (Collision::CheckSphere2Sphere(inflictDamageCollision, enemyObj->GetCollision())) {
+				bullet.push_back(Bullet::Create(position, enemyObj.get()));
+			}
+		}
 		isCharging = false;
 		chargeTimer = 60;
 	}
@@ -140,15 +180,17 @@ void Player::Attack()
 		attackPowor = 2;
 		isAttack = true;
 		isHaveElement = false;
-		PlayAnimation();
+		PlayAnimation(true);
 	}
 
-	if (input->TriggerKey(DIK_3)) {
+	/*if (input->TriggerKey(DIK_3)) {
 		attackPowor = 3;
 		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
-			bullet.push_back(Bullet::Create(position,enemyObj.get()));
+			if (Collision::CheckSphere2Sphere(inflictDamageCollision, enemyObj->GetCollision())) {
+				bullet.push_back(Bullet::Create(position, enemyObj.get()));
+			}
 		}
-	}
+	}*/
 
 	inflictDamageColliderVisualizationObject->SetPosition({ position.x,position.y,position.z });
 	inflictDamageColliderVisualizationObject->SetScale(inflictDamageCollision.radius);
@@ -176,6 +218,8 @@ void Player::Move(Vector3 vec) {
 			xMoveAmount += moveVec.x * moveAmount;
 			zMoveAmount += moveVec.z * moveAmount;
 			rotation.y = -b + 90.0f;
+			isIdle = false;
+			isMove = true;
 			if (input->PushKey(DIK_A)) {
 				xMoveAmount -= moveVec.z * moveAmount;
 				zMoveAmount += moveVec.x * moveAmount;
@@ -191,10 +235,12 @@ void Player::Move(Vector3 vec) {
 			xMoveAmount -= moveVec.x * moveAmount;
 			zMoveAmount -= moveVec.z * moveAmount;
 			rotation.y = -b - 90.0f;
+			isIdle = false;
+			isMove = true;
 			if (input->PushKey(DIK_A)) {
 				xMoveAmount -= moveVec.z * moveAmount;
 				zMoveAmount += moveVec.x * moveAmount;
-				rotation.y = -b - 45.0f; ;
+				rotation.y = -b - 45.0f;
 			}
 			if (input->PushKey(DIK_D)) {
 				xMoveAmount += moveVec.z * moveAmount;
@@ -206,11 +252,15 @@ void Player::Move(Vector3 vec) {
 			xMoveAmount -= moveVec.z * moveAmount;
 			zMoveAmount += moveVec.x * moveAmount;
 			rotation.y = -b;
+			isIdle = false;
+			isMove = true;
 		}
 		else if (input->PushKey(DIK_D)) {
 			xMoveAmount += moveVec.z * moveAmount;
 			zMoveAmount -= moveVec.x * moveAmount;
 			rotation.y = -b + 180.0f;
+			isIdle = false;
+			isMove = true;
 		}
 	}
 
