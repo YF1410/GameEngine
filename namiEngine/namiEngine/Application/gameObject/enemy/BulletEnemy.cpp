@@ -54,8 +54,6 @@ void BulletEnemy::Draw(ID3D12GraphicsCommandList* cmdList) {
 
 void BulletEnemy::Move()
 {
-	XMFLOAT3 pos = player->GetPosition();
-
 	if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), shotRange)) {
 		isShotRange = true;
 	}
@@ -64,15 +62,21 @@ void BulletEnemy::Move()
 		shotInterval = 60;
 	}
 
-	moveX = position.x;
-	moveZ = position.z;
-
+	XMFLOAT3 pos = player->GetPosition();
 	float rad = atan2(pos.z - position.z, pos.x - position.x);
 	if (!isDamage && !isShotRange) {
 		savePos = position;
 		moveX = (float)(cos(rad) * moveAmount + position.x);
 		moveZ = (float)(sin(rad) * moveAmount + position.z);
 	}
+
+	if (isFirstMove) {
+		savePos = position;
+		moveX = (float)(cos(rad) * moveAmount + position.x);
+		moveZ = (float)(sin(rad) * moveAmount + position.z);
+		isFirstMove = false;
+	}
+
 	position = { moveX + shakeObjectPos[0], position.y + shakeObjectPos[1], moveZ + shakeObjectPos[2] };
 	rotation = { 0,-XMConvertToDegrees(rad) + 90.0f,0 };
 }

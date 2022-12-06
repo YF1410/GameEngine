@@ -21,6 +21,7 @@ public:
 	void SetIsShotRange(bool isShotRange) { this->isShotRange = isShotRange; }
 private:
 	bool isShotRange = false;
+	bool isFirstMove = true;
 	Sphere shotRange;
 	int shotInterval = 60;
 	std::list<std::unique_ptr<Bullet>> bullet;
