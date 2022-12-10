@@ -20,6 +20,7 @@ std::unique_ptr<BaseEnemy> BaseEnemy::Create(FbxModel* fbxmodel, Player* player,
 
 void BaseEnemy::Initialize(Player*player,Camera*camera) {
 	FbxObject3d::Initialize();
+
 	this->player = player;
 	this->camera = camera;
 	savePos = position;
@@ -43,12 +44,13 @@ void BaseEnemy::Initialize(Player*player,Camera*camera) {
 }
 
 void BaseEnemy::Update() {
-	XMFLOAT3 fixCollisionPos = { position.x,0,position.z };
+	XMFLOAT3 fixCollisionPos = { position.x,position.y,position.z };
 	collision.center = XMLoadFloat3(&fixCollisionPos);
 	colliderVisualizationObject->SetPosition(fixCollisionPos);
 	colliderVisualizationObject->SetScale(collision.radius);
 	colliderVisualizationObject->Update();
 	FbxObject3d::Update();
+	lightGroup->SetCircleShadowCasterPos(0, player->GetPosition());
 }
 
 void BaseEnemy::Draw(ID3D12GraphicsCommandList* cmdList) {

@@ -284,9 +284,6 @@
     <ClInclude Include="Engine\base\WinApp.h">
       <Filter>Engine\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\camera\Camera.h">
-      <Filter>Engine\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\camera\DebugCamera.h">
       <Filter>Engine\Camera</Filter>
     </ClInclude>
@@ -304,6 +301,9 @@
     </ClInclude>
     <ClInclude Include="Application\gameObject\bullet\Bullet.h">
       <Filter>Application\GameObject\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\camera\Camera.h">
+      <Filter>Engine\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -347,9 +347,6 @@
     </Filter>
     <Filter Include="Engine\3D\Light">
       <UniqueIdentifier>{b0ae97d4-381b-4fea-b745-0cc1f7d29de2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\3D\Particle">
-      <UniqueIdentifier>{336d0305-9c45-4ae1-97b9-54d1537f2270}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Audio">
       <UniqueIdentifier>{0cdc238a-40c7-4f84-a8e2-8f0812cb18f7}</UniqueIdentifier>
@@ -395,6 +392,9 @@
     </Filter>
     <Filter Include="Application\GameObject\Bullet">
       <UniqueIdentifier>{675b727c-a840-42f9-a680-e42c194dd2dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\Particle">
+      <UniqueIdentifier>{336d0305-9c45-4ae1-97b9-54d1537f2270}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

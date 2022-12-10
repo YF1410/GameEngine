@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "FbxLoader.h"
 #include "DirectXCommon.h"
+#include "LightGroup.h"
 
 #include <Windows.h>
 #include <wrl.h>
@@ -40,7 +41,6 @@ public: // サブクラス
 	struct ConstBufferDataSkin {
 		XMMATRIX bones[MAX_BONES];
 	};
-
 
 public: // 静的メンバ関数
 	/// <summary>
@@ -121,6 +121,8 @@ protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffTransform;
 	//定数バッファ(スキン)
 	ComPtr<ID3D12Resource> constBuffSkin;
+	//ライトグループ
+	std::unique_ptr<LightGroup> lightGroup;
 	// ローカルスケール
 	XMFLOAT3 scale = { 1,1,1 };
 	// X,Y,Z軸回りのローカル回転角
@@ -147,4 +149,8 @@ protected: // メンバ変数
 	bool isPlay = false;
 	//アニメーションループ再生中
 	bool isLoop = false;
+
+	XMFLOAT3 circleShadowDir = { 0,-1,0 };
+	XMFLOAT3 circleShadowAtten = { 0.5f,0.6f,0.0f };
+	XMFLOAT2 circleShadowFactorAngle = { 0.0f,0.5f };
 };

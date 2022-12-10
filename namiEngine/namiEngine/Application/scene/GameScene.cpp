@@ -57,7 +57,7 @@ void GameScene::Initialize() {
 	playerModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
 	enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("ZR");
 	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
-	groundModel = Model::CreateFromObject("stage1");
+	groundModel = Model::CreateFromObject("ground");
 	skydomeModel = Model::CreateFromObject("skydome");
 	// ライト生成
 	lightGroup = LightGroup::Create();
@@ -69,10 +69,6 @@ void GameScene::Initialize() {
 	// カメラをセット
 	FbxObject3d::SetCamera(cameraObject.get());
 
-	lightGroup->SetDirLightActive(0, true);
-	lightGroup->SetDirLightActive(1, true);
-	lightGroup->SetDirLightActive(2, true);
-
 	player = Player::Create(playerModel.get(), &enemy);
 
 	for (int i = 0; i < 5; i++) {
@@ -81,15 +77,11 @@ void GameScene::Initialize() {
 	//enemy.push_back(ElementEnemy::Create(enemyModel.get(), player.get(),cameraObject.get()));
 	enemy.push_back(BulletEnemy::Create(enemyModel.get(), player.get(), cameraObject.get()));
 
-	int circleShadowCount = 0;
-
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 		posX = static_cast<float>(rand() % 100 - 50);
 		posZ = static_cast<float>(rand() % 100 - 50);
 
 		enemyObj->SetPosition({ posX, 0, posZ });
-		lightGroup->SetCircleShadowActive(circleShadowCount, true);
-		circleShadowCount++;
 	}
 
 	groundObj = Object3d::Create(groundModel.get());
@@ -140,16 +132,9 @@ void GameScene::Update() {
 		cameraCollider.center = XMLoadFloat3(&colliderCenter);
 
 		Vector3 a = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
-		int circleShadowCount = 0;
 
 		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 			enemyObj->Move();
-			lightGroup->SetCircleShadowDir(circleShadowCount, XMLoadFloat3(&circleShadowDir));
-			lightGroup->SetCircleShadowCasterPos(circleShadowCount, enemyObj->GetPosition());
-			lightGroup->SetCircleShadowAtten(circleShadowCount, circleShadowAtten);
-			lightGroup->SetCircleShadowFactorAngle(circleShadowCount, circleShadowFactorAngle);
-
-
 			enemyObj->Damage();
 			if (!enemyObj->GetIsActive() && enemyObj->GetHaveElement()) {
 				element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
@@ -177,6 +162,12 @@ void GameScene::Update() {
 		}
 
 		player->Move(a);
+
+		lightGroup->SetCircleShadowDir(0, XMLoadFloat3(&circleShadowDir));
+		lightGroup->SetCircleShadowCasterPos(0, player->GetPosition());
+		lightGroup->SetCircleShadowDistanceCasterLight(0, 450.0f);
+		lightGroup->SetCircleShadowAtten(0, circleShadowAtten);
+		lightGroup->SetCircleShadowFactorAngle(0, circleShadowFactorAngle);
 
 		if (Collision::CheckSphereInside2Sphere(cameraCollider, skydomeCollider)) {
 			player->SetIsMapEnd(false);
@@ -214,6 +205,7 @@ void GameScene::Update() {
 		skydomeObj->Update();
 		//skydomeCollider.Update();
 		particleMan->Update();
+		lightGroup->Update();
 	}
 	else if (isFadeOut) {
 		if (isFadeOut) {
@@ -279,7 +271,7 @@ void GameScene::Draw() {
 	}
 
 	player->Draw(cmdList);
-	lightGroup->Draw(cmdList, 3);
+	//lightGroup->Draw(cmdList, 3);
 
 	// パーティクルの描画
 	particleMan->Draw(cmdList);
