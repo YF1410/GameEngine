@@ -3,11 +3,11 @@
 
 void GameEndScene::Initialize()
 {
-	if (!Sprite::LoadTexture(3, L"Resources/gameend.png")) {
+	if (!Sprite::LoadTexture(10, L"Resources/gameend.png")) {
 		assert(0);
 		return;
 	}
-	endBG = Sprite::Create(3, { 0.0f,0.0f });
+	endBG = Sprite::Create(10, { 0.0f,0.0f });
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 }
 

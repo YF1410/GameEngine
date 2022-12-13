@@ -57,7 +57,7 @@ void GameScene::Initialize() {
 	playerModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
 	enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("ZR");
 	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
-	groundModel = Model::CreateFromObject("ground");
+	groundModel = Model::CreateFromObject("stage1");
 	skydomeModel = Model::CreateFromObject("skydome");
 	// ライト生成
 	lightGroup = LightGroup::Create();
@@ -72,7 +72,7 @@ void GameScene::Initialize() {
 	player = Player::Create(playerModel.get(), &enemy);
 
 	for (int i = 0; i < 5; i++) {
-		enemy.push_back(BaseEnemy::Create(enemyModel.get(), player.get(), cameraObject.get()));
+		//enemy.push_back(BaseEnemy::Create(enemyModel.get(), player.get(), cameraObject.get()));
 	}
 	//enemy.push_back(ElementEnemy::Create(enemyModel.get(), player.get(),cameraObject.get()));
 	enemy.push_back(BulletEnemy::Create(enemyModel.get(), player.get(), cameraObject.get()));
