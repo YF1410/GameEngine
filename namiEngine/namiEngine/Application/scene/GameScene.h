@@ -70,9 +70,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
-	bool randEnemyPosX();
-	bool randEnemyPosZ();
-
 	//void DamageShake(bool isDamageShake,BaseEnemy* enemy);
 
 private: // メンバ変数
@@ -94,10 +91,11 @@ private: // メンバ変数
 	std::unique_ptr <Camera> cameraObject;
 	ParticleManager* particleMan;
 
+	std::unique_ptr<Sprite> HP[4];
+
 	std::unique_ptr<FbxModel> playerModel;
 	std::unique_ptr<Player> player;
 
-	std::unique_ptr<FbxModel> enemyModel;
 	std::list<std::unique_ptr<BaseEnemy>> enemy;
 
 	std::unique_ptr<FbxModel> elementModel;

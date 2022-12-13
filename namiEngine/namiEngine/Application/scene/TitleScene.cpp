@@ -67,8 +67,6 @@ void TitleScene::Update()
 			SceneManager::GetInstance()->ToGameScene();
 		}
 	}
-
-	//SceneManager::GetInstance()->ToGameScene();
 }
 
 void TitleScene::Draw()

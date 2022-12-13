@@ -55,12 +55,12 @@ void GameScene::Initialize() {
 
 	// モデル名を指定してファイル読み込み
 	playerModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
-	enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("ZR");
 	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 	groundModel = Model::CreateFromObject("stage1");
 	skydomeModel = Model::CreateFromObject("skydome");
 	// ライト生成
 	lightGroup = LightGroup::Create();
+	lightGroup->SetCircleShadowActive(0, true);
 	// 3Dオブエクトにライトをセット
 	Object3d::SetLightGroup(lightGroup.get());
 	// 3Dオブジェクトにカメラをセット
@@ -72,16 +72,12 @@ void GameScene::Initialize() {
 	player = Player::Create(playerModel.get(), &enemy);
 
 	for (int i = 0; i < 5; i++) {
-		//enemy.push_back(BaseEnemy::Create(enemyModel.get(), player.get(), cameraObject.get()));
+		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
+		enemy.push_back(BulletEnemy::Create(player.get(), cameraObject.get()));
 	}
-	//enemy.push_back(ElementEnemy::Create(enemyModel.get(), player.get(),cameraObject.get()));
-	enemy.push_back(BulletEnemy::Create(enemyModel.get(), player.get(), cameraObject.get()));
 
-	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-		posX = static_cast<float>(rand() % 100 - 50);
-		posZ = static_cast<float>(rand() % 100 - 50);
-
-		enemyObj->SetPosition({ posX, 0, posZ });
+	for (int i = 0; i < 2; i++) {
+		enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
 	}
 
 	groundObj = Object3d::Create(groundModel.get());
@@ -94,6 +90,29 @@ void GameScene::Initialize() {
 
 	skydomeCollider.center = { 0,0,0 };
 	skydomeCollider.radius = 400.0f;
+
+
+	if (!Sprite::LoadTexture(5, L"Resources/0.png")) {
+		assert(0);
+		return;
+	}
+	if (!Sprite::LoadTexture(6, L"Resources/1.png")) {
+		assert(0);
+		return;
+	}
+	if (!Sprite::LoadTexture(7, L"Resources/2.png")) {
+		assert(0);
+		return;
+	}
+	if (!Sprite::LoadTexture(8, L"Resources/3.png")) {
+		assert(0);
+		return;
+	}
+
+	HP[0] = Sprite::Create(5, { 0.0f,0.0f });
+	HP[1] = Sprite::Create(6, { 0.0f,0.0f });
+	HP[2] = Sprite::Create(7, { 0.0f,0.0f });
+	HP[3] = Sprite::Create(8, { 0.0f,0.0f });
 }
 
 void GameScene::Finalize()
@@ -284,6 +303,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	HP[player->GetHP()]->Draw();
+
+
 	fadeSprite->Draw();
 
 	// デバッグテキストの描画
