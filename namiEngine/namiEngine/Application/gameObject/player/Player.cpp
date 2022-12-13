@@ -183,14 +183,14 @@ void Player::Attack()
 		PlayAnimation(true);
 	}
 
-	/*if (input->TriggerKey(DIK_3)) {
+	if (input->TriggerKey(DIK_3)) {
 		attackPowor = 3;
 		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
 			if (Collision::CheckSphere2Sphere(inflictDamageCollision, enemyObj->GetCollision())) {
 				bullet.push_back(Bullet::Create(position, enemyObj.get()));
 			}
 		}
-	}*/
+	}
 
 	inflictDamageColliderVisualizationObject->SetPosition({ position.x,position.y,position.z });
 	inflictDamageColliderVisualizationObject->SetScale(inflictDamageCollision.radius);

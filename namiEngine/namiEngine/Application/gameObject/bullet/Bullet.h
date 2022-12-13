@@ -37,7 +37,9 @@ private:
 	Sphere targetCollision;
 	XMFLOAT3 startPosition;
 	XMFLOAT3 endPosition;
-	std::unique_ptr<Model> bulletModel;
+	//std::unique_ptr<Model> bulletModel;
 	std::unique_ptr<Object3d> bulletObject;
+private:
+	static std::unique_ptr<Model> bulletModel;
 };
 

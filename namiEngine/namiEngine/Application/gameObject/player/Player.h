@@ -51,6 +51,7 @@ public:
 	bool GetIsAttack() { return isAttack; }
 	bool GetIsReceivedDamage() { return isReceivedDamage; }
 	bool GetIsActive() { return isActive; }
+	int GetHP() { return HP; }
 
 	void SetIsReceivedDamage(bool isReceivedDamage) { this->isReceivedDamage = isReceivedDamage; }
 	void SetIsHaveElement(bool isHaveElement) { this->isHaveElement = isHaveElement; }

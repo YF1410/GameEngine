@@ -18,7 +18,7 @@ protected: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 public:
-	static std::unique_ptr<BaseEnemy> Create(FbxModel* fbxmodel, Player* player,Camera*camera);
+	static std::unique_ptr<BaseEnemy> Create(Player* player,Camera*camera);
 public:
 	//コンストラクタ
 	BaseEnemy();
@@ -30,6 +30,11 @@ public:
 	virtual void Update();
 
 	virtual void Draw(ID3D12GraphicsCommandList* cmdList);
+
+	void randPosX();
+	void randPosZ();
+	void randPos();
+
 	/*void SelectAction();
 	void Sweep();
 	void Stab();
@@ -55,6 +60,10 @@ protected:
 	bool isDamage = false;
 	bool isActive = true;
 	bool haveElement = false;
+
+	bool isDecisionPosX = false;
+	bool isDecisionPosZ = false;
+
 	int damageShakeCount = 0;
 	float shakeObjectPos[3];
 	float moveX = 0;
@@ -64,5 +73,7 @@ protected:
 	Sphere collision;
 	std::unique_ptr<Model> colliderVisualizationModel;
 	std::unique_ptr<Object3d> colliderVisualizationObject;
+protected:
+	static std::unique_ptr<FbxModel> enemyModel;
 };
 

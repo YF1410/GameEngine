@@ -12,10 +12,14 @@ ElementEnemy::~ElementEnemy()
 {
 }
 
-std::unique_ptr<ElementEnemy> ElementEnemy::Create(FbxModel* fbxmodel, Player* player,Camera*camera) {
+std::unique_ptr<ElementEnemy> ElementEnemy::Create(Player* player,Camera*camera) {
 	std::unique_ptr<ElementEnemy> enemy = std::make_unique<ElementEnemy>();
 
-	enemy->SetModel(fbxmodel);
+	if (enemyModel == nullptr) {
+		enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("ZR");
+	}
+
+	enemy->SetModel(enemyModel.get());
 	enemy->Initialize(player,camera);
 
 	return enemy;

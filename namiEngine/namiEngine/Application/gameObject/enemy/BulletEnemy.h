@@ -5,7 +5,7 @@
 class BulletEnemy : public BaseEnemy
 {
 public:
-	static std::unique_ptr<BulletEnemy> Create(FbxModel* fbxmodel, Player* player,Camera*camera);
+	static std::unique_ptr<BulletEnemy> Create(Player* player,Camera*camera);
 public:
 	//コンストラクタ
 	BulletEnemy();

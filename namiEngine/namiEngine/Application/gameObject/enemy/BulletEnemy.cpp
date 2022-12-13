@@ -6,17 +6,21 @@ BulletEnemy::BulletEnemy()
 	defaultColor = { 0,1,0,1 };
 	SetColor(defaultColor);
 	shotRange.center = XMLoadFloat3(&position);
-	shotRange.radius = 30.0f;
+	shotRange.radius = 45.0f;
 }
 
 BulletEnemy::~BulletEnemy()
 {
 }
 
-std::unique_ptr<BulletEnemy> BulletEnemy::Create(FbxModel* fbxmodel, Player* player,Camera*camera) {
+std::unique_ptr<BulletEnemy> BulletEnemy::Create(Player* player,Camera*camera) {
 	std::unique_ptr<BulletEnemy> enemy = std::make_unique<BulletEnemy>();
 
-	enemy->SetModel(fbxmodel);
+	if (enemyModel == nullptr) {
+		enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("ZR");
+	}
+
+	enemy->SetModel(enemyModel.get());
 	enemy->Initialize(player,camera);
 
 	return enemy;

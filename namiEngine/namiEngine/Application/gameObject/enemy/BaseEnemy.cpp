@@ -1,6 +1,8 @@
 #include "BaseEnemy.h"
 #include <DirectXMath.h>
 
+std::unique_ptr<FbxModel> BaseEnemy::enemyModel;
+
 BaseEnemy::BaseEnemy()
 {
 }
@@ -9,10 +11,14 @@ BaseEnemy::~BaseEnemy()
 {
 }
 
-std::unique_ptr<BaseEnemy> BaseEnemy::Create(FbxModel* fbxmodel, Player* player,Camera*camera) {
+std::unique_ptr<BaseEnemy> BaseEnemy::Create(Player* player,Camera*camera) {
 	std::unique_ptr<BaseEnemy> enemy = std::make_unique<BaseEnemy>();
 
-	enemy->SetModel(fbxmodel);
+	if (enemyModel == nullptr) {
+		enemyModel = FbxLoader::GetInstance()->LoadModelFromFile("ZR");
+	}
+
+	enemy->SetModel(enemyModel.get());
 	enemy->Initialize(player,camera);
 
 	return enemy;
@@ -29,8 +35,7 @@ void BaseEnemy::Initialize(Player*player,Camera*camera) {
 	damageShakeCount = 0;
 	moveX = 0;
 	moveZ = 0;
-	defaultPos = { 0,-5.0f,-20.0f };
-	position = defaultPos;
+	randPos();
 	XMFLOAT3 fixCollisionPos = { position.x,0,position.z };
 	collision.center = XMLoadFloat3(&fixCollisionPos);
 	collision.radius = 3.0f;
@@ -107,4 +112,39 @@ void BaseEnemy::CheckCollisionToPlayer()
 		camera->SetShakeFlag(true, 6);
 		player->SetIsReceivedDamage(true);
 	}
+}
+
+void BaseEnemy::randPosX() {
+	float x = static_cast<float>(rand() % 100 - 50);
+	if (x >= -10 && x <= 10) {
+		isDecisionPosX = false;
+	}
+	else {
+		position.x = x;
+		isDecisionPosX = true;
+	}
+}
+
+void BaseEnemy::randPosZ() {
+	float z = static_cast<float>(rand() % 100 - 50);
+	if (z >= -10 && z <= 10) {
+		isDecisionPosZ = false;
+	}
+	else {
+		position.z = z;
+		isDecisionPosZ = true;
+	}
+}
+
+void BaseEnemy::randPos() {
+	while (!isDecisionPosX) {
+		randPosX();
+	}
+
+	while (!isDecisionPosZ) {
+		randPosZ();
+	}
+
+	isDecisionPosX = false;
+	isDecisionPosZ = false;
 }

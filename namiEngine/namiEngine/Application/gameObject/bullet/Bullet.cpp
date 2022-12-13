@@ -1,5 +1,7 @@
 #include "Bullet.h"
 
+std::unique_ptr<Model> Bullet::bulletModel;
+
 std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos, Player* player)
 {
 	std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>();
@@ -24,7 +26,9 @@ std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos, BaseEnemy*enemy)
 
 bool Bullet::Initialize(XMFLOAT3 startPos, Player* player)
 {
-	bulletModel = Model::CreateFromObject("SphereCollider");
+	if (bulletModel == nullptr) {
+		bulletModel = Model::CreateFromObject("SphereCollider");
+	}
 	bulletObject = Object3d::Create(bulletModel.get());
 	bulletObject->SetPosition(startPos);
 	startPosition = startPos;
@@ -40,7 +44,9 @@ bool Bullet::Initialize(XMFLOAT3 startPos, Player* player)
 
 bool Bullet::Initialize(XMFLOAT3 startPos, BaseEnemy*enemy)
 {
-	bulletModel = Model::CreateFromObject("SphereCollider");
+	if (bulletModel == nullptr) {
+		bulletModel = Model::CreateFromObject("SphereCollider");
+	}
 	bulletObject = Object3d::Create(bulletModel.get());
 	bulletObject->SetPosition(startPos);
 	startPosition = startPos;
@@ -81,8 +87,8 @@ void Bullet::EnemyBulletUpdate(Camera*camera)
 	targetCollision.center = XMLoadFloat3(&pPos);
 	float rad = atan2(pPos.z - startPosition.z, pPos.x - startPosition.x);
 
-	float moveX = (float)(cos(rad) * 0.5f + startPosition.x);
-	float moveZ = (float)(sin(rad) * 0.5f + startPosition.z);
+	float moveX = (float)(cos(rad) * 0.7f + startPosition.x);
+	float moveZ = (float)(sin(rad) * 0.7f + startPosition.z);
 
 	startPosition = { moveX, 1.0f, moveZ };
 	bulletObject->SetPosition(startPosition);
