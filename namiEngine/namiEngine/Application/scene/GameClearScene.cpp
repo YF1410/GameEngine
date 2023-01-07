@@ -1,7 +1,7 @@
-#include "GameEndScene.h"
+#include "GameClearScene.h"
 #include "SceneManager.h"
 
-void GameEndScene::Initialize()
+void GameClearScene::Initialize()
 {
 	if (!Sprite::LoadTexture(10, L"Resources/gameend.png")) {
 		assert(0);
@@ -11,11 +11,11 @@ void GameEndScene::Initialize()
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 }
 
-void GameEndScene::Finalize()
+void GameClearScene::Finalize()
 {
 }
 
-void GameEndScene::Update()
+void GameClearScene::Update()
 {
 	if (isFadeIn) {
 		fadeColor.w -= 0.05f;
@@ -40,7 +40,7 @@ void GameEndScene::Update()
 	}
 }
 
-void GameEndScene::Draw()
+void GameClearScene::Draw()
 {
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 	// 背景スプライト描画前処理

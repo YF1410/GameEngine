@@ -1,12 +1,11 @@
 #pragma once
-
 #include "Input.h"
 #include "Sprite.h"
 #include "SceneInterface.h"
 
 #include <memory>
 
-class GameEndScene : public SceneInterface
+class GameClearScene : public SceneInterface
 {
 public:
 	void Initialize();
