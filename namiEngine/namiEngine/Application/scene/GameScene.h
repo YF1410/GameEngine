@@ -29,7 +29,7 @@ class Player;
 /// ゲームシーン
 /// </summary>
 class GameScene : public SceneInterface {
-private: // エイリアス
+protected: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
@@ -39,7 +39,7 @@ private: // エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private: // 静的メンバ変数
+protected: // 静的メンバ変数
 	static const int debugTextTexNumber = 0;
 public: // メンバ関数
 
@@ -72,7 +72,7 @@ public: // メンバ関数
 
 	//void DamageShake(bool isDamageShake,BaseEnemy* enemy);
 
-private: // メンバ変数
+protected: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
 	Audio* audio = nullptr;

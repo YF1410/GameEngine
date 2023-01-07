@@ -1,7 +1,9 @@
 #include "SceneManager.h"
 #include "TitleScene.h"
 #include "GameScene.h"
-#include "GameEndScene.h"
+#include "GameClearScene.h"
+#include "GameOverScene.h"
+#include "TutorialScene.h"
 
 SceneManager SceneManager::instance;
 
@@ -26,14 +28,24 @@ void SceneManager::ToTitleScene()
 	Initialize(new TitleScene);
 }
 
+void SceneManager::ToTutorialScene()
+{
+	Initialize(new TutorialScene);
+}
+
 void SceneManager::ToGameScene()
 {
 	Initialize(new GameScene);
 }
 
-void SceneManager::ToGameEndScene()
+void SceneManager::ToGameClearScene()
 {
-	Initialize(new GameEndScene);
+	Initialize(new GameClearScene);
+}
+
+void SceneManager::ToGameOverScene()
+{
+	Initialize(new GameOverScene);
 }
 
 void SceneManager::changeScene(SceneInterface* scene)

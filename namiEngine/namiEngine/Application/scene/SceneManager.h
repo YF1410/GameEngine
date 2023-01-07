@@ -14,9 +14,13 @@ public:
 
 	void ToTitleScene();
 
+	void ToTutorialScene();
+
 	void ToGameScene();
 
-	void ToGameEndScene();
+	void ToGameClearScene();
+
+	void ToGameOverScene();
 
 private:
 	void changeScene(SceneInterface* scene);

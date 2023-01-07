@@ -104,8 +104,11 @@ void BaseEnemy::Damage() {
 void BaseEnemy::CheckCollisionToPlayer()
 {
 	if (Collision::CheckSphere2Sphere(player->GetInflictDamageCollision(), collision) && isActive && player->GetIsAttack()) {
-		SetColor({ 1,0,0,1 });
-		isDamage = true;
+		if (!isFirstDamage) {
+			SetColor({ 1,0,0,1 });
+			isDamage = true;
+			isFirstDamage = true;
+		}
 	}
 	else if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), collision) && isActive && !player->GetIsAttack() && !player->GetIsReceivedDamage()) {
 		player->Damage(1);

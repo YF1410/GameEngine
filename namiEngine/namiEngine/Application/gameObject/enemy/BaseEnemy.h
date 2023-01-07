@@ -45,6 +45,8 @@ public:
 	bool GetHaveElement() { return haveElement; }
 	//セッター
 	void SetIsDamage(bool isDamage) { this->isDamage = isDamage; }
+
+	void SetIsFirstDamage(bool isFirstDamage) { this->isFirstDamage = isFirstDamage; }
 	//ダメージ処理
 	virtual void Damage();
 
@@ -58,6 +60,7 @@ protected:
 	XMFLOAT3 savePos;
 	XMFLOAT4 defaultColor = { 1,1,1,1 };
 	bool isDamage = false;
+	bool isFirstDamage = false;
 	bool isActive = true;
 	bool haveElement = false;
 

@@ -77,12 +77,12 @@ void Input::Update() {
 
 	GetClientRect(hwnd, &rcClient);
 	POINT ptClientUL;
-	ptClientUL.x = rcClient.left - 1;
-	ptClientUL.y = rcClient.top-1;
+	ptClientUL.x = rcClient.left + 20;
+	ptClientUL.y = rcClient.top + 20;
 
 	POINT ptClientLR;
-	ptClientLR.x = rcClient.right - 1;
-	ptClientLR.y = rcClient.bottom - 1;
+	ptClientLR.x = rcClient.right - 20;
+	ptClientLR.y = rcClient.bottom - 20;
 	ClientToScreen(hwnd, &ptClientUL);
 	ClientToScreen(hwnd, &ptClientLR);
 

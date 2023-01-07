@@ -98,9 +98,11 @@ void Bullet::EnemyBulletUpdate(Camera*camera)
 		isActive = false;
 	}else if (Collision::CheckSphere2Sphere(collision, player->GetReceiveDamageCollision())) {
 		isActive = false;
-		player->Damage(1);
-		camera->SetShakeFlag(true, 6);
-		player->SetIsReceivedDamage(true);
+		if (player->GetHP() > 0 && !player->GetIsReceivedDamage()) {
+			player->Damage(1);
+			camera->SetShakeFlag(true, 6);
+			player->SetIsReceivedDamage(true);
+		}
 	}
 }
 

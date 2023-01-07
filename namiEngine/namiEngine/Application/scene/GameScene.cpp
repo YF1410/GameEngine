@@ -119,7 +119,6 @@ void GameScene::Finalize()
 {
 }
 
-
 void GameScene::Update() {
 	if (isFadeIn) {
 		if (updateCount == 0) {
@@ -232,7 +231,7 @@ void GameScene::Update() {
 			fadeSprite->SetColor(fadeColor);
 			if (fadeColor.w >= 1.0f) {
 				isFadeOut = false;
-				SceneManager::GetInstance()->ToGameEndScene();
+				SceneManager::GetInstance()->ToGameOverScene();
 			}
 		}
 	}

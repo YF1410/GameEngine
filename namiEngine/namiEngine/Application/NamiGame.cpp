@@ -1,6 +1,6 @@
 #include "NamiGame.h"
 #include "GameScene.h"
-#include "GameEndScene.h"
+#include "GameOverScene.h"
 #include "TitleScene.h"
 
 void NamiGame::Initialize() {

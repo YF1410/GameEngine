@@ -48,6 +48,10 @@ void Player::Update() {
 	}
 
 	if (!isPlay) {
+		isAttack = false;
+		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
+			enemyObj->SetIsFirstDamage(false);
+		}
 		if (isMove) {
 			SetModel(moveModel.get());
 			ResetAnimationTime();
@@ -73,11 +77,11 @@ void Player::Update() {
 	isIdle = true;
 	isMove = false;
 
-	if (!isCharging && input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D)) && !isDash) {
+	/*if (!isCharging && input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D)) && !isDash) {
 		isDash = true;
 		SetModel(rollModel.get());
 		PlayAnimation(true);
-	}
+	}*/
 
 	if (isDash) {
 		dashTimer--;
@@ -99,6 +103,7 @@ void Player::Update() {
 
 	if (HP <= 0 && !isNowCameraShake) {
 		isActive = false;
+		HP = 0;
 	}
 
 	if (!isMapEnd) {
@@ -135,7 +140,7 @@ void Player::Draw(ID3D12GraphicsCommandList* cmdList) {
 
 void Player::Attack()
 {
-	isAttack = false;
+	//isAttack = false;
 
 	if ((input->TriggerKey(DIK_1) || input->TriggerMouse(MouseButton::LeftButton)) && !isPlay) {
 		inflictDamageCollision.radius = 15.0f;
@@ -264,40 +269,12 @@ void Player::Move(Vector3 vec) {
 		}
 	}
 
+	if (!isCharging && input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D)) && !isDash) {
+		isDash = true;
+		isAttack = false;
+		SetModel(rollModel.get());
+		PlayAnimation(true);
+	}
+
 	SetPosition({ playerPos.x + xMoveAmount, playerPos.y,playerPos.z + zMoveAmount });
-	//}
-	//else {
-		/*if (input->PushKey(DIK_W)) {
-			zMoveAmount -= moveAmount*4;
-			rotation = { 0.0f,180.0f,0.0f };
-			if (input->PushKey(DIK_A)) {
-				xMoveAmount += moveAmount * 4;
-				rotation = { 0.0f,135.0f,0.0f };
-			}
-			else if (input->PushKey(DIK_D)) {
-				xMoveAmount -= moveAmount * 4;
-				rotation = { 0.0f,235.0f,0.0f };
-			}
-		}
-		else if (input->PushKey(DIK_S)) {
-			zMoveAmount += moveAmount * 4;
-			rotation = { 0.0f,0.0f,0.0f };
-			if (input->PushKey(DIK_A)) {
-				xMoveAmount += moveAmount * 4;
-				rotation = { 0.0f,45.0f,0.0f };
-			}
-			else if (input->PushKey(DIK_D)) {
-				xMoveAmount -= moveAmount * 4;
-				rotation = { 0.0f,315.0f,0.0f };
-			}
-		}
-		else if (input->PushKey(DIK_A)) {
-			xMoveAmount += moveAmount * 4;
-			rotation = { 0.0f,90.0f,0.0f };
-		}
-		else if (input->PushKey(DIK_D)) {
-			xMoveAmount -= moveAmount * 4;
-			rotation = { 0.0f,270.0f,0.0f };
-		}*/
-		//}
 }
