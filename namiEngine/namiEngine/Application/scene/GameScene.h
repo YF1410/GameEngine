@@ -70,8 +70,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
-	//void DamageShake(bool isDamageShake,BaseEnemy* enemy);
-
 protected: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
@@ -83,7 +81,8 @@ protected: // メンバ変数
 	XMFLOAT4 fadeColor = { 1.0f,1.0f,1.0f,1.0f };
 	bool isFadeOut = false;
 	bool isFadeIn = true;
-	int updateCount = 0;
+	bool isGameOver = false;
+	bool isGameClear = false;
 
 	/// <summary>
 	/// ゲームシーン用

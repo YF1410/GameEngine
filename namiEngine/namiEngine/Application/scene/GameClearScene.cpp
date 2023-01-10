@@ -9,6 +9,20 @@ void GameClearScene::Initialize()
 	}
 	endBG = Sprite::Create(10, { 0.0f,0.0f });
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
+
+	clap = FbxLoader::GetInstance()->LoadModelFromFile("Clap");
+	clapObject = std::make_unique<FbxObject3d>();
+	clapObject->Initialize();
+	clapObject->SetModel(clap.get());
+	clapObject->SetPosition({ 0.0f,0.0f,-20.0f });
+	clapObject->SetRotation({0.0f, 180.0f, 0.0f});
+	clapObject->LoopAnimation();
+
+	cameraObject = std::make_unique<Camera>(WinApp::window_width, WinApp::window_height);
+	cameraObject->SetTarget(cameraTarget);
+	cameraObject->SetEye({ cameraEye[0],cameraEye[1],cameraEye[2] });
+	cameraObject->Update();
+	FbxObject3d::SetCamera(cameraObject.get());
 }
 
 void GameClearScene::Finalize()
@@ -17,6 +31,7 @@ void GameClearScene::Finalize()
 
 void GameClearScene::Update()
 {
+	Input* input = Input::GetInstance();
 	if (isFadeIn) {
 		fadeColor.w -= 0.05f;
 		fadeSprite->SetColor(fadeColor);
@@ -25,9 +40,19 @@ void GameClearScene::Update()
 		}
 	}
 
-	if ((Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE)
-		|| Input::GetInstance()->TriggerMouse(MouseButton::LeftButton)) && !isFadeIn) {
+	if (input->TriggerKey(DIK_W)) {
+		isRetry = true;
+	}
+	else if (input->TriggerKey(DIK_S)) {
+		isRetry = false;
+	}
+
+	if ((input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) && !isFadeIn) {
 		isFadeOut = true;
+	}
+
+	if (input->TriggerMouse(MouseButton::LeftButton) && !isFadeIn) {
+		XMFLOAT2 mousePos = input->GetMousePosition();
 	}
 
 	if (isFadeOut) {
@@ -35,9 +60,18 @@ void GameClearScene::Update()
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w >= 1.0f) {
 			isFadeOut = false;
-			SceneManager::GetInstance()->ToTitleScene();
+			if (isRetry) {
+				SceneManager::GetInstance()->ToGameScene();
+			}
+			else if (!isRetry) {
+				SceneManager::GetInstance()->ToTitleScene();
+			}
 		}
 	}
+
+	clapObject->SetPosition({ 0.0f,11.0f,-35.0f });
+
+	clapObject->Update();
 }
 
 void GameClearScene::Draw()
@@ -47,14 +81,15 @@ void GameClearScene::Draw()
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
 	endBG->Draw();
-	fadeSprite->Draw();
-
-	/// <summary>
-	/// ここに背景スプライトの描画処理を追加できる
-	/// </summary>
-
-	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
 	DirectXCommon::GetInstance()->ClearDepthBuffer();
+
+
+	clapObject->Draw(cmdList);
+
+	Sprite::PreDraw(cmdList);
+	fadeSprite->Draw();
+	// スプライト描画後処理
+	Sprite::PostDraw();
 }

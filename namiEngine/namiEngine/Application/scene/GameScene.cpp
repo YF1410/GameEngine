@@ -55,7 +55,7 @@ void GameScene::Initialize() {
 
 	// モデル名を指定してファイル読み込み
 	playerModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
-	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("windingObject");
 	groundModel = Model::CreateFromObject("stage1");
 	skydomeModel = Model::CreateFromObject("skydome");
 	// ライト生成
@@ -69,7 +69,7 @@ void GameScene::Initialize() {
 	// カメラをセット
 	FbxObject3d::SetCamera(cameraObject.get());
 
-	player = Player::Create(playerModel.get(), &enemy);
+	player = Player::Create(&enemy);
 
 	for (int i = 0; i < 5; i++) {
 		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
@@ -113,6 +113,19 @@ void GameScene::Initialize() {
 	HP[1] = Sprite::Create(6, { 0.0f,0.0f });
 	HP[2] = Sprite::Create(7, { 0.0f,0.0f });
 	HP[3] = Sprite::Create(8, { 0.0f,0.0f });
+
+	cameraObject->Update();
+	player->Update();
+	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+		enemyObj->Update();
+	}
+
+	for (std::unique_ptr<ElementObject>& elementObj : element) {
+		elementObj->Update();
+	}
+	groundObj->Update();
+	skydomeObj->Update();
+	particleMan->Update();
 }
 
 void GameScene::Finalize()
@@ -121,22 +134,6 @@ void GameScene::Finalize()
 
 void GameScene::Update() {
 	if (isFadeIn) {
-		if (updateCount == 0) {
-			cameraObject->Update();
-			player->Update();
-			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-				enemyObj->Update();
-			}
-
-			for (std::unique_ptr<ElementObject>& elementObj : element) {
-				elementObj->Update();
-			}
-			groundObj->Update();
-			skydomeObj->Update();
-			//skydomeCollider.Update();
-			particleMan->Update();
-			updateCount++;
-		}
 		fadeColor.w -= 0.01f;
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w <= 0.0f) {
@@ -149,7 +146,7 @@ void GameScene::Update() {
 		XMFLOAT3 colliderCenter = { (pPos.x + cPos.x) / 2,(pPos.y + cPos.y) / 2 ,(pPos.z + cPos.z) / 2 };
 		cameraCollider.center = XMLoadFloat3(&colliderCenter);
 
-		Vector3 a = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
+		Vector3 vec = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
 
 		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 			enemyObj->Move();
@@ -179,7 +176,7 @@ void GameScene::Update() {
 			}
 		}
 
-		player->Move(a);
+		player->Move(vec);
 
 		lightGroup->SetCircleShadowDir(0, XMLoadFloat3(&circleShadowDir));
 		lightGroup->SetCircleShadowCasterPos(0, player->GetPosition());
@@ -205,8 +202,13 @@ void GameScene::Update() {
 
 		cameraObject->CameraShake();
 
-		if (enemy.empty() || !player->GetIsActive()) {
+		if (!player->GetIsActive()) {
 			isFadeOut = true;
+			isGameOver = true;
+		}
+		else if (enemy.empty()) {
+			isFadeOut = true;
+			isGameClear = true;
 		}
 
 		cameraObject->Update();
@@ -221,16 +223,18 @@ void GameScene::Update() {
 
 		groundObj->Update();
 		skydomeObj->Update();
-		//skydomeCollider.Update();
 		particleMan->Update();
 		lightGroup->Update();
 	}
 	else if (isFadeOut) {
-		if (isFadeOut) {
-			fadeColor.w += 0.02f;
-			fadeSprite->SetColor(fadeColor);
-			if (fadeColor.w >= 1.0f) {
-				isFadeOut = false;
+		fadeColor.w += 0.02f;
+		fadeSprite->SetColor(fadeColor);
+		if (fadeColor.w >= 1.0f) {
+			isFadeOut = false;
+			if (isGameClear) {
+				SceneManager::GetInstance()->ToGameClearScene();
+			}
+			else if (isGameOver) {
 				SceneManager::GetInstance()->ToGameOverScene();
 			}
 		}
@@ -240,15 +244,12 @@ void GameScene::Update() {
 
 
 void GameScene::Draw() {
-	/*object2Pos[0] = object2->GetPosition().x;
-	object2Pos[1] = object2->GetPosition().y;
-	object2Pos[2] = object2->GetPosition().z;*/
 
 	//ImGui::Begin("window");
 	//ImGui::SetWindowPos(ImVec2(0, 0));
 	//ImGui::SetWindowSize(ImVec2(500, 200));
-	////ImGui::InputFloat3("cubePos", object2Pos);
-	////ImGui::SliderFloat3("object2Pos", object2Pos,-1000,1000);
+	//ImGui::InputFloat3("cubePos", object2Pos);
+	//ImGui::SliderFloat3("object2Pos", object2Pos,-1000,1000);
 	//ImGui::DragFloat3("object2Pos", object2Pos);
 	//ImGui::DragFloat3("cameraEye", cameraEye);
 	//ImGui::End();

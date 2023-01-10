@@ -50,7 +50,7 @@ void TutorialScene::Initialize() {
 	// カメラをセット
 	FbxObject3d::SetCamera(cameraObject.get());
 
-	player = Player::Create(playerModel.get(), &enemy);
+	player = Player::Create(&enemy);
 
 	for (int i = 0; i < 5; i++) {
 		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
@@ -94,6 +94,19 @@ void TutorialScene::Initialize() {
 	HP[1] = Sprite::Create(6, { 0.0f,0.0f });
 	HP[2] = Sprite::Create(7, { 0.0f,0.0f });
 	HP[3] = Sprite::Create(8, { 0.0f,0.0f });
+
+	cameraObject->Update();
+	player->Update();
+	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+		enemyObj->Update();
+	}
+
+	for (std::unique_ptr<ElementObject>& elementObj : element) {
+		elementObj->Update();
+	}
+	groundObj->Update();
+	skydomeObj->Update();
+	particleMan->Update();
 }
 
 void TutorialScene::Finalize()
@@ -102,22 +115,6 @@ void TutorialScene::Finalize()
 
 void TutorialScene::Update() {
 	if (isFadeIn) {
-		if (updateCount == 0) {
-			cameraObject->Update();
-			player->Update();
-			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-				enemyObj->Update();
-			}
-
-			for (std::unique_ptr<ElementObject>& elementObj : element) {
-				elementObj->Update();
-			}
-			groundObj->Update();
-			skydomeObj->Update();
-			//skydomeCollider.Update();
-			particleMan->Update();
-			updateCount++;
-		}
 		fadeColor.w -= 0.01f;
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w <= 0.0f) {

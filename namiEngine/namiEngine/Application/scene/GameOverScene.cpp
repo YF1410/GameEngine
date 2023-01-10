@@ -3,11 +3,11 @@
 
 void GameOverScene::Initialize()
 {
-	if (!Sprite::LoadTexture(10, L"Resources/gameend.png")) {
+	if (!Sprite::LoadTexture(11, L"Resources/gameend.png")) {
 		assert(0);
 		return;
 	}
-	endBG = Sprite::Create(10, { 0.0f,0.0f });
+	endBG = Sprite::Create(11, { 0.0f,0.0f });
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 }
 
@@ -17,6 +17,7 @@ void GameOverScene::Finalize()
 
 void GameOverScene::Update()
 {
+	Input* input = Input::GetInstance();
 	if (isFadeIn) {
 		fadeColor.w -= 0.05f;
 		fadeSprite->SetColor(fadeColor);
@@ -25,9 +26,19 @@ void GameOverScene::Update()
 		}
 	}
 
-	if ((Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE)
-		|| Input::GetInstance()->TriggerMouse(MouseButton::LeftButton)) && !isFadeIn) {
+	if (input->TriggerKey(DIK_W)) {
+		isRetry = true;
+	}
+	else if (input->TriggerKey(DIK_S)) {
+		isRetry = false;
+	}
+
+	if ((input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) && !isFadeIn) {
 		isFadeOut = true;
+	}
+
+	if (input->TriggerMouse(MouseButton::LeftButton) && !isFadeIn) {
+		XMFLOAT2 mousePos = input->GetMousePosition();
 	}
 
 	if (isFadeOut) {
@@ -35,7 +46,12 @@ void GameOverScene::Update()
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w >= 1.0f) {
 			isFadeOut = false;
-			SceneManager::GetInstance()->ToTitleScene();
+			if (isRetry) {
+				SceneManager::GetInstance()->ToGameScene();
+			}
+			else if (!isRetry) {
+				SceneManager::GetInstance()->ToTitleScene();
+			}
 		}
 	}
 }

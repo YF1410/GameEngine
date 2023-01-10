@@ -19,5 +19,6 @@ private:
 	XMFLOAT4 fadeColor = { 1.0f,1.0f,1.0f,1.0f };
 	bool isFadeOut = false;
 	bool isFadeIn = true;
+	bool isRetry = true;
 };
 

@@ -18,7 +18,7 @@ public:
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static std::unique_ptr<Player> Create(FbxModel* fbxmodel, std::list<std::unique_ptr<BaseEnemy>>* enemy);
+	static std::unique_ptr<Player> Create(std::list<std::unique_ptr<BaseEnemy>>* enemy);
 
 
 public:
@@ -65,7 +65,6 @@ private:
 	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };
 	XMFLOAT3 savePos = { 0.0f,0.0f,0.0f };
 	int HP = 3;
-	const float chargeMoveAmount = 0.2f;
 	const float defMoveAmount = 0.7f;
 	const float dashMoveAmount = 1.5f;
 	int dashTimer = 16;
@@ -73,7 +72,6 @@ private:
 
 	XMFLOAT4 defColor = { 1,1,1,1 };
 
-	int chargeTimer = 60;
 	float attackPowor = 1;
 	bool isActive = true;
 	bool isHaveElement = false;
@@ -82,7 +80,6 @@ private:
 	bool isReceivedDamage = false;
 	bool isNowCameraShake = false;
 	bool isMapEnd = false;
-	bool isCharging = false;
 	bool isMove = false;
 	bool isIdle = false;
 	Sphere receiveDamageCollision;

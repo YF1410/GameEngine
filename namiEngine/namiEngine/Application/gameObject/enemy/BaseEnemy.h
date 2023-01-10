@@ -35,10 +35,6 @@ public:
 	void randPosZ();
 	void randPos();
 
-	/*void SelectAction();
-	void Sweep();
-	void Stab();
-	void Tackle();*/
 	//ÉQÉbÉ^Å[
 	bool GetIsActive() { return isActive; }
 	Sphere GetCollision() { return collision; }
