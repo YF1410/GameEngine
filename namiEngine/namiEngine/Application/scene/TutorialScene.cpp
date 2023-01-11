@@ -36,7 +36,7 @@ void TutorialScene::Initialize() {
 
 	// モデル名を指定してファイル読み込み
 	playerModel = FbxLoader::GetInstance()->LoadModelFromFile("Walking");
-	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+	elementModel = FbxLoader::GetInstance()->LoadModelFromFile("windingObject");
 	groundModel = Model::CreateFromObject("stage1");
 	skydomeModel = Model::CreateFromObject("skydome");
 	// ライト生成
@@ -52,14 +52,14 @@ void TutorialScene::Initialize() {
 
 	player = Player::Create(&enemy);
 
-	for (int i = 0; i < 5; i++) {
+	/*for (int i = 0; i < 5; i++) {
 		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
 		enemy.push_back(BulletEnemy::Create(player.get(), cameraObject.get()));
 	}
 
 	for (int i = 0; i < 2; i++) {
 		enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
-	}
+	}*/
 
 	groundObj = Object3d::Create(groundModel.get());
 	groundObj->SetScale(8.5f);
@@ -127,20 +127,92 @@ void TutorialScene::Update() {
 		XMFLOAT3 colliderCenter = { (pPos.x + cPos.x) / 2,(pPos.y + cPos.y) / 2 ,(pPos.z + cPos.z) / 2 };
 		cameraCollider.center = XMLoadFloat3(&colliderCenter);
 
+		if (Collision::CheckSphereInside2Sphere(cameraCollider, skydomeCollider)) {
+			player->SetIsMapEnd(false);
+			cameraObject->SetEye({ cameraEye[0] + player->GetXMoveAmount(), cameraEye[1],cameraEye[2] + player->GetZMoveAmount() });
+			cameraObject->SetTarget({ cameraTarget.x + player->GetXMoveAmount(), cameraTarget.y,cameraTarget.z + player->GetZMoveAmount() });
+		}
+		else {
+			player->SetIsMapEnd(true);
+		}
+
 		Vector3 a = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
 
-		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
-			enemyObj->Move();
-			enemyObj->Damage();
-			if (!enemyObj->GetIsActive() && enemyObj->GetHaveElement()) {
-				element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
+		switch (num) {
+		case 1:
+			player->Move(a);
+			if (player->GetDashCount() >= 5) {
+				num++;
 			}
+			//一定量動く、回避n回したらnum++;
+			break;
+		case 2:
+			player->Attack();
+			player->Move(a);
+			if (player->GetAttackCount() >= 3) {
+				num++;
+				enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
+			}
+			//攻撃n回したらnum++、baseenemy.push_back();
+			break;
+		case 3:
+			player->Attack();
+			player->Move(a);
+			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+				enemyObj->Move();
+				enemyObj->Damage();
+			}
+			if (enemy.empty() && !player->GetIsAttack()) {
+				num++;
+				enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
+			}
+			//エネミー倒したらnum++、elementEnemy.push_back();
+			break;
+		case 4:
+			player->Attack();
+			player->Move(a);
+			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+				enemyObj->Move();
+				enemyObj->Damage();
+				if (!enemyObj->GetIsActive() && enemyObj->GetHaveElement()) {
+					element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
+				}
+			}
+
+			if (player->GetIsHaveElement()) {
+				isFadeOut = true;
+				num++;
+			}
+			//属性を回収したらnum++、強攻撃の説明へ
+			break;
+		case 5:
+			player->Attack();
+			player->Move(a);
+			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+				enemyObj->Move();
+				enemyObj->Damage();
+				if (!enemyObj->GetIsActive() && enemyObj->GetHaveElement()) {
+					element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
+				}
+			}
+			//強攻撃する為のエネミー配置をして一撃で倒したらnum++;
+			break;
+		case 6:
+			player->Attack();
+			player->Move(a);
+			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
+				enemyObj->Move();
+				enemyObj->Damage();
+				if (!enemyObj->GetIsActive() && enemyObj->GetHaveElement()) {
+					element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
+				}
+			}
+			//弾を撃ってくる敵の説明をしたらnum++;
+			break;
 		}
 
 		enemy.remove_if([](std::unique_ptr<BaseEnemy>& enemyObj) {return !enemyObj->GetIsActive(); });
 		element.remove_if([](std::unique_ptr<ElementObject>& elementObj) {return !elementObj->GetIsActive(); });
-
-		player->Attack();
 
 		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 			enemyObj->CheckCollisionToPlayer();
@@ -157,22 +229,11 @@ void TutorialScene::Update() {
 			}
 		}
 
-		player->Move(a);
-
 		lightGroup->SetCircleShadowDir(0, XMLoadFloat3(&circleShadowDir));
 		lightGroup->SetCircleShadowCasterPos(0, player->GetPosition());
 		lightGroup->SetCircleShadowDistanceCasterLight(0, 450.0f);
 		lightGroup->SetCircleShadowAtten(0, circleShadowAtten);
 		lightGroup->SetCircleShadowFactorAngle(0, circleShadowFactorAngle);
-
-		if (Collision::CheckSphereInside2Sphere(cameraCollider, skydomeCollider)) {
-			player->SetIsMapEnd(false);
-			cameraObject->SetEye({ cameraEye[0] + player->GetXMoveAmount(), cameraEye[1],cameraEye[2] + player->GetZMoveAmount() });
-			cameraObject->SetTarget({ cameraTarget.x + player->GetXMoveAmount(), cameraTarget.y,cameraTarget.z + player->GetZMoveAmount() });
-		}
-		else {
-			player->SetIsMapEnd(true);
-		}
 
 		if (cameraObject->GetShakeFlag()) {
 			player->SetIsNowCameraShake(true);
@@ -183,7 +244,7 @@ void TutorialScene::Update() {
 
 		cameraObject->CameraShake();
 
-		if (enemy.empty() || !player->GetIsActive()) {
+		if (!player->GetIsActive()) {
 			isFadeOut = true;
 		}
 

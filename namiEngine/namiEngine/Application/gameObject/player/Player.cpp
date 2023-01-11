@@ -48,6 +48,7 @@ void Player::Update() {
 
 	if (!isPlay) {
 		isAttack = false;
+		inflictDamageCollision.radius = 15.0f;
 		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
 			enemyObj->SetIsFirstDamage(false);
 		}
@@ -129,6 +130,7 @@ void Player::Attack()
 		inflictDamageCollision.radius = 15.0f;
 		attackPowor = 1;
 		isAttack = true;
+		attackCount++;
 		SetModel(attackModel.get());
 		PlayAnimation(true);
 	}
@@ -139,6 +141,7 @@ void Player::Attack()
 		SetColor(defColor);
 		attackPowor = 2;
 		isAttack = true;
+		attackCount++;
 		isHaveElement = false;
 		SetModel(attackModel.get());
 		PlayAnimation(true);
@@ -220,9 +223,10 @@ void Player::Move(Vector3 vec) {
 		}
 	}
 
-	if (input->TriggerKey(DIK_SPACE) && (!input->TriggerKey(DIK_W) || !input->TriggerKey(DIK_A) || !input->TriggerKey(DIK_S) || !input->TriggerKey(DIK_D)) && !isDash) {
+	if (input->TriggerKey(DIK_SPACE) && (input->PushKey(DIK_W) || input->PushKey(DIK_A) || input->PushKey(DIK_S) || input->PushKey(DIK_D)) && !isDash) {
 		isDash = true;
 		isAttack = false;
+		dashCount++;
 		SetModel(rollModel.get());
 		PlayAnimation(true);
 	}
