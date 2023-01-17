@@ -52,6 +52,10 @@ public:
 	bool GetIsReceivedDamage() { return isReceivedDamage; }
 	bool GetIsActive() { return isActive; }
 	int GetHP() { return HP; }
+	int GetDashCount() { return dashCount; }
+	int GetAttackCount() { return attackCount; }
+	bool GetIsHaveElement() { return isHaveElement; }
+
 
 	void SetIsReceivedDamage(bool isReceivedDamage) { this->isReceivedDamage = isReceivedDamage; }
 	void SetIsHaveElement(bool isHaveElement) { this->isHaveElement = isHaveElement; }
@@ -69,6 +73,9 @@ private:
 	const float dashMoveAmount = 1.5f;
 	int dashTimer = 16;
 	int damageTimer = 60;
+
+	int dashCount = 0;
+	int attackCount = 0;
 
 	XMFLOAT4 defColor = { 1,1,1,1 };
 

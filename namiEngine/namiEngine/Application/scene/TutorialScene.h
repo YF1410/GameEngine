@@ -20,5 +20,7 @@ public:
 	/// •`‰æ
 	/// </summary>
 	void Draw() override;
+private:
+	int num = 1;
 };
 
