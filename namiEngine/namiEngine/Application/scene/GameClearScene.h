@@ -14,13 +14,14 @@ public:
 	void Update();
 	void Draw();
 private:
-	std::unique_ptr<Sprite> endBG;
+	std::unique_ptr<Sprite> retryFromGameClearBG;
+	std::unique_ptr<Sprite> titleFromGameClearBG;
 	std::unique_ptr<Sprite> fadeSprite;
 	XMFLOAT4 fadeColor = { 1.0f,1.0f,1.0f,1.0f };
 	bool isFadeOut = false;
 	bool isFadeIn = true;
 	bool isRetry = true;
-	std::unique_ptr<FbxModel> clap;
+	std::unique_ptr<FbxModel> clapModel;
 	std::unique_ptr<FbxObject3d> clapObject;
 	std::unique_ptr<Camera> cameraObject;
 	float cameraEye[3] = { 0.0f,0.0f,-10.0f };
