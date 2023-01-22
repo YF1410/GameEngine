@@ -2,6 +2,7 @@
 #include "GameScene.h"
 #include "GameOverScene.h"
 #include "TitleScene.h"
+#include "TutorialScene.h"
 
 void NamiGame::Initialize() {
 	Framework::Initialize();

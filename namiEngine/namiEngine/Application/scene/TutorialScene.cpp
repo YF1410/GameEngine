@@ -136,11 +136,11 @@ void TutorialScene::Update() {
 			player->SetIsMapEnd(true);
 		}
 
-		Vector3 a = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
+		Vector3 vec = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };
 
 		switch (num) {
 		case 1:
-			player->Move(a);
+			player->Move(vec);
 			if (player->GetDashCount() >= 5) {
 				num++;
 			}
@@ -148,7 +148,7 @@ void TutorialScene::Update() {
 			break;
 		case 2:
 			player->Attack();
-			player->Move(a);
+			player->Move(vec);
 			if (player->GetAttackCount() >= 3) {
 				num++;
 				enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
@@ -157,7 +157,7 @@ void TutorialScene::Update() {
 			break;
 		case 3:
 			player->Attack();
-			player->Move(a);
+			player->Move(vec);
 			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 				enemyObj->Move();
 				enemyObj->Damage();
@@ -170,7 +170,7 @@ void TutorialScene::Update() {
 			break;
 		case 4:
 			player->Attack();
-			player->Move(a);
+			player->Move(vec);
 			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 				enemyObj->Move();
 				enemyObj->Damage();
@@ -187,7 +187,7 @@ void TutorialScene::Update() {
 			break;
 		case 5:
 			player->Attack();
-			player->Move(a);
+			player->Move(vec);
 			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 				enemyObj->Move();
 				enemyObj->Damage();
@@ -199,7 +199,7 @@ void TutorialScene::Update() {
 			break;
 		case 6:
 			player->Attack();
-			player->Move(a);
+			player->Move(vec);
 			for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 				enemyObj->Move();
 				enemyObj->Damage();

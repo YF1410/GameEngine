@@ -159,6 +159,9 @@
     <ClCompile Include="Application\scene\GameClearScene.cpp">
       <Filter>Application\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="TackleEnemy.cpp">
+      <Filter>Application\GameObject\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\NamiGame.h">
@@ -316,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="Application\scene\GameClearScene.h">
       <Filter>Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TackleEnemy.h">
+      <Filter>Application\GameObject\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

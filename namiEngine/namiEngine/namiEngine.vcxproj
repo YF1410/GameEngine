@@ -201,6 +201,7 @@
     <ClCompile Include="Engine\input\Input.cpp" />
     <ClCompile Include="Engine\utility\Angle.cpp" />
     <ClCompile Include="Engine\utility\Easing.cpp" />
+    <ClCompile Include="TackleEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\gameObject\bullet\Bullet.h" />
@@ -255,6 +256,7 @@
     <ClInclude Include="Engine\utility\Angle.h" />
     <ClInclude Include="Engine\utility\Easing.h" />
     <ClInclude Include="Engine\utility\Vector3.h" />
+    <ClInclude Include="TackleEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli" />
