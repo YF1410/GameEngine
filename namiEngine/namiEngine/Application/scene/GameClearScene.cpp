@@ -3,18 +3,23 @@
 
 void GameClearScene::Initialize()
 {
-	if (!Sprite::LoadTexture(10, L"Resources/gameend.png")) {
+	if (!Sprite::LoadTexture(10, L"Resources/RetryFromGameClear.png")) {
 		assert(0);
 		return;
 	}
-	endBG = Sprite::Create(10, { 0.0f,0.0f });
+	if (!Sprite::LoadTexture(11, L"Resources/TitleFromGameClear.png")) {
+		assert(0);
+		return;
+	}
+	retryFromGameClearBG = Sprite::Create(10, { 0.0f,0.0f });
+	titleFromGameClearBG = Sprite::Create(11, { 0.0f,0.0f });
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 
-	clap = FbxLoader::GetInstance()->LoadModelFromFile("Clap");
+	clapModel = FbxLoader::GetInstance()->LoadModelFromFile("Clap");
 	clapObject = std::make_unique<FbxObject3d>();
 	clapObject->Initialize();
-	clapObject->SetModel(clap.get());
-	clapObject->SetPosition({ 0.0f,0.0f,-20.0f });
+	clapObject->SetModel(clapModel.get());
+	clapObject->SetPosition({ 0.0f,11.0f,-35.0f });
 	clapObject->SetRotation({0.0f, 180.0f, 0.0f});
 	clapObject->LoopAnimation();
 
@@ -47,13 +52,13 @@ void GameClearScene::Update()
 		isRetry = false;
 	}
 
-	if ((input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)) && !isFadeIn) {
+	if ((input->TriggerKey(DIK_1) || input->TriggerKey(DIK_SPACE)|| input->TriggerMouse(MouseButton::LeftButton)) && !isFadeIn) {
 		isFadeOut = true;
 	}
 
-	if (input->TriggerMouse(MouseButton::LeftButton) && !isFadeIn) {
+	/*if (input->TriggerMouse(MouseButton::LeftButton) && !isFadeIn) {
 		XMFLOAT2 mousePos = input->GetMousePosition();
-	}
+	}*/
 
 	if (isFadeOut) {
 		fadeColor.w += 0.02f;
@@ -69,8 +74,6 @@ void GameClearScene::Update()
 		}
 	}
 
-	clapObject->SetPosition({ 0.0f,11.0f,-35.0f });
-
 	clapObject->Update();
 }
 
@@ -80,7 +83,12 @@ void GameClearScene::Draw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	endBG->Draw();
+	if (isRetry) {
+		retryFromGameClearBG->Draw();
+	}
+	else if (!isRetry) {
+		titleFromGameClearBG->Draw();
+	}
 	Sprite::PostDraw();
 	// 深度バッファクリア
 	DirectXCommon::GetInstance()->ClearDepthBuffer();

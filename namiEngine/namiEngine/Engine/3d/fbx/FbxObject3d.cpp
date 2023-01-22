@@ -260,9 +260,9 @@ void FbxObject3d::Update() {
 	if (isPlay) {
 		//1フレームずつ進める
 		currentTime += frameTime;
-		//最後まで再生したら先頭に戻す
+		//最後まで再生したらストップ
 		if (currentTime > endTime) {
-			currentTime = startTime;
+			currentTime = endTime;
 			isPlay = false;
 		}
 	}
