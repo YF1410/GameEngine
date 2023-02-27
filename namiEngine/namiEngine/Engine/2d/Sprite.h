@@ -36,7 +36,7 @@ public: // 静的メンバ関数
 	//静的解放
 	static void StaticFinalize();
 	// テクスチャ読み込み
-	static bool LoadTexture(UINT texnumber, const wchar_t* filename);
+	static bool LoadTexture(UINT texnumber, const std::wstring& filename);
 	// 描画前処理
 	static void PreDraw(ID3D12GraphicsCommandList* cmdList);
 	// 描画後処理

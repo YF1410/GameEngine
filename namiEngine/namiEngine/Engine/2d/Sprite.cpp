@@ -19,7 +19,7 @@ XMMATRIX Sprite::matProjection;
 ComPtr<ID3D12DescriptorHeap> Sprite::descHeap;
 ComPtr<ID3D12Resource> Sprite::texBuff[srvCount];
 
-bool Sprite::StaticInitialize( int window_width, int window_height) {
+bool Sprite::StaticInitialize(int window_width, int window_height) {
 
 	Sprite::device = DirectXCommon::GetInstance()->GetDevice();
 
@@ -42,7 +42,7 @@ bool Sprite::StaticInitialize( int window_width, int window_height) {
 		0,
 		&vsBlob, &errorBlob
 	);
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		// errorBlobからエラー内容をstring型にコピー
 		std::string errstr;
 		errstr.resize(errorBlob->GetBufferSize());
@@ -68,7 +68,7 @@ bool Sprite::StaticInitialize( int window_width, int window_height) {
 		0,
 		&psBlob, &errorBlob
 	);
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		// errorBlobからエラー内容をstring型にコピー
 		std::string errstr;
 		errstr.resize(errorBlob->GetBufferSize());
@@ -160,13 +160,13 @@ bool Sprite::StaticInitialize( int window_width, int window_height) {
 	ComPtr<ID3DBlob> rootSigBlob;
 	// バージョン自動判定のシリアライズ
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
 	// ルートシグネチャの生成
 	result = device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
@@ -176,7 +176,7 @@ bool Sprite::StaticInitialize( int window_width, int window_height) {
 	// グラフィックスパイプラインの生成
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineState));
 
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
@@ -195,7 +195,7 @@ bool Sprite::StaticInitialize( int window_width, int window_height) {
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
 	descHeapDesc.NumDescriptors = srvCount;
 	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
@@ -217,7 +217,7 @@ void Sprite::StaticFinalize() {
 	}
 }
 
-bool Sprite::LoadTexture(UINT texnumber, const wchar_t* filename) {
+bool Sprite::LoadTexture(UINT texnumber, const std::wstring& filename) {
 	// nullptrチェック
 	assert(device);
 
@@ -226,12 +226,36 @@ bool Sprite::LoadTexture(UINT texnumber, const wchar_t* filename) {
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 
-	result = LoadFromWICFile
-	(
-		filename, WIC_FLAGS_NONE,
-		&metadata, scratchImg
-	);
-	if (FAILED(result)) 	{
+
+	size_t pos1;
+	std::wstring exceptExt;
+	std::wstring fileExt;
+	std::wstring directoryPath;
+
+	//区切り文字'.'が出てくる一番最後の部分を検索
+	pos1 = filename.rfind('.');
+	//検索がヒットしたら
+	if (pos1 != std::wstring::npos) {
+		//区切り文字の後ろをファイル拡張子として保存
+		fileExt = filename.substr(pos1 + 1, filename.size() - pos1 - 1);
+		//区切り文字の前までを抜き出す
+		exceptExt = filename.substr(0, pos1);
+	}
+	else {
+		fileExt = L"";
+		exceptExt = filename;
+	}
+
+	//TL1評価課題2ddsファイル読み込みはここでやっている
+	if (fileExt == L"dds") {
+		result = LoadFromDDSFile(filename.c_str(), WIC_FLAGS_NONE, &metadata, scratchImg);
+	}
+	else {
+		result = LoadFromWICFile(filename.c_str(), WIC_FLAGS_NONE, &metadata, scratchImg);
+
+	}
+
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
@@ -258,7 +282,7 @@ bool Sprite::LoadTexture(UINT texnumber, const wchar_t* filename) {
 		nullptr,
 		IID_PPV_ARGS(&texBuff[texnumber])
 	);
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
@@ -272,7 +296,7 @@ bool Sprite::LoadTexture(UINT texnumber, const wchar_t* filename) {
 		(UINT)img->rowPitch,  // 1ラインサイズ
 		(UINT)img->slicePitch // 1枚サイズ
 	);
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
@@ -320,7 +344,7 @@ std::unique_ptr<Sprite> Sprite::Create(UINT texNumber, XMFLOAT2 position, XMFLOA
 	// 仮サイズ
 	XMFLOAT2 size = { 100.0f, 100.0f };
 
-	if (texBuff[texNumber]) 	{
+	if (texBuff[texNumber]) {
 		// テクスチャ情報取得
 		D3D12_RESOURCE_DESC resDesc = texBuff[texNumber]->GetDesc();
 		// スプライトのサイズをテクスチャのサイズに設定
@@ -329,12 +353,12 @@ std::unique_ptr<Sprite> Sprite::Create(UINT texNumber, XMFLOAT2 position, XMFLOA
 
 	// Spriteのインスタンスを生成
 	std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>(texNumber, position, size, color, anchorpoint, isFlipX, isFlipY);
-	if (sprite == nullptr) 	{
+	if (sprite == nullptr) {
 		return nullptr;
 	}
 
 	// 初期化
-	if (!sprite->Initialize()) 	{
+	if (!sprite->Initialize()) {
 		//delete sprite;
 		assert(0);
 		return nullptr;
@@ -384,7 +408,7 @@ bool Sprite::Initialize() {
 		nullptr,
 		IID_PPV_ARGS(&constBuff)
 	);
-	if (FAILED(result)) 	{
+	if (FAILED(result)) {
 		assert(0);
 		return false;
 	}
@@ -392,7 +416,7 @@ bool Sprite::Initialize() {
 	// 定数バッファにデータ転送
 	ConstBufferData* constMap = nullptr;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	if (SUCCEEDED(result)) 	{
+	if (SUCCEEDED(result)) {
 		constMap->color = color;
 		constMap->mat = matProjection;
 		constBuff->Unmap(0, nullptr);
@@ -413,7 +437,7 @@ void Sprite::VertexBufferGeneration() {
 		nullptr,
 		IID_PPV_ARGS(&vertBuff)
 	);
-	
+
 	assert(SUCCEEDED(result));
 }
 
@@ -476,7 +500,7 @@ void Sprite::Draw() {
 	// 定数バッファにデータ転送
 	ConstBufferData* constMap = nullptr;
 	HRESULT result = this->constBuff->Map(0, nullptr, (void**)&constMap);
-	if (SUCCEEDED(result)) 	{
+	if (SUCCEEDED(result)) {
 		constMap->color = this->color;
 		constMap->mat = this->matWorld * matProjection;	// 行列の合成	
 		this->constBuff->Unmap(0, nullptr);
@@ -507,12 +531,12 @@ void Sprite::TransferVertices() {
 	float top = (0.0f - anchorpoint.y) * size.y;
 	float bottom = (1.0f - anchorpoint.y) * size.y;
 
-	if (isFlipX) 	{// 左右入れ替え
+	if (isFlipX) {// 左右入れ替え
 		left = -left;
 		right = -right;
 	}
 
-	if (isFlipY) 	{// 上下入れ替え
+	if (isFlipY) {// 上下入れ替え
 		top = -top;
 		bottom = -bottom;
 	}
@@ -526,7 +550,7 @@ void Sprite::TransferVertices() {
 	vertices[RT].pos = { right,	top,	0.0f }; // 右上
 
 	// テクスチャ情報取得
-	if (texBuff[texNumber]) 	{
+	if (texBuff[texNumber]) {
 		D3D12_RESOURCE_DESC resDesc = texBuff[texNumber]->GetDesc();
 
 		float tex_left = texBase.x / resDesc.Width;
@@ -543,7 +567,7 @@ void Sprite::TransferVertices() {
 	// 頂点バッファへのデータ転送
 	VertexPosUv* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(result)) 	{
+	if (SUCCEEDED(result)) {
 		memcpy(vertMap, vertices, sizeof(vertices));
 		vertBuff->Unmap(0, nullptr);
 	}
