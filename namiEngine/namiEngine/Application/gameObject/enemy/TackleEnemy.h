@@ -15,9 +15,15 @@ public:
 	void Update() override;
 
 	void Move() override;
+
+	void Tackle(float rad);
 private:
 	bool isFirstMove = true;
 	Sphere tackleRange;
 	bool isTackleRange;
+	int tackleInterval;
+	float rad;
+	bool canMove;
+	int moveCoolDown = 20;
 };
 

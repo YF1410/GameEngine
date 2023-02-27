@@ -66,8 +66,8 @@ void TitleScene::Update()
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w >= 1.0f) {
 			isFadeOut = false;
-			//SceneManager::GetInstance()->ToGameScene();
-			SceneManager::GetInstance()->ToTutorialScene();
+			SceneManager::GetInstance()->ToGameScene();
+			//SceneManager::GetInstance()->ToTutorialScene();
 		}
 	}
 }

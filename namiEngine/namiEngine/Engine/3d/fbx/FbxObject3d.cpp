@@ -360,15 +360,11 @@ void FbxObject3d::LoopAnimation()
 	}
 }
 
-void FbxObject3d::StopPlayAnimation() {
+void FbxObject3d::StopAnimation() {
 	//再生していない状態にする
 	saveTime = currentTime;
-	isPlay = false;
-}
-
-void FbxObject3d::StopLoopAnimation() {
-	saveTime = currentTime;
 	isLoop = false;
+	isPlay = false;
 }
 
 void FbxObject3d::ResetAnimationTime() {

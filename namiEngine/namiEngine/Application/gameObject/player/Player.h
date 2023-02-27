@@ -20,7 +20,6 @@ public:
 	/// <returns></returns>
 	static std::unique_ptr<Player> Create(std::list<std::unique_ptr<BaseEnemy>>* enemy);
 
-
 public:
 
 	/// <summary>
@@ -34,21 +33,34 @@ public:
 	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
+	/// <summary>
+	/// 攻撃処理
+	/// </summary>
 	void Attack();
 
+	/// <summary>
+	/// 移動処理
+	/// </summary>
 	void Move(Vector3 vec);
 
+	/// <summary>
+	/// ダメージ処理
+	/// </summary>
+	/// <param name="damageQuantity"></param>
 	void Damage(int damageQuantity) { HP -= damageQuantity; }
 
+	//ゲッター
 	float GetAttackPowor() { return attackPowor; }
-
-	float GetXMoveAmount() { return xMoveAmount; }
-	float GetZMoveAmount() { return zMoveAmount; }
+	XMFLOAT3 GetPlayerPos() { return playerPos; }
 	Sphere GetReceiveDamageCollision() { return receiveDamageCollision; }
 	Sphere GetInflictDamageCollision() { return inflictDamageCollision; }
 	bool GetIsAttack() { return isAttack; }
+	bool GetIsDash() { return isDash; }
 	bool GetIsReceivedDamage() { return isReceivedDamage; }
 	bool GetIsActive() { return isActive; }
 	int GetHP() { return HP; }
@@ -56,53 +68,53 @@ public:
 	int GetAttackCount() { return attackCount; }
 	bool GetIsHaveElement() { return isHaveElement; }
 
-
+	//セッター
 	void SetIsReceivedDamage(bool isReceivedDamage) { this->isReceivedDamage = isReceivedDamage; }
 	void SetIsHaveElement(bool isHaveElement) { this->isHaveElement = isHaveElement; }
 	void SetIsMapEnd(bool isMapEnd) { this->isMapEnd = isMapEnd; }
 	void SetIsNowCameraShake(bool isNowCameraShake) { this->isNowCameraShake = isNowCameraShake; }
 	void SetDefColor(XMFLOAT4 color) { defColor = color; }
 private:
-	std::list<std::unique_ptr<BaseEnemy>>* enemy;
+	std::list<std::unique_ptr<BaseEnemy>>* enemy;	//エネミー配列
 
-	Input* input = nullptr;
-	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };
-	XMFLOAT3 savePos = { 0.0f,0.0f,0.0f };
+	Input* input = nullptr;	//入力
+	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };	//移動時に使用
+	XMFLOAT3 savePos = { 0.0f,0.0f,0.0f };		//ポジションの保存用
 	int HP = 3;
-	const float defMoveAmount = 0.7f;
-	const float dashMoveAmount = 1.5f;
-	int dashTimer = 16;
-	int damageTimer = 60;
+	const float defMoveAmount = 0.7f;			//基本の移動量
+	const float dashMoveAmount = 1.5f;			//ダッシュ中の移動量
+	int dashTimer = 16;							//ダッシュの持続時間
+	int damageTimer = 60;						//ダメージくらった時の無敵時間
 
-	int dashCount = 0;
-	int attackCount = 0;
+	int dashCount = 0;							//チュートリアルでダッシュ回数を数えるために使用
+	int attackCount = 0;						//チュートリアルで攻撃回数を数えるために使用
 
-	XMFLOAT4 defColor = { 1,1,1,1 };
+	XMFLOAT4 defColor = { 1,1,1,1 };			//基本の色
 
-	float attackPowor = 1;
-	bool isActive = true;
-	bool isHaveElement = false;
-	bool isDash = false;
-	bool isAttack = false;
-	bool isReceivedDamage = false;
-	bool isNowCameraShake = false;
-	bool isMapEnd = false;
-	bool isMove = false;
-	bool isIdle = false;
-	Sphere receiveDamageCollision;
-	Sphere inflictDamageCollision;
-	float xMoveAmount = 0.0f;
-	float zMoveAmount = 0.0f;
-	float saveXMoveAmount = 0.0f;
-	float saveZMoveAmount = 0.0f;
-	std::unique_ptr<Model> receiveDamageColliderVisualizationModel;
-	std::unique_ptr<Object3d> receiveDamageColliderVisualizationObject;
-	std::unique_ptr<Model> inflictDamageColliderVisualizationModel;
-	std::unique_ptr<Object3d> inflictDamageColliderVisualizationObject;
-	std::unique_ptr<FbxModel> attackModel;
-	std::unique_ptr<FbxModel> moveModel;
-	std::unique_ptr<FbxModel> rollModel;
-	std::unique_ptr<FbxModel> idleModel;
-	std::list<std::unique_ptr<Bullet>> bullet;
+	float attackPowor = 1;						//攻撃した時に与えるダメージ
+	bool isActive = true;						//生きているかどうか
+	bool isHaveElement = false;					//属性を持っているかどうか
+	bool isDash = false;						//ダッシュしているかどうか
+	bool isAttack = false;						//攻撃しているかどうか
+	bool isReceivedDamage = false;				//攻撃を受けているかどうか
+	bool isNowCameraShake = false;				//カメラシェイクをしているかどうか
+	bool isMapEnd = false;						//マップの端っこにいるかどうか
+	bool isMove = false;						//動いているかどうか
+	bool isIdle = false;						//待機中かどうか
+	Sphere receiveDamageCollision;				//ダメージを受ける当たり判定
+	Sphere inflictDamageCollision;				//ダメージを与えられる当たり判定
+	float moveAmount;							//移動量
+	std::unique_ptr<Model> receiveDamageColliderVisualizationModel;			//敵が触れるとダメージを受ける判定を可視化する用のモデル
+	std::unique_ptr<Object3d> receiveDamageColliderVisualizationObject;		//敵が触れるとダメージを受ける判定を可視化する用のオブジェクト
+	std::unique_ptr<Model> inflictDamageColliderVisualizationModel;			//攻撃中に範囲内に敵が入るとダメージを与えられる判定を可視化する用のモデル
+	std::unique_ptr<Object3d> inflictDamageColliderVisualizationObject;		//攻撃中に範囲内に敵が入るとダメージを与えられる判定を可視化する用のオブジェクト
+	std::unique_ptr<FbxModel> attackModel;		//攻撃時のモデル
+	std::unique_ptr<FbxModel> moveModel;		//移動時のモデル
+	std::unique_ptr<FbxModel> rollModel;		//ダッシュ時のモデル
+	std::unique_ptr<FbxModel> idleModel;		//操作していない時のモデル
+	std::list<std::unique_ptr<Bullet>> bullet;	//弾
 	//Mediatorパターン
+
+	//止まっている時に行動ゲージチャージ
+	//動いたり攻撃で減っていく
 };

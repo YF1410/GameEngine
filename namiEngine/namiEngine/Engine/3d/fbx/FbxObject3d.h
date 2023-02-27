@@ -92,10 +92,7 @@ public: // メンバ関数
 	/// <summary>
 	/// アニメーション停止
 	/// </summary>
-	void StopPlayAnimation();
-
-	//ループアニメーション停止
-	void StopLoopAnimation();
+	void StopAnimation();
 
 	//	座標の取得
 	inline const XMFLOAT3& GetPosition() { return position; }
