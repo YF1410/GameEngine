@@ -20,6 +20,7 @@
 #include "BaseCollider.h"
 #include "ElementEnemy.h"
 #include "BulletEnemy.h"
+#include "TackleEnemy.h"
 
 #include <vector>
 

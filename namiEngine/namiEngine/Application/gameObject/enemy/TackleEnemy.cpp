@@ -6,7 +6,7 @@ TackleEnemy::TackleEnemy()
 	defaultColor = { 0,0,1,1 };
 	SetColor(defaultColor);
 	tackleRange.center = XMLoadFloat3(&position);
-	tackleRange.radius = 30.0f;
+	tackleRange.radius = 25.0f;
 }
 
 TackleEnemy::~TackleEnemy()
@@ -31,37 +31,61 @@ void TackleEnemy::Update()
 {
 	BaseEnemy::Update();
 
-	if (isShotRange) {
-		shotInterval--;
+	if (isTackleRange && canMove) {
+		tackleInterval--;
 	}
 
-	if (shotInterval <= 0) {
-		shotInterval = 60;
+	if (tackleInterval <= 0) {
+		//tackleInterval = 60;
 	}
 
-	for (std::unique_ptr<Bullet>& bulletObj : bullet) {
-		bulletObj->EnemyBulletUpdate(camera);
-	}
-	shotRange.center = XMLoadFloat3(&position);
+	tackleRange.center = XMLoadFloat3(&position);
 }
 
 void TackleEnemy::Move()
 {
 	if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), tackleRange)) {
+		StopAnimation();
+		tackleRange.radius = 50.0f;
 		isTackleRange = true;
 	}
 	else {
+		if (!isLoop) {
+			LoopAnimation();
+		}
 		isTackleRange = false;
-		shotInterval = 60;
+		moveAmount = 0.2f;
+		tackleInterval = 60;
 	}
 
-	XMFLOAT3 pos = player->GetPosition();
-	float rad = atan2(pos.z - position.z, pos.x - position.x);
-	if (!isDamage && !isTackleRange) {
+	if (tackleInterval > 30 && canMove) {
+		XMFLOAT3 pos = player->GetPosition();
+		rad = atan2(pos.z - position.z, pos.x - position.x);
+	}else if (tackleInterval <= 0) {
+		Tackle(rad);
+		if (tackleInterval <= -5) {
+			canMove = false;
+			tackleRange.radius = 25.0f;
+			tackleInterval = 60;
+		}
+	}
+
+	if (!canMove) {
+		StopAnimation();
+		moveCoolDown--;
+		if (moveCoolDown <= 0) {
+			canMove = true;
+			moveCoolDown = 180;
+		}
+	}
+
+	if (!isDamage && !isTackleRange && canMove) {
 		savePos = position;
 		moveX = (float)(cos(rad) * moveAmount + position.x);
 		moveZ = (float)(sin(rad) * moveAmount + position.z);
 	}
+
+
 
 	if (isFirstMove) {
 		savePos = position;
@@ -72,4 +96,10 @@ void TackleEnemy::Move()
 
 	position = { moveX + shakeObjectPos[0], position.y + shakeObjectPos[1], moveZ + shakeObjectPos[2] };
 	rotation = { 0,-XMConvertToDegrees(rad) + 90.0f,0 };
+}
+
+void TackleEnemy::Tackle(float rad) {
+	moveAmount = 10.0f;
+	moveX = (float)(cos(rad) * moveAmount + position.x);
+	moveZ = (float)(sin(rad) * moveAmount + position.z);
 }

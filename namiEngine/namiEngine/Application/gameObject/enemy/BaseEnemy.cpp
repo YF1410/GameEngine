@@ -110,7 +110,7 @@ void BaseEnemy::CheckCollisionToPlayer()
 			isFirstDamage = true;
 		}
 	}
-	else if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), collision) && isActive && !player->GetIsAttack() && !player->GetIsReceivedDamage()) {
+	else if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), collision) && isActive && !player->GetIsAttack() && !player->GetIsReceivedDamage() && !player->GetIsDash()) {
 		player->Damage(1);
 		camera->SetShakeFlag(true, 6);
 		player->SetIsReceivedDamage(true);

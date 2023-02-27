@@ -165,6 +165,7 @@
     <ClCompile Include="Application\gameObject\enemy\BaseEnemy.cpp" />
     <ClCompile Include="Application\gameObject\enemy\BulletEnemy.cpp" />
     <ClCompile Include="Application\gameObject\enemy\ElementEnemy.cpp" />
+    <ClCompile Include="Application\gameObject\enemy\TackleEnemy.cpp" />
     <ClCompile Include="Application\gameObject\player\Player.cpp" />
     <ClCompile Include="Application\main.cpp" />
     <ClCompile Include="Application\NamiGame.cpp" />
@@ -201,7 +202,6 @@
     <ClCompile Include="Engine\input\Input.cpp" />
     <ClCompile Include="Engine\utility\Angle.cpp" />
     <ClCompile Include="Engine\utility\Easing.cpp" />
-    <ClCompile Include="TackleEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\gameObject\bullet\Bullet.h" />
@@ -209,6 +209,7 @@
     <ClInclude Include="Application\gameObject\enemy\BaseEnemy.h" />
     <ClInclude Include="Application\gameObject\enemy\BulletEnemy.h" />
     <ClInclude Include="Application\gameObject\enemy\ElementEnemy.h" />
+    <ClInclude Include="Application\gameObject\enemy\TackleEnemy.h" />
     <ClInclude Include="Application\gameObject\player\Player.h" />
     <ClInclude Include="Application\NamiGame.h" />
     <ClInclude Include="Application\scene\GameClearScene.h" />
@@ -256,7 +257,6 @@
     <ClInclude Include="Engine\utility\Angle.h" />
     <ClInclude Include="Engine\utility\Easing.h" />
     <ClInclude Include="Engine\utility\Vector3.h" />
-    <ClInclude Include="TackleEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\FBX.hlsli" />

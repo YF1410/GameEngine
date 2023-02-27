@@ -159,7 +159,7 @@
     <ClCompile Include="Application\scene\GameClearScene.cpp">
       <Filter>Application\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="TackleEnemy.cpp">
+    <ClCompile Include="Application\gameObject\enemy\TackleEnemy.cpp">
       <Filter>Application\GameObject\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
@@ -320,7 +320,7 @@
     <ClInclude Include="Application\scene\GameClearScene.h">
       <Filter>Application\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="TackleEnemy.h">
+    <ClInclude Include="Application\gameObject\enemy\TackleEnemy.h">
       <Filter>Application\GameObject\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
