@@ -92,6 +92,10 @@ private:
 	XMFLOAT4 defColor = { 1,1,1,1 };			//基本の色
 
 	float attackPowor = 1;						//攻撃した時に与えるダメージ
+	int attackTimer = 15;
+	bool isNowCombo = false;
+	int comboCount = 0;
+	int comboTimer = 60;
 	bool isActive = true;						//生きているかどうか
 	bool isHaveElement = false;					//属性を持っているかどうか
 	bool isDash = false;						//ダッシュしているかどうか

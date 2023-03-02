@@ -52,6 +52,24 @@ void Player::Update() {
 		bulletObj->PlayerBulletUpdate();
 	}
 
+	if (isAttack) {
+		attackTimer--;
+		if (attackTimer <= 0) {
+			StopAnimation();
+			isNowCombo = true;
+			comboCount++;
+			comboTimer = 60;
+		}
+	}
+
+	if (isNowCombo) {
+		comboTimer--;
+		if (comboTimer <= 0) {
+			isNowCombo = false;
+			comboCount = 0;
+		}
+	}
+
 	//çsìÆÇ…âûÇ∂ÇƒÉÇÅ[ÉVÉáÉìÇÃïœâª
 	if (!isPlay) {
 		isAttack = false;
@@ -142,27 +160,31 @@ void Player::Draw(ID3D12GraphicsCommandList* cmdList) {
 
 void Player::Attack()
 {
-	//í èÌçUåÇ
-	if ((input->TriggerKey(DIK_1) || input->TriggerMouse(MouseButton::LeftButton)) && !isPlay) {
-		inflictDamageCollision.radius = 15.0f;
-		attackPowor = 1;
-		isAttack = true;
-		attackCount++;
-		SetModel(attackModel.get());
-		PlayAnimation(true);
-	}
+	if (comboCount <= 2) {
+		//í èÌçUåÇ
+		if ((input->TriggerKey(DIK_1) || input->TriggerMouse(MouseButton::LeftButton)) && !isPlay) {
+			inflictDamageCollision.radius = 15.0f;
+			attackPowor = 1;
+			isAttack = true;
+			attackCount++;
+			attackTimer = 15;
+			SetModel(attackModel.get());
+			PlayAnimation(true);
+		}
 
-	//ã≠çUåÇ
-	if ((input->TriggerKey(DIK_2) || input->TriggerMouse(MouseButton::RightButton)) && !isPlay && isHaveElement && !isReceivedDamage) {
-		inflictDamageCollision.radius = 50.0f;
-		defColor = { 1,1,1,1 };
-		SetColor(defColor);
-		attackPowor = 2;
-		isAttack = true;
-		attackCount++;
-		isHaveElement = false;
-		SetModel(attackModel.get());
-		PlayAnimation(true);
+		//ã≠çUåÇ
+		if ((input->TriggerKey(DIK_2) || input->TriggerMouse(MouseButton::RightButton)) && !isPlay && isHaveElement && !isReceivedDamage) {
+			inflictDamageCollision.radius = 20.0f;
+			//defColor = { 1,1,1,1 };
+			//SetColor(defColor);
+			attackPowor = 2;
+			isAttack = true;
+			attackCount++;
+			attackTimer = 30;
+			//isHaveElement = false;
+			SetModel(attackModel.get());
+			PlayAnimation(true);
+		}
 	}
 
 	//íeçUåÇ(ãììÆÇÃÇ›

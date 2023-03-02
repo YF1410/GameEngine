@@ -3,8 +3,7 @@
 
 void TitleScene::Initialize()
 {
-	//ddsのテクスチャファイル読み込みをここでやっている
-	if (!Sprite::LoadTexture(1, L"Resources/sw.dds")) {
+	if (!Sprite::LoadTexture(1, L"Resources/title.png")) {
 		assert(0);
 		return;
 	}
