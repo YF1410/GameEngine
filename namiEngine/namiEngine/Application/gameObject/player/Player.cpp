@@ -55,10 +55,18 @@ void Player::Update() {
 	if (isAttack) {
 		attackTimer--;
 		if (attackTimer <= 0) {
+			isAttack = false;
+			isRigor = true;
 			StopAnimation();
+		}
+	}
+
+	if (isRigor) {
+		rigorTimer--;
+		if (rigorTimer <= 0) {
+			isRigor = false;
 			isNowCombo = true;
 			comboCount++;
-			comboTimer = 60;
 		}
 	}
 
@@ -125,13 +133,6 @@ void Player::Update() {
 		HP = 0;
 	}
 
-	// TODO: マップ端の処理(要改善
-	/*if (!isMapEnd) {
-		savePos = position;
-	}
-	else if (isMapEnd) {
-	}*/
-
 	//ダメージ関係の当たり判定更新
 	receiveDamageCollision.center = XMLoadFloat3(&position);
 	inflictDamageCollision.center = XMLoadFloat3(&position);
@@ -160,14 +161,21 @@ void Player::Draw(ID3D12GraphicsCommandList* cmdList) {
 
 void Player::Attack()
 {
-	if (comboCount <= 2) {
+	if (comboCount <= 2 && !isRigor) {
 		//通常攻撃
 		if ((input->TriggerKey(DIK_1) || input->TriggerMouse(MouseButton::LeftButton)) && !isPlay) {
 			inflictDamageCollision.radius = 15.0f;
 			attackPowor = 1;
+			if (comboCount == 2) {
+				attackPowor = 2;
+			}
 			isAttack = true;
+			isRigor = false;
+			isNowCombo = false;
 			attackCount++;
 			attackTimer = 15;
+			rigorTimer = 30;
+			comboTimer = 60;
 			SetModel(attackModel.get());
 			PlayAnimation(true);
 		}
@@ -178,9 +186,14 @@ void Player::Attack()
 			//defColor = { 1,1,1,1 };
 			//SetColor(defColor);
 			attackPowor = 2;
+			if (comboCount == 2) {
+				attackPowor = 3;
+			}
 			isAttack = true;
 			attackCount++;
 			attackTimer = 30;
+			rigorTimer = 60;
+			comboTimer = 120;
 			//isHaveElement = false;
 			SetModel(attackModel.get());
 			PlayAnimation(true);

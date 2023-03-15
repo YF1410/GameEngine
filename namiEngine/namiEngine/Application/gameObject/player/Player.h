@@ -73,6 +73,7 @@ public:
 	void SetIsHaveElement(bool isHaveElement) { this->isHaveElement = isHaveElement; }
 	void SetIsMapEnd(bool isMapEnd) { this->isMapEnd = isMapEnd; }
 	void SetIsNowCameraShake(bool isNowCameraShake) { this->isNowCameraShake = isNowCameraShake; }
+	void SetPlayerPos(XMFLOAT3 playerPos) { this->playerPos = playerPos; }
 	void SetDefColor(XMFLOAT4 color) { defColor = color; }
 private:
 	std::list<std::unique_ptr<BaseEnemy>>* enemy;	//エネミー配列
@@ -96,6 +97,8 @@ private:
 	bool isNowCombo = false;
 	int comboCount = 0;
 	int comboTimer = 60;
+	bool isRigor = false;
+	int rigorTimer = 15;
 	bool isActive = true;						//生きているかどうか
 	bool isHaveElement = false;					//属性を持っているかどうか
 	bool isDash = false;						//ダッシュしているかどうか
