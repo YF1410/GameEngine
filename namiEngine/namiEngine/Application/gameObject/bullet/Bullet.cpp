@@ -2,18 +2,18 @@
 
 std::unique_ptr<Model> Bullet::bulletModel;
 
-std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos,XMFLOAT3 endPos, Player* player)
+std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player)
 {
 	std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>();
 
-	bullet->Initialize(startPos, endPos, player);
+	bullet->Initialize(startPos, shotRad, player);
 	bullet->SetScale(1.0f);
 	bullet->SetColor({ 1,1,1,1 });
 
 	return bullet;
 }
 
-std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos, BaseEnemy*enemy)
+std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos, BaseEnemy* enemy)
 {
 	std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>();
 
@@ -24,7 +24,7 @@ std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos, BaseEnemy*enemy)
 	return bullet;
 }
 
-bool Bullet::Initialize(XMFLOAT3 startPos,XMFLOAT3 endPos, Player* player)
+bool Bullet::Initialize(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player)
 {
 	if (bulletModel == nullptr) {
 		bulletModel = Model::CreateFromObject("SphereCollider");
@@ -34,7 +34,7 @@ bool Bullet::Initialize(XMFLOAT3 startPos,XMFLOAT3 endPos, Player* player)
 	startPosition = startPos;
 	bulletPosX = startPos.x;
 	bulletPosZ = startPos.z;
-	endPosition = endPos;
+	this->shotRad = shotRad;
 	collision.radius = 1.0f;
 	isActive = true;
 	this->player = player;
@@ -43,7 +43,7 @@ bool Bullet::Initialize(XMFLOAT3 startPos,XMFLOAT3 endPos, Player* player)
 }
 
 
-bool Bullet::Initialize(XMFLOAT3 startPos, BaseEnemy*enemy)
+bool Bullet::Initialize(XMFLOAT3 startPos, BaseEnemy* enemy)
 {
 	if (bulletModel == nullptr) {
 		bulletModel = Model::CreateFromObject("SphereCollider");
@@ -81,24 +81,18 @@ void Bullet::PlayerBulletUpdate()
 	}
 }
 
-void Bullet::EnemyBulletUpdate(Camera*camera)
+void Bullet::EnemyBulletUpdate(Camera* camera)
 {
-	collision.center = XMLoadFloat3(&startPosition);
-	float rad = atan2(endPosition.z - startPosition.z, endPosition.x - startPosition.x);
+	//XMStoreFloat2(&move, XMVector2Normalize(XMLoadFloat2(&move)));
 
-	
-	XMFLOAT2 moveRad = XMFLOAT2{endPosition.x - startPosition.x,endPosition.z - startPosition.z };
-	XMStoreFloat2(&moveRad, XMVector2Normalize(XMLoadFloat2(&moveRad)));
+	bulletPosX += shotRad.m128_f32[0];
+	bulletPosZ += shotRad.m128_f32[2];
 
-	bulletPosX += moveRad.x * 0.7f;
-	bulletPosZ += moveRad.y * 0.7f;
-
-	bulletObject->SetPosition({bulletPosX,1.0f,bulletPosZ});
+	collision.center = { bulletPosX,1.0f,bulletPosZ };
+	bulletObject->SetPosition({ bulletPosX,1.0f,bulletPosZ });
 	bulletObject->Update();
 
-	if (!player->GetIsPlay() && Collision::CheckSphere2Sphere(collision, player->GetInflictDamageCollision())) {
-		isActive = false;
-	}else if (Collision::CheckSphere2Sphere(collision, player->GetReceiveDamageCollision())) {
+	if (Collision::CheckSphere2Sphere(collision, player->GetReceiveDamageCollision()) && !player->GetIsDash()) {
 		isActive = false;
 		if (player->GetHP() > 0 && !player->GetIsReceivedDamage()) {
 			player->Damage(1);

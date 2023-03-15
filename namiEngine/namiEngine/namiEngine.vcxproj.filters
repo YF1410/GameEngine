@@ -162,6 +162,9 @@
     <ClCompile Include="Application\gameObject\enemy\TackleEnemy.cpp">
       <Filter>Application\GameObject\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Application\gameObject\enemy\InvisibleEnemy.cpp">
+      <Filter>Application\GameObject\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\NamiGame.h">
@@ -321,6 +324,9 @@
       <Filter>Application\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Application\gameObject\enemy\TackleEnemy.h">
+      <Filter>Application\GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\gameObject\enemy\InvisibleEnemy.h">
       <Filter>Application\GameObject\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

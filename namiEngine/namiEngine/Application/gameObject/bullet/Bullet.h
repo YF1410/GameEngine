@@ -20,10 +20,10 @@ private: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 public:
-	static std::unique_ptr<Bullet> Create(XMFLOAT3 startPos, XMFLOAT3 endPos, Player* player);
+	static std::unique_ptr<Bullet> Create(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player);
 	static std::unique_ptr<Bullet> Create(XMFLOAT3 startPos, BaseEnemy*enemy);
 public:
-	bool Initialize(XMFLOAT3 startPos, XMFLOAT3 endPos, Player* player);
+	bool Initialize(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player);
 	bool Initialize(XMFLOAT3 startPos, BaseEnemy*enemy);
 	void PlayerBulletUpdate();
 	void EnemyBulletUpdate(Camera*camera);
@@ -37,6 +37,7 @@ private:
 	Sphere targetCollision;
 	XMFLOAT3 startPosition;
 	XMFLOAT3 endPosition;
+	XMVECTOR shotRad;
 	float bulletPosX, bulletPosZ;
 	std::unique_ptr<Object3d> bulletObject;
 private:

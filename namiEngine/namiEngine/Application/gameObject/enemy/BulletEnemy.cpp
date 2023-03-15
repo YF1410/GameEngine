@@ -6,14 +6,14 @@ BulletEnemy::BulletEnemy()
 	defaultColor = { 0,1,0,1 };
 	SetColor(defaultColor);
 	shotRange.center = XMLoadFloat3(&position);
-	shotRange.radius = 45.0f;
+	shotRange.radius = 60.0f;
 }
 
 BulletEnemy::~BulletEnemy()
 {
 }
 
-std::unique_ptr<BulletEnemy> BulletEnemy::Create(Player* player,Camera*camera) {
+std::unique_ptr<BulletEnemy> BulletEnemy::Create(Player* player, Camera* camera) {
 	std::unique_ptr<BulletEnemy> enemy = std::make_unique<BulletEnemy>();
 
 	if (enemyModel == nullptr) {
@@ -21,7 +21,7 @@ std::unique_ptr<BulletEnemy> BulletEnemy::Create(Player* player,Camera*camera) {
 	}
 
 	enemy->SetModel(enemyModel.get());
-	enemy->Initialize(player,camera);
+	enemy->Initialize(player, camera);
 
 	return enemy;
 }
@@ -36,8 +36,13 @@ void BulletEnemy::Update() {
 	if (shotInterval <= 0) {
 		shotInterval = 60;
 		XMFLOAT3 playerPos = player->GetPosition();
-		for (int i = -1; i<2; i++) {
-			bullet.push_back(Bullet::Create(position, { playerPos.x + (i*10),1.0f,playerPos.z + (i*10)}, player));
+		XMVECTOR move = XMVECTOR{ playerPos.x - position.x,playerPos.y - position.y,playerPos.z - position.z };
+		move = XMVector3Normalize(move);
+		move *= 0.7f;
+
+		for (int i = -1; i < 2; i++) {
+			XMVECTOR shotRad = XMVector3TransformNormal(move, XMMatrixRotationY(XMConvertToRadians(i * 20)));
+			bullet.push_back(Bullet::Create(position, shotRad, player));
 		}
 	}
 
@@ -66,7 +71,7 @@ void BulletEnemy::Move()
 	}
 	else {
 		isShotRange = false;
-		shotInterval = 60;
+		shotInterval = 90;
 	}
 
 	XMFLOAT3 pos = player->GetPosition();
