@@ -40,25 +40,17 @@ void TitleScene::Update()
 		}
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_2) && !isFadeIn) {
-		isTutorial = true;
-	}
-
 	if ((Input::GetInstance()->TriggerKey(DIK_1) || Input::GetInstance()->TriggerKey(DIK_SPACE) 
 		|| Input::GetInstance()->TriggerMouse(MouseButton::LeftButton)) && !isFadeIn) {
-		if (isTutorial) {
+
+		if (tutorialNum == 1) {
+			isFadeOut = true;
+		}else if (isTutorial) {
 			tutorialNum++;
 		}
 
 		isTutorial = true;
 
-		if (tutorialNum > 1) {
-			isTutorial = false;
-		}
-
-		if (!isTutorial) {
-			isFadeOut = true;
-		}
 	}
 
 	if (isFadeOut) {
