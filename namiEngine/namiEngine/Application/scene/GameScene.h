@@ -21,6 +21,7 @@
 #include "ElementEnemy.h"
 #include "BulletEnemy.h"
 #include "TackleEnemy.h"
+#include "InvisibleEnemy.h"
 
 #include <vector>
 
