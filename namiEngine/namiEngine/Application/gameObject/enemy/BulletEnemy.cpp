@@ -35,7 +35,10 @@ void BulletEnemy::Update() {
 
 	if (shotInterval <= 0) {
 		shotInterval = 60;
-		bullet.push_back(Bullet::Create(position, player));
+		XMFLOAT3 playerPos = player->GetPosition();
+		for (int i = -1; i<2; i++) {
+			bullet.push_back(Bullet::Create(position, { playerPos.x + (i*10),1.0f,playerPos.z + (i*10)}, player));
+		}
 	}
 
 	bullet.remove_if([](std::unique_ptr<Bullet>& bulletObj) {return !bulletObj->GetIsActive(); });

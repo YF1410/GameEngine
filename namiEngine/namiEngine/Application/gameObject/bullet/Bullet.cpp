@@ -2,11 +2,11 @@
 
 std::unique_ptr<Model> Bullet::bulletModel;
 
-std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos, Player* player)
+std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos,XMFLOAT3 endPos, Player* player)
 {
 	std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>();
 
-	bullet->Initialize(startPos, player);
+	bullet->Initialize(startPos, endPos, player);
 	bullet->SetScale(1.0f);
 	bullet->SetColor({ 1,1,1,1 });
 
@@ -24,7 +24,7 @@ std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos, BaseEnemy*enemy)
 	return bullet;
 }
 
-bool Bullet::Initialize(XMFLOAT3 startPos, Player* player)
+bool Bullet::Initialize(XMFLOAT3 startPos,XMFLOAT3 endPos, Player* player)
 {
 	if (bulletModel == nullptr) {
 		bulletModel = Model::CreateFromObject("SphereCollider");
@@ -32,9 +32,10 @@ bool Bullet::Initialize(XMFLOAT3 startPos, Player* player)
 	bulletObject = Object3d::Create(bulletModel.get());
 	bulletObject->SetPosition(startPos);
 	startPosition = startPos;
-	endPosition = player->GetPosition();
+	bulletPosX = startPos.x;
+	bulletPosZ = startPos.z;
+	endPosition = endPos;
 	collision.radius = 1.0f;
-	targetCollision.radius = 3.0f;
 	isActive = true;
 	this->player = player;
 
@@ -83,15 +84,16 @@ void Bullet::PlayerBulletUpdate()
 void Bullet::EnemyBulletUpdate(Camera*camera)
 {
 	collision.center = XMLoadFloat3(&startPosition);
-	XMFLOAT3 pPos = player->GetPosition();
-	targetCollision.center = XMLoadFloat3(&pPos);
-	float rad = atan2(pPos.z - startPosition.z, pPos.x - startPosition.x);
+	float rad = atan2(endPosition.z - startPosition.z, endPosition.x - startPosition.x);
 
-	float moveX = (float)(cos(rad) * 0.7f + startPosition.x);
-	float moveZ = (float)(sin(rad) * 0.7f + startPosition.z);
+	
+	XMFLOAT2 moveRad = XMFLOAT2{endPosition.x - startPosition.x,endPosition.z - startPosition.z };
+	XMStoreFloat2(&moveRad, XMVector2Normalize(XMLoadFloat2(&moveRad)));
 
-	startPosition = { moveX, 1.0f, moveZ };
-	bulletObject->SetPosition(startPosition);
+	bulletPosX += moveRad.x * 0.7f;
+	bulletPosZ += moveRad.y * 0.7f;
+
+	bulletObject->SetPosition({bulletPosX,1.0f,bulletPosZ});
 	bulletObject->Update();
 
 	if (!player->GetIsPlay() && Collision::CheckSphere2Sphere(collision, player->GetInflictDamageCollision())) {
