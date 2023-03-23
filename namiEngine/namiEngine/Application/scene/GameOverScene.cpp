@@ -56,10 +56,6 @@ void GameOverScene::Update()
 		isFadeOut = true;
 	}
 
-	/*if (input->TriggerMouse(MouseButton::LeftButton) && !isFadeIn) {
-		XMFLOAT2 mousePos = input->GetMousePosition();
-	}*/
-
 	if (isFadeOut) {
 		fadeColor.w += 0.02f;
 		fadeSprite->SetColor(fadeColor);

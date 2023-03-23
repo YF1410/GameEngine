@@ -93,12 +93,12 @@ private:
 	XMFLOAT4 defColor = { 1,1,1,1 };			//基本の色
 
 	float attackPowor = 1;						//攻撃した時に与えるダメージ
-	int attackTimer = 15;
-	bool isNowCombo = false;
-	int comboCount = 0;
-	int comboTimer = 60;
-	bool isRigor = false;
-	int rigorTimer = 15;
+	int attackTimer = 15;						//攻撃の持続時間
+	bool isNowCombo = false;					//コンボ中かどうか
+	int comboCount = 0;							//今何コンボ目かのカウント
+	int comboTimer = 60;						//コンボが切れるまでの時間
+	bool isRigor = false;						//今硬直している時間かどうか
+	int rigorTimer = 15;						//硬直が切れるまでの時間
 	bool isActive = true;						//生きているかどうか
 	bool isHaveElement = false;					//属性を持っているかどうか
 	bool isDash = false;						//ダッシュしているかどうか

@@ -181,10 +181,8 @@ void Player::Attack()
 		}
 
 		//‹­UŒ‚
-		if ((input->TriggerKey(DIK_2) || input->TriggerMouse(MouseButton::RightButton)) && !isPlay && isHaveElement && !isReceivedDamage) {
+		if ((input->TriggerKey(DIK_2) || input->TriggerMouse(MouseButton::RightButton)) && !isPlay) {
 			inflictDamageCollision.radius = 20.0f;
-			//defColor = { 1,1,1,1 };
-			//SetColor(defColor);
 			attackPowor = 2;
 			if (comboCount == 2) {
 				attackPowor = 3;
@@ -194,7 +192,6 @@ void Player::Attack()
 			attackTimer = 30;
 			rigorTimer = 60;
 			comboTimer = 120;
-			//isHaveElement = false;
 			SetModel(attackModel.get());
 			PlayAnimation(true);
 		}

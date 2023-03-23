@@ -81,9 +81,6 @@ void GameScene::Initialize() {
 		enemy.push_back(TackleEnemy::Create(player.get(), cameraObject.get()));
 	}
 
-	//enemy.push_back(InvisibleEnemy::Create(player.get(), cameraObject.get()));
-	//enemy.push_back(BulletEnemy::Create(player.get(), cameraObject.get()));
-
 	groundObj = Object3d::Create(groundModel.get());
 	groundObj->SetScale(8.5f);
 	skydomeObj = Object3d::Create(skydomeModel.get());
@@ -196,7 +193,6 @@ void GameScene::Update() {
 		else {
 			Vector3 colliderVec = { colliderCenter.x, 0, colliderCenter.z };
 			colliderVec = colliderVec.Normalize();
-			//player->SetPosition({ pPos.x - (colliderVec.x * 0.7f), 0 , pPos.z - (colliderVec.z * 0.7f) });
 			player->SetPlayerPos({ pPos.x - (colliderVec.x * 0.7f), 0 , pPos.z - (colliderVec.z * 0.7f) });
 			cameraObject->SetEye({ cameraEye[0] + player->GetPlayerPos().x, cameraEye[1],cameraEye[2] + player->GetPlayerPos().z });
 			cameraObject->SetTarget({ cameraTarget.x + player->GetPlayerPos().x, cameraTarget.y,cameraTarget.z + player->GetPlayerPos().z });
