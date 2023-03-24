@@ -36,6 +36,7 @@ void TitleScene::Update()
 		fadeColor.w -= 0.05f;
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w <= 0.0f) {
+			fadeColor.w = 0.0f;
 			isFadeIn = false;
 		}
 	}
@@ -50,7 +51,6 @@ void TitleScene::Update()
 		}
 
 		isTutorial = true;
-
 	}
 
 	if (isFadeOut) {
@@ -74,8 +74,10 @@ void TitleScene::Draw()
 	if (isTutorial) {
 		tutorial[tutorialNum]->Draw();
 	}
-	fadeSprite->Draw();
-
+	if (isFadeOut) {
+		fadeSprite->Draw();
+	}
+	
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
