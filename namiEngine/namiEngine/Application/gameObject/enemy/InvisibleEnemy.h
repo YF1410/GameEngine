@@ -21,8 +21,8 @@ private:
 	int shotInterval = 30;
 	int shotCount = 0;
 	int invisibleTimer = 60;
-	int randX = 0;
-	int randZ = 0;
+	float randX = 0;
+	float randZ = 0;
 	bool isInvisible = false;
 	bool isFirstMove = true;
 	std::list<std::unique_ptr<Bullet>> bullet;

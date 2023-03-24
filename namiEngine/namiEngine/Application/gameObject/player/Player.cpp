@@ -181,7 +181,7 @@ void Player::Attack()
 		}
 
 		//‹­UŒ‚
-		if ((input->TriggerKey(DIK_2) || input->TriggerMouse(MouseButton::RightButton)) && !isPlay && isHaveElement && !isReceivedDamage) {
+		if ((input->TriggerKey(DIK_2) || input->TriggerMouse(MouseButton::RightButton)) && !isPlay && !isReceivedDamage) {
 			inflictDamageCollision.radius = 20.0f;
 			//defColor = { 1,1,1,1 };
 			//SetColor(defColor);

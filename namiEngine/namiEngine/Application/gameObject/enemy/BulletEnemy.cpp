@@ -34,7 +34,7 @@ void BulletEnemy::Update() {
 	}
 
 	if (shotInterval <= 0) {
-		shotInterval = 60;
+		shotInterval = 120;
 		XMFLOAT3 playerPos = player->GetPosition();
 		XMVECTOR move = XMVECTOR{ playerPos.x - position.x,playerPos.y - position.y,playerPos.z - position.z };
 		move = XMVector3Normalize(move);

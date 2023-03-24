@@ -1,4 +1,5 @@
 #include "InvisibleEnemy.h"
+#include <random>
 
 InvisibleEnemy::InvisibleEnemy()
 {
@@ -27,6 +28,7 @@ std::unique_ptr<InvisibleEnemy> InvisibleEnemy::Create(Player* player, Camera* c
 
 void InvisibleEnemy::Update()
 {
+	BaseEnemy::Update();
 	if (!isInvisible) {
 		shotInterval--;
 		if (shotInterval <= 0) {
@@ -39,8 +41,11 @@ void InvisibleEnemy::Update()
 			if (shotCount == 3) {
 				isInvisible = true;
 				shotCount = 0;
-				randX = rand() % 15 - 30;
-				randZ = rand() % 15 - 30;
+				std::random_device seed_gen;
+				std::mt19937_64 engine(seed_gen());
+				std::uniform_real_distribution<float> posDist(-7.5f, 7.5f);
+				randX = posDist(engine);
+				randZ = posDist(engine);
 			}
 		}
 	}
@@ -72,8 +77,8 @@ void InvisibleEnemy::Move()
 	float rad = atan2(pos.z - position.z, pos.x - position.x);
 	if (!isDamage && isInvisible) {
 		savePos = position;
-		moveX = randX/10 * moveAmount + position.x;
-		moveZ = randZ/10 * moveAmount + position.x;
+		moveX = randX * moveAmount + position.x;
+		moveZ = randZ * moveAmount + position.z;
 	}
 
 	if (isFirstMove) {

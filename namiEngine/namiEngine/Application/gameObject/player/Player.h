@@ -67,6 +67,7 @@ public:
 	int GetDashCount() { return dashCount; }
 	int GetAttackCount() { return attackCount; }
 	bool GetIsHaveElement() { return isHaveElement; }
+	float GetMoveAmount() { return moveAmount; }
 
 	//セッター
 	void SetIsReceivedDamage(bool isReceivedDamage) { this->isReceivedDamage = isReceivedDamage; }

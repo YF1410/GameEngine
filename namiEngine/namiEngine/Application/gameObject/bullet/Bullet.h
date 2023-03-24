@@ -22,6 +22,7 @@ private: // エイリアス
 public:
 	static std::unique_ptr<Bullet> Create(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player);
 	static std::unique_ptr<Bullet> Create(XMFLOAT3 startPos, BaseEnemy*enemy);
+	static void SetSkydomeCollier(Sphere skydomeCollider);
 public:
 	bool Initialize(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player);
 	bool Initialize(XMFLOAT3 startPos, BaseEnemy*enemy);
@@ -42,5 +43,5 @@ private:
 	std::unique_ptr<Object3d> bulletObject;
 private:
 	static std::unique_ptr<Model> bulletModel;
+	static Sphere skydomeCollider;
 };
-

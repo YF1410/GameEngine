@@ -23,7 +23,7 @@ private:
 	bool isShotRange = false;
 	bool isFirstMove = true;
 	Sphere shotRange;
-	int shotInterval = 60;
+	int shotInterval = 120;
 	std::list<std::unique_ptr<Bullet>> bullet;
 };
 

@@ -1,6 +1,12 @@
 #include "Bullet.h"
 
 std::unique_ptr<Model> Bullet::bulletModel;
+Sphere Bullet::skydomeCollider;
+
+void Bullet::SetSkydomeCollier(Sphere skydomeCollider) {
+	Bullet::skydomeCollider = skydomeCollider;
+	Bullet::skydomeCollider.radius = 500.0f;
+}
 
 std::unique_ptr<Bullet> Bullet::Create(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player)
 {
@@ -38,6 +44,7 @@ bool Bullet::Initialize(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player)
 	collision.radius = 1.0f;
 	isActive = true;
 	this->player = player;
+	this->skydomeCollider = skydomeCollider;
 
 	return true;
 }
@@ -99,6 +106,10 @@ void Bullet::EnemyBulletUpdate(Camera* camera)
 			camera->SetShakeFlag(true, 6);
 			player->SetIsReceivedDamage(true);
 		}
+	}
+	
+	if (!Collision::CheckSphere2Sphere(collision, skydomeCollider)) {
+		isActive = false;
 	}
 }
 
