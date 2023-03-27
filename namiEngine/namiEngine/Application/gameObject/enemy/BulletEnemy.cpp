@@ -49,7 +49,7 @@ void BulletEnemy::Update() {
 	bullet.remove_if([](std::unique_ptr<Bullet>& bulletObj) {return !bulletObj->GetIsActive(); });
 
 	for (std::unique_ptr<Bullet>& bulletObj : bullet) {
-		bulletObj->EnemyBulletUpdate(camera);
+		bulletObj->Update(camera);
 	}
 	shotRange.center = XMLoadFloat3(&position);
 }

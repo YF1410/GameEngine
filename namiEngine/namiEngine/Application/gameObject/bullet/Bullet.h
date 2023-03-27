@@ -21,17 +21,13 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 public:
 	static std::unique_ptr<Bullet> Create(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player);
-	static std::unique_ptr<Bullet> Create(XMFLOAT3 startPos, BaseEnemy*enemy);
 	static void SetSkydomeCollier(Sphere skydomeCollider);
 public:
 	bool Initialize(XMFLOAT3 startPos, XMVECTOR shotRad, Player* player);
-	bool Initialize(XMFLOAT3 startPos, BaseEnemy*enemy);
-	void PlayerBulletUpdate();
-	void EnemyBulletUpdate(Camera*camera);
+	void Update(Camera*camera);
 	void Draw();
 	bool GetIsActive() { return isActive; }
 private:
-	BaseEnemy* enemy;
 	Player* player;
 	bool isActive;
 	Sphere collision;

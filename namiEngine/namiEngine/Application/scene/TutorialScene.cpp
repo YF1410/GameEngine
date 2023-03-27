@@ -128,12 +128,12 @@ void TutorialScene::Update() {
 		cameraCollider.center = XMLoadFloat3(&colliderCenter);
 
 		if (Collision::CheckSphereInside2Sphere(cameraCollider, skydomeCollider)) {
-			player->SetIsMapEnd(false);
+			
 			cameraObject->SetEye({ cameraEye[0] + player->GetPlayerPos().x, cameraEye[1],cameraEye[2] + player->GetPlayerPos().z });
 			cameraObject->SetTarget({ cameraTarget.x + player->GetPlayerPos().x, cameraTarget.y,cameraTarget.z + player->GetPlayerPos().z });
 		}
 		else {
-			player->SetIsMapEnd(true);
+
 		}
 
 		Vector3 vec = { pPos.x - cPos.x, pPos.y - cPos.y,pPos.z - cPos.z };

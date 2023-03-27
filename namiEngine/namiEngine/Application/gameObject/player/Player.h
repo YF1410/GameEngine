@@ -4,11 +4,9 @@
 #include "CollisionPrimitive.h"
 #include "input.h"
 #include "Vector3.h"
-#include "Bullet.h"
 #include "BaseEnemy.h"
 
 class BaseEnemy;
-class Bullet;
 class GameScene;
 
 class Player :
@@ -72,7 +70,6 @@ public:
 	//セッター
 	void SetIsReceivedDamage(bool isReceivedDamage) { this->isReceivedDamage = isReceivedDamage; }
 	void SetIsHaveElement(bool isHaveElement) { this->isHaveElement = isHaveElement; }
-	void SetIsMapEnd(bool isMapEnd) { this->isMapEnd = isMapEnd; }
 	void SetIsNowCameraShake(bool isNowCameraShake) { this->isNowCameraShake = isNowCameraShake; }
 	void SetPlayerPos(XMFLOAT3 playerPos) { this->playerPos = playerPos; }
 	void SetDefColor(XMFLOAT4 color) { defColor = color; }
@@ -106,7 +103,6 @@ private:
 	bool isAttack = false;						//攻撃しているかどうか
 	bool isReceivedDamage = false;				//攻撃を受けているかどうか
 	bool isNowCameraShake = false;				//カメラシェイクをしているかどうか
-	bool isMapEnd = false;						//マップの端っこにいるかどうか
 	bool isMove = false;						//動いているかどうか
 	bool isIdle = false;						//待機中かどうか
 	Sphere receiveDamageCollision;				//ダメージを受ける当たり判定
@@ -120,7 +116,6 @@ private:
 	std::unique_ptr<FbxModel> moveModel;		//移動時のモデル
 	std::unique_ptr<FbxModel> rollModel;		//ダッシュ時のモデル
 	std::unique_ptr<FbxModel> idleModel;		//操作していない時のモデル
-	std::list<std::unique_ptr<Bullet>> bullet;	//弾
 	//Mediatorパターン
 
 	//止まっている時に行動ゲージチャージ

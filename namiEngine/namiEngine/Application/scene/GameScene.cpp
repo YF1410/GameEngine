@@ -22,7 +22,6 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
-	srand(static_cast<unsigned int>(time(NULL)));
 	// nullptrチェック
 	dxCommon = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
@@ -82,18 +81,17 @@ void GameScene::Initialize() {
 
 
 	for (int i = 0; i < 5; i++) {
-		//enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
-		
+		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
 	}
 
 	for (int i = 0; i < 3; i++) {
-		//enemy.push_back(BulletEnemy::Create(player.get(), cameraObject.get()));
-		//enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
-		//enemy.push_back(TackleEnemy::Create(player.get(), cameraObject.get()));
+		enemy.push_back(BulletEnemy::Create(player.get(), cameraObject.get()));
 	}
 
-	enemy.push_back(InvisibleEnemy::Create(player.get(), cameraObject.get()));
-	//enemy.push_back(BulletEnemy::Create(player.get(), cameraObject.get()));
+	for (int i = 0; i < 2; i++) {
+		enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
+		enemy.push_back(TackleEnemy::Create(player.get(), cameraObject.get()));
+	}
 
 	groundObj = Object3d::Create(groundModel.get());
 	groundObj->SetScale(8.5f);
@@ -191,7 +189,6 @@ void GameScene::Update() {
 		lightGroup->SetCircleShadowFactorAngle(0, circleShadowFactorAngle);
 
 		if (Collision::CheckSphereInside2Sphere(cameraCollider, skydomeCollider)) {
-			player->SetIsMapEnd(false);
 			cameraObject->SetEye({ cameraEye[0] + player->GetPlayerPos().x, cameraEye[1],cameraEye[2] + player->GetPlayerPos().z });
 			cameraObject->SetTarget({ cameraTarget.x + player->GetPlayerPos().x, cameraTarget.y,cameraTarget.z + player->GetPlayerPos().z });
 		}
@@ -201,7 +198,6 @@ void GameScene::Update() {
 			player->SetPlayerPos({ pPos.x - (colliderVec.x * player->GetMoveAmount()), 0 , pPos.z - (colliderVec.z * player->GetMoveAmount()) });
 			cameraObject->SetEye({ cameraEye[0] + player->GetPlayerPos().x, cameraEye[1],cameraEye[2] + player->GetPlayerPos().z });
 			cameraObject->SetTarget({ cameraTarget.x + player->GetPlayerPos().x, cameraTarget.y,cameraTarget.z + player->GetPlayerPos().z });
-			player->SetIsMapEnd(true);
 		}
 
 		player->Move(moveVec);

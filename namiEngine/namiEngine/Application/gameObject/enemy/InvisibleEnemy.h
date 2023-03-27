@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseEnemy.h"
+#include "Bullet.h"
 
 class InvisibleEnemy : public BaseEnemy
 {

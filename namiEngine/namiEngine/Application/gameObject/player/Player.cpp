@@ -45,12 +45,6 @@ void Player::Initialize(std::list<std::unique_ptr<BaseEnemy>>* enemy) {
 }
 
 void Player::Update() {
-	//íeÇÃçÌèú
-	bullet.remove_if([](std::unique_ptr<Bullet>& bulletObj) {return !bulletObj->GetIsActive(); });
-	//íeÇÃçXêV
-	for (std::unique_ptr<Bullet>& bulletObj : bullet) {
-		bulletObj->PlayerBulletUpdate();
-	}
 
 	if (isAttack) {
 		attackTimer--;
@@ -145,10 +139,6 @@ void Player::Update() {
 void Player::Draw(ID3D12GraphicsCommandList* cmdList) {
 	FbxObject3d::Draw(cmdList);
 	Object3d::PreDraw(cmdList);
-	//íeï`âÊ
-	for (std::unique_ptr<Bullet>& bulletObj : bullet) {
-		bulletObj->Draw();
-	}
 
 	//ìñÇΩÇËîªíËï`âÊ
 	receiveDamageColliderVisualizationObject->Draw();
@@ -194,16 +184,6 @@ void Player::Attack()
 			comboTimer = 120;
 			SetModel(attackModel.get());
 			PlayAnimation(true);
-		}
-	}
-
-	//íeçUåÇ(ãììÆÇÃÇ›
-	if (input->TriggerKey(DIK_3)) {
-		attackPowor = 3;
-		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
-			if (Collision::CheckSphere2Sphere(inflictDamageCollision, enemyObj->GetCollision())) {
-				bullet.push_back(Bullet::Create(position, enemyObj.get()));
-			}
 		}
 	}
 

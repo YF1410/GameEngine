@@ -67,8 +67,8 @@ void BaseEnemy::Draw(ID3D12GraphicsCommandList* cmdList) {
 
 void BaseEnemy::Move()
 {
-	XMFLOAT3 pos = player->GetPosition();
-	float rad = atan2(pos.z - position.z, pos.x - position.x);
+	XMFLOAT3 pPos = player->GetPosition();
+	float rad = atan2(pPos.z - position.z, pPos.x - position.x);
 	if (!isDamage) {
 		savePos = position;
 		moveX = (float)(cos(rad) * moveAmount + position.x);
@@ -117,35 +117,36 @@ void BaseEnemy::CheckCollisionToPlayer()
 	}
 }
 
-void BaseEnemy::randPosX() {
-	float x = static_cast<float>(rand() % 100 - 50);
-	if (x >= -10 && x <= 10) {
+void BaseEnemy::randPosX(float posDist) {
+	if (posDist >= -10 && posDist <= 10) {
 		isDecisionPosX = false;
 	}
 	else {
-		position.x = x;
+		position.x = posDist;
 		isDecisionPosX = true;
 	}
 }
 
-void BaseEnemy::randPosZ() {
-	float z = static_cast<float>(rand() % 100 - 50);
-	if (z >= -10 && z <= 10) {
+void BaseEnemy::randPosZ(float posDist) {
+	if (posDist >= -10 && posDist <= 10) {
 		isDecisionPosZ = false;
 	}
 	else {
-		position.z = z;
+		position.z = posDist;
 		isDecisionPosZ = true;
 	}
 }
 
 void BaseEnemy::randPos() {
+	std::random_device seed_gen;
+	std::mt19937_64 engine(seed_gen());
+	std::uniform_real_distribution<float> posDist(-50.0f, 50.0f);
 	while (!isDecisionPosX) {
-		randPosX();
+		randPosX(posDist(engine));
 	}
 
 	while (!isDecisionPosZ) {
-		randPosZ();
+		randPosZ(posDist(engine));
 	}
 
 	isDecisionPosX = false;

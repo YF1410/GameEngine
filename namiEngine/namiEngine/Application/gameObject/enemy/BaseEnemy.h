@@ -4,6 +4,7 @@
 #include "CollisionPrimitive.h"
 #include "Player.h"
 #include "Collision.h"
+#include <random>
 
 class Player;
 
@@ -31,8 +32,8 @@ public:
 
 	virtual void Draw(ID3D12GraphicsCommandList* cmdList);
 
-	void randPosX();
-	void randPosZ();
+	void randPosX(float posDist);
+	void randPosZ(float posDist);
 	void randPos();
 
 	//ÉQÉbÉ^Å[
