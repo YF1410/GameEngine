@@ -34,8 +34,12 @@ void InvisibleEnemy::Update()
 		if (shotInterval <= 0) {
 			shotInterval = 30;
 			XMFLOAT3 playerPos = player->GetPosition();
+			XMVECTOR move = XMVECTOR{ playerPos.x - position.x,playerPos.y - position.y,playerPos.z - position.z };
+			move = XMVector3Normalize(move);
+			move *= 0.7f;
 			for (int i = -1; i < 2; i++) {
-				bullet.push_back(Bullet::Create(position, { playerPos.x + (i * 10),1.0f,playerPos.z + (i * 10) }, player));
+				XMVECTOR shotRad = XMVector3TransformNormal(move, XMMatrixRotationY(XMConvertToRadians(i * 20)));
+				bullet.push_back(Bullet::Create(position, shotRad, player));
 			}
 			shotCount++;
 			if (shotCount == 3) {
@@ -55,6 +59,12 @@ void InvisibleEnemy::Update()
 			isInvisible = false;
 			invisibleTimer = 60;
 		}
+	}
+
+	bullet.remove_if([](std::unique_ptr<Bullet>& bulletObj) {return !bulletObj->GetIsActive(); });
+
+	for (std::unique_ptr<Bullet>& bulletObj : bullet) {
+		bulletObj->Update(camera);
 	}
 }
 
