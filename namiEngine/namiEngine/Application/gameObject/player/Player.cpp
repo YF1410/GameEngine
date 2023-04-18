@@ -102,7 +102,7 @@ void Player::Update() {
 		dashTimer--;	//タイマーを減らす
 		if (dashTimer <= 0) {	//0以下になったら
 			//タイマー初期化してフラグをfalseに
-			dashTimer = 16;
+			dashTimer = 30;
 			isDash = false;
 		}
 	}
