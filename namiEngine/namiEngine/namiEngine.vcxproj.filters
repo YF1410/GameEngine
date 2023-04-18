@@ -165,6 +165,9 @@
     <ClCompile Include="Application\gameObject\enemy\InvisibleEnemy.cpp">
       <Filter>Application\GameObject\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Application\scene\StageManager.cpp">
+      <Filter>Application\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\NamiGame.h">
@@ -328,6 +331,9 @@
     </ClInclude>
     <ClInclude Include="Application\gameObject\enemy\InvisibleEnemy.h">
       <Filter>Application\GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\scene\StageManager.h">
+      <Filter>Application\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

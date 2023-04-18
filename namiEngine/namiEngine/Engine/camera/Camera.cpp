@@ -246,7 +246,7 @@ void Camera::CameraShake()
 		shakeTimer++;
 		if (shakeTimer > 0)
 		{
-			shake.x = static_cast<float>((rand() % (shakeCount - attenuation) - (shakeCount / 2)));//(rand() % (int)(Ease(In,Quad,(float)(shakeTimer /20),100,1)));
+			shake.x = static_cast<float>((rand() % (shakeCount - attenuation) - (shakeCount / 2)));
 			shake.y = static_cast<float>((rand() % (shakeCount - attenuation) - (shakeCount / 2)));
 			//shake.z = (rand() % (shakeCount - attenuation) - (shakeCount / 2));//(rand() % (int)Ease(In, Quad, (float)(shakeTimer / 20), 100, 1));
 			shakeEye = { shake.x + cameraEye.x,shake.y + cameraEye.y,shake.z + cameraEye.z };
