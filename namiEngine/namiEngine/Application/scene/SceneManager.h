@@ -1,6 +1,6 @@
 #pragma once
 #include "SceneInterface.h"
-
+#include "StageManager.h"
 class SceneManager
 {
 public:
@@ -16,7 +16,7 @@ public:
 
 	void ToTutorialScene();
 
-	void ToGameScene();
+	void ToGameScene(StageManager::StageType stageType);
 
 	void ToGameClearScene();
 
@@ -31,7 +31,6 @@ public:
 	static SceneManager* GetInstance();
 private:
 	static SceneManager instance;
-
 private:
 	SceneManager() = default;
 	SceneManager(const SceneManager&) = delete;

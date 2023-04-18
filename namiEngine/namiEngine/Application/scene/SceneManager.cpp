@@ -33,8 +33,9 @@ void SceneManager::ToTutorialScene()
 	Initialize(new TutorialScene);
 }
 
-void SceneManager::ToGameScene()
+void SceneManager::ToGameScene(StageManager::StageType stageType)
 {
+	StageManager::GetInstance()->SetStageType(stageType);
 	Initialize(new GameScene);
 }
 

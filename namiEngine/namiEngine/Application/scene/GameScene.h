@@ -13,6 +13,8 @@
 #include "FbxObject3d.h"
 #include "CollisionPrimitive.h"
 
+#include "SceneManager.h"
+
 #include "BaseEnemy.h"
 #include "ElementObject.h"
 #include "Player.h"
@@ -71,6 +73,14 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw() override;
+
+	void stageEnemy(StageManager::StageType nowStageNum);
+
+	void firstStage();
+	void secondStage();
+	void thirdStage();
+	void fourthStage();
+	void fifthStage();
 
 protected: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
