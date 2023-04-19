@@ -46,56 +46,8 @@ void Player::Initialize(std::list<std::unique_ptr<BaseEnemy>>* enemy) {
 
 void Player::Update() {
 
-	if (isAttack) {
-		attackTimer--;
-		if (attackTimer <= 0) {
-			isAttack = false;
-			isRigor = true;
-			StopAnimation();
-		}
-	}
-
-	if (isRigor) {
-		rigorTimer--;
-		if (rigorTimer <= 0) {
-			isRigor = false;
-			isNowCombo = true;
-			comboCount++;
-		}
-	}
-
-	if (isNowCombo) {
-		comboTimer--;
-		if (comboTimer <= 0) {
-			isNowCombo = false;
-			comboCount = 0;
-		}
-	}
-
-	//行動に応じてモーションの変化
-	if (!isPlay) {
-		isAttack = false;
-		inflictDamageCollision.radius = 15.0f;
-		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
-			enemyObj->SetIsFirstDamage(false);
-		}
-		if (isMove) {
-			SetModel(moveModel.get());
-			ResetAnimationTime();
-		}
-		else if (isIdle) {
-			SetModel(idleModel.get());
-			ResetAnimationTime();
-		}
-
-		if (!isLoop) {
-			LoopAnimation();
-		}
-	}
-
-	//毎フレーム待機状態に
-	isIdle = true;
-	isMove = false;
+	Combo();
+	ChangeMotion();
 
 	//ダッシュ状態の時
 	if (isDash) {
@@ -127,13 +79,78 @@ void Player::Update() {
 		HP = 0;
 	}
 
+	CollisionUpdate();
+	FbxObject3d::Update();
+}
+
+void Player::CollisionUpdate()
+{
 	//ダメージ関係の当たり判定更新
 	receiveDamageCollision.center = XMLoadFloat3(&position);
 	inflictDamageCollision.center = XMLoadFloat3(&position);
 	receiveDamageColliderVisualizationObject->SetPosition(position);
 	receiveDamageColliderVisualizationObject->SetScale(receiveDamageCollision.radius);
 	receiveDamageColliderVisualizationObject->Update();
-	FbxObject3d::Update();
+	inflictDamageColliderVisualizationObject->SetPosition(position);
+	inflictDamageColliderVisualizationObject->SetScale(inflictDamageCollision.radius);
+	inflictDamageColliderVisualizationObject->Update();
+}
+
+void Player::Combo()
+{
+	if (isAttack) {
+		attackTimer--;
+		if (attackTimer <= 0) {
+			isAttack = false;
+			isRigor = true;
+			StopAnimation();
+		}
+	}
+
+	if (isRigor) {
+		rigorTimer--;
+		if (rigorTimer <= 0) {
+			isRigor = false;
+			isNowCombo = true;
+			comboCount++;
+		}
+	}
+
+	if (isNowCombo) {
+		comboTimer--;
+		if (comboTimer <= 0) {
+			isNowCombo = false;
+			comboCount = 0;
+		}
+	}
+}
+
+void Player::ChangeMotion()
+{
+	//行動に応じてモーションの変化
+	if (!isPlay) {
+		isAttack = false;
+		inflictDamageCollision.radius = 15.0f;
+		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
+			enemyObj->SetIsFirstDamage(false);
+		}
+		if (isMove) {
+			SetModel(moveModel.get());
+			ResetAnimationTime();
+		}
+		else if (isIdle) {
+			SetModel(idleModel.get());
+			ResetAnimationTime();
+		}
+
+		if (!isLoop) {
+			LoopAnimation();
+		}
+	}
+
+	//毎フレーム待機状態に
+	isIdle = true;
+	isMove = false;
 }
 
 void Player::Draw(ID3D12GraphicsCommandList* cmdList) {
@@ -186,10 +203,6 @@ void Player::Attack()
 			PlayAnimation(true);
 		}
 	}
-
-	inflictDamageColliderVisualizationObject->SetPosition({ position.x,position.y,position.z });
-	inflictDamageColliderVisualizationObject->SetScale(inflictDamageCollision.radius);
-	inflictDamageColliderVisualizationObject->Update();
 }
 
 void Player::Move(Vector3 vec) {

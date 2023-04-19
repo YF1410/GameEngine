@@ -30,6 +30,8 @@ public:
 	//çXêV
 	virtual void Update();
 
+	void CollisionUpdate();
+
 	virtual void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	void randPosX(float posDist);

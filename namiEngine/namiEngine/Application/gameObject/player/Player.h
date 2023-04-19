@@ -32,6 +32,21 @@ public:
 	void Update();
 
 	/// <summary>
+	/// 毎フレーム処理
+	/// </summary>
+	void CollisionUpdate();
+
+	/// <summary>
+	/// コンボ処理
+	/// </summary>
+	void Combo();
+
+	/// <summary>
+	/// モーション変更
+	/// </summary>
+	void ChangeMotion();
+
+	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
