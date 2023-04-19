@@ -1,6 +1,5 @@
 ﻿#include "GameScene.h"
 #include "FbxLoader.h"
-#include "SceneManager.h"
 #include "Vector3.h"
 #include "Bullet.h"
 
@@ -79,19 +78,7 @@ void GameScene::Initialize() {
 
 	Bullet::SetSkydomeCollier(skydomeCollider);
 
-
-	for (int i = 0; i < 5; i++) {
-		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
-	}
-
-	for (int i = 0; i < 3; i++) {
-		enemy.push_back(BulletEnemy::Create(player.get(), cameraObject.get()));
-	}
-
-	for (int i = 0; i < 2; i++) {
-		enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
-		enemy.push_back(TackleEnemy::Create(player.get(), cameraObject.get()));
-	}
+	stageEnemy(StageManager::GetInstance()->GetStageType());
 
 	groundObj = Object3d::Create(groundModel.get());
 	groundObj->SetScale(8.5f);
@@ -241,7 +228,12 @@ void GameScene::Update() {
 		if (fadeColor.w >= 1.0f) {
 			isFadeOut = false;
 			if (isGameClear) {
-				SceneManager::GetInstance()->ToGameClearScene();
+				if (StageManager::GetInstance()->GetStageType() < StageManager::fifthStage) {
+					SceneManager::GetInstance()->ToGameScene(StageManager::GetInstance()->GetNextStageType());
+				}
+				else if (StageManager::GetInstance()->GetStageType() == StageManager::fifthStage) {
+					SceneManager::GetInstance()->ToGameClearScene();
+				}
 			}
 			else if (isGameOver) {
 				SceneManager::GetInstance()->ToGameOverScene();
@@ -324,4 +316,86 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 #pragma endregion
+}
+
+void GameScene::stageEnemy(StageManager::StageType nowStageNum)
+{
+	if (nowStageNum == StageManager::firstStage) {
+		firstStage();
+	}
+	else if (nowStageNum == StageManager::secondStage) {
+		secondStage();
+	}
+	else if (nowStageNum == StageManager::thirdStage) {
+		thirdStage();
+	}
+	else if (nowStageNum == StageManager::fourthStage) {
+		fourthStage();
+	}
+	else if (nowStageNum == StageManager::fifthStage) {
+		fifthStage();
+	}
+}
+
+void GameScene::firstStage()
+{
+	for (int i = 0; i < 10; i++) {
+		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
+	}
+}
+
+void GameScene::secondStage()
+{
+	for (int i = 0; i < 10; i++) {
+		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
+	}
+
+	for (int i = 0; i < 2; i++) {
+		enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
+	}
+}
+
+void GameScene::thirdStage()
+{
+	for (int i = 0; i < 8; i++) {
+		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
+	}
+
+	for (int i = 0; i < 2; i++) {
+		enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
+		enemy.push_back(TackleEnemy::Create(player.get(), cameraObject.get()));
+	}
+}
+
+void GameScene::fourthStage()
+{
+	for (int i = 0; i < 7; i++) {
+		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
+	}
+
+	for (int i = 0; i < 3; i++) {
+		enemy.push_back(BulletEnemy::Create(player.get(), cameraObject.get()));
+	}
+
+	for (int i = 0; i < 2; i++) {
+		enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
+		enemy.push_back(TackleEnemy::Create(player.get(), cameraObject.get()));
+	}
+}
+
+void GameScene::fifthStage()
+{
+	for (int i = 0; i < 5; i++) {
+		enemy.push_back(BaseEnemy::Create(player.get(), cameraObject.get()));
+	}
+
+	for (int i = 0; i < 3; i++) {
+		enemy.push_back(BulletEnemy::Create(player.get(), cameraObject.get()));
+	}
+
+	for (int i = 0; i < 2; i++) {
+		enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
+		enemy.push_back(TackleEnemy::Create(player.get(), cameraObject.get()));
+		enemy.push_back(InvisibleEnemy::Create(player.get(), cameraObject.get()));
+	}
 }

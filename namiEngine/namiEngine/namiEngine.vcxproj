@@ -173,6 +173,7 @@
     <ClCompile Include="Application\scene\GameClearScene.cpp" />
     <ClCompile Include="Application\scene\GameOverScene.cpp" />
     <ClCompile Include="Application\scene\GameScene.cpp" />
+    <ClCompile Include="Application\scene\StageManager.cpp" />
     <ClCompile Include="Application\scene\SceneManager.cpp" />
     <ClCompile Include="Application\scene\TitleScene.cpp" />
     <ClCompile Include="Application\scene\TutorialScene.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="Application\scene\GameClearScene.h" />
     <ClInclude Include="Application\scene\GameOverScene.h" />
     <ClInclude Include="Application\scene\GameScene.h" />
+    <ClInclude Include="Application\scene\StageManager.h" />
     <ClInclude Include="Application\scene\SceneInterface.h" />
     <ClInclude Include="Application\scene\SceneManager.h" />
     <ClInclude Include="Application\scene\TitleScene.h" />

@@ -62,7 +62,7 @@ void GameOverScene::Update()
 		if (fadeColor.w >= 1.0f) {
 			isFadeOut = false;
 			if (isRetry) {
-				SceneManager::GetInstance()->ToGameScene();
+				SceneManager::GetInstance()->ToGameScene(StageManager::GetInstance()->GetStageType());
 			}
 			else if (!isRetry) {
 				SceneManager::GetInstance()->ToTitleScene();
