@@ -20,6 +20,8 @@ public:
 private:
 	int moveInterval = 60;
 	int shotInterval = 30;
+	int shotCooldown = 120;
+	bool isShotCooldown = false;
 	int shotCount = 0;
 	int invisibleTimer = 60;
 	float randX = 0;

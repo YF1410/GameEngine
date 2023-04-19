@@ -31,8 +31,8 @@ void InvisibleEnemy::Update()
 	BaseEnemy::Update();
 	if (!isInvisible) {
 		shotInterval--;
-		if (shotInterval <= 0) {
-			shotInterval = 30;
+		if (shotInterval <= 0 && !isShotCooldown) {
+			shotInterval = 20;
 			XMFLOAT3 playerPos = player->GetPosition();
 			XMVECTOR move = XMVECTOR{ playerPos.x - position.x,playerPos.y - position.y,playerPos.z - position.z };
 			move = XMVector3Normalize(move);
@@ -42,7 +42,16 @@ void InvisibleEnemy::Update()
 				bullet.push_back(Bullet::Create(position, shotRad, player));
 			}
 			shotCount++;
-			if (shotCount == 3) {
+			if (shotCount == 5) {
+				isShotCooldown = true;
+			}
+		}
+
+		if (isShotCooldown) {
+			shotCooldown--;
+			if (shotCooldown <= 0) {
+				isShotCooldown = false;
+				shotCooldown = 120;
 				isInvisible = true;
 				shotCount = 0;
 				std::random_device seed_gen;
