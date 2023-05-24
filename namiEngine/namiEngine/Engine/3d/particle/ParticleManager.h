@@ -140,6 +140,9 @@ public: // メンバ関数
 	/// </summary>
 	void Finalize();
 
+	//パーティクル全削除
+	void Clear() { particles.clear(); }
+
 private: // メンバ変数
 	// デバイス
 	ComPtr<ID3D12Device> device = nullptr;
