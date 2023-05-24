@@ -1,8 +1,6 @@
 #include "DirectXCommon.h"
 #include <vector>
 #include <cassert>
-#include <imgui_impl_win32.h>
-#include <imgui_impl_dx12.h>
 #include "SafeDelete.h"
 
 #pragma comment(lib, "d3d12.lib")
@@ -79,6 +77,10 @@ void DirectXCommon::Initialize(HWND hwnd) {
 	if (!InitImgui()) {
 		assert(0);
 	}
+
+	//FPS固定初期化
+	fixFPS = std::make_unique<FixFPS>();
+	fixFPS->Initialize();
 }
 
 void DirectXCommon::PreDraw() {
@@ -105,11 +107,6 @@ void DirectXCommon::PreDraw() {
 	// シザリング矩形の設定
 	commandList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, WinApp::window_width, WinApp::window_height));
 
-	// imgui開始
-	ImGui_ImplDX12_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
 	//// 経過時間計測
 	//auto now = std::chrono::steady_clock::now();
 	//deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - lastUpdate).count() / 1000000.0f;
@@ -132,11 +129,6 @@ void DirectXCommon::PreDraw() {
 }
 
 void DirectXCommon::PostDraw() {
-	// imgui描画
-	ImGui::Render();
-	ID3D12DescriptorHeap* ppHeaps[] = { imguiHeap.Get() };
-	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
 
 	// リソースバリアを変更（描画対象→表示状態）
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
@@ -160,6 +152,9 @@ void DirectXCommon::PostDraw() {
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
+
+	//FPS固定
+	fixFPS->Update();
 
 	commandAllocator->Reset(); // キューをクリア
 	commandList->Reset(commandAllocator.Get(), nullptr); // 再びコマンドリストを貯める準備
@@ -447,26 +442,6 @@ bool DirectXCommon::InitImgui() {
 	DXGI_SWAP_CHAIN_DESC swcDesc = {};
 	result = swapchain->GetDesc(&swcDesc);
 	if (FAILED(result)) {
-		assert(0);
-		return false;
-	}
-
-	if (ImGui::CreateContext() == nullptr) {
-		assert(0);
-		return false;
-	}
-	if (!ImGui_ImplWin32_Init(hwnd)) {
-		assert(0);
-		return false;
-	}
-	if (!ImGui_ImplDX12_Init(
-		GetDevice().Get(),
-		swcDesc.BufferCount,
-		swcDesc.BufferDesc.Format,
-		imguiHeap.Get(),
-		imguiHeap->GetCPUDescriptorHandleForHeapStart(),
-		imguiHeap->GetGPUDescriptorHandleForHeapStart()
-	)) {
 		assert(0);
 		return false;
 	}

@@ -9,6 +9,7 @@
 #include <chrono>
 
 #include "WinApp.h"
+#include "FixFPS.h"
 
 class DirectXCommon {
 private: // エイリアス
@@ -59,6 +60,8 @@ private: // メンバ変数
 	float frameRate = 0.0f;
 	float commandWaitTime = 0.0f;
 	std::chrono::steady_clock::time_point lastUpdate;
+
+	std::unique_ptr<FixFPS> fixFPS;
 
 private: // メンバ関数
 	/// <summary>
