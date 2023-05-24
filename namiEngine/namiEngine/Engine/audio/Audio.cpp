@@ -30,8 +30,8 @@ bool Audio::Initialize() {
 
 	return true;
 }
-//                          ファイル名   ループする回数(0～255) 音のボリューム
-void Audio::PlayWave(const char* filename, int loopCount, float volume) {
+//ファイル名   ループする回数(0～255) 音のボリューム
+void Audio::PlayWave(const char* filename, bool loop, float volume) {
 	HRESULT result;
 	//ファイル入力ストリームのインスタンス
 	std::ifstream file;
@@ -84,7 +84,9 @@ void Audio::PlayWave(const char* filename, int loopCount, float volume) {
 	buf.pContext = pBuffer;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 	buf.AudioBytes = data.size;
-	buf.LoopCount = loopCount;
+	if (loop == true) {
+		buf.LoopCount = XAUDIO2_LOOP_INFINITE;
+	}
 
 	// 波形データの再生
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
