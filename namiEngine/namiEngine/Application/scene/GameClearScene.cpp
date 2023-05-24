@@ -38,7 +38,7 @@ void GameClearScene::Update()
 {
 	Input* input = Input::GetInstance();
 	if (isFadeIn) {
-		fadeColor.w -= 0.05f;
+		fadeColor.w -= 0.04f;
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w <= 0.0f) {
 			isFadeIn = false;
@@ -57,12 +57,12 @@ void GameClearScene::Update()
 	}
 
 	if (isFadeOut) {
-		fadeColor.w += 0.02f;
+		fadeColor.w += 0.04f;
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w >= 1.0f) {
 			isFadeOut = false;
 			if (isRetry) {
-				SceneManager::GetInstance()->ToGameScene(StageManager::GetInstance()->GetNextStageType());
+				SceneManager::GetInstance()->ToGameScene(StageManager::GetInstance()->GetStageType());
 			}
 			else if (!isRetry) {
 				SceneManager::GetInstance()->ToTitleScene();

@@ -27,6 +27,7 @@ std::unique_ptr<BaseEnemy> BaseEnemy::Create(Player* player,Camera*camera) {
 void BaseEnemy::Initialize(Player*player,Camera*camera) {
 	FbxObject3d::Initialize();
 
+	SetColor(defaultColor);
 	this->player = player;
 	this->camera = camera;
 	savePos = position;
@@ -39,11 +40,11 @@ void BaseEnemy::Initialize(Player*player,Camera*camera) {
 	XMFLOAT3 fixCollisionPos = { position.x,0,position.z };
 	collision.center = XMLoadFloat3(&fixCollisionPos);
 	collision.radius = 3.0f;
-
 	colliderVisualizationModel = Model::CreateFromObject("SphereCollider");
 	colliderVisualizationObject = Object3d::Create(colliderVisualizationModel.get());
 	colliderVisualizationObject->SetPosition(fixCollisionPos);
 	colliderVisualizationObject->SetScale(collision.radius);
+	colliderVisualizationObject->SetCollider(new SphereCollider(XMLoadFloat3(&fixCollisionPos),3.0f));
 	colliderVisualizationObject->SetColor({ 1,0,0,0.3f });
 	LoopAnimation();
 }

@@ -4,7 +4,7 @@ ElementEnemy::ElementEnemy()
 {
 	haveElement = true;
 	defaultColor = { 1,0,0,1 };
-	moveAmount = 0.3f;
+	moveAmount = 0.4f;
 	SetColor(defaultColor);
 }
 

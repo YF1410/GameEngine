@@ -13,7 +13,6 @@ public:
 	void Finalize()override;
 	void Update()override;
 	void Draw()override;
-	//void SetIsFadeIn(bool isFadeIn);
 	void SpecifiedMove();
 private:
 	std::unique_ptr<Sprite> titleBG;
@@ -33,7 +32,7 @@ private:
 
 	bool isUp = false;
 	int specifiedMoveTimer = 0;
-	int maxSpecifiedMoveTimer = 30;
+	int maxSpecifiedMoveTimer = 15;
 	float bounceAmount = 20.0f;
 	float specifiedBouncePosUp = titleObjectPosition + bounceAmount;
 	float specifiedBouncePosDown = titleObjectPosition - bounceAmount;

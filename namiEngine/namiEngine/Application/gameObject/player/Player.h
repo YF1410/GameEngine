@@ -95,8 +95,8 @@ private:
 	XMFLOAT3 playerPos = { 0.0f,0.0f,0.0f };	//移動時に使用
 	XMFLOAT3 savePos = { 0.0f,0.0f,0.0f };		//ポジションの保存用
 	int HP = 3;
-	const float defMoveAmount = 0.7f;			//基本の移動量
-	const float dashMoveAmount = 1.0f;			//ダッシュ中の移動量
+	const float defMoveAmount = 1.0f;			//基本の移動量
+	const float dashMoveAmount = 1.2f;			//ダッシュ中の移動量
 	int dashTimer = 30;							//ダッシュの持続時間
 	int damageTimer = 60;						//ダメージくらった時の無敵時間
 

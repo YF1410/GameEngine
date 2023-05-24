@@ -6,7 +6,6 @@
 #include <cassert>
 #include <sstream>
 #include <iomanip>
-#include "imgui.h"
 #include "Collision.h"
 #include <stdlib.h>
 #include <time.h>
@@ -47,6 +46,7 @@ void GameScene::Initialize() {
 	// パーティクルマネージャ生成
 	particleMan = ParticleManager::GetInstance();
 	particleMan->SetCamera(cameraObject.get());
+	particleMan->Clear();
 
 	// カメラ注視点をセット
 	cameraObject->SetTarget(cameraTarget);
@@ -127,7 +127,7 @@ void GameScene::Finalize()
 
 void GameScene::Update() {
 	if (isFadeIn) {
-		fadeColor.w -= 0.01f;
+		fadeColor.w -= 0.02f;
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w <= 0.0f) {
 			isFadeIn = false;
@@ -144,6 +144,19 @@ void GameScene::Update() {
 		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 			enemyObj->Move();
 			enemyObj->Damage();
+
+			if (!enemyObj->GetIsActive()) {
+				std::random_device seed_gen;
+				std::mt19937_64 engine(seed_gen());
+				std::uniform_real_distribution<float> vecXDist(-0.7f,0.7f);
+				std::uniform_real_distribution<float> vecYDist(0.5f,2.0f);
+				std::uniform_real_distribution<float> vecZDist(-0.7f,0.7f);
+				
+				for (int i = 0; i < 10; i++) {
+					particleMan->Add(30, enemyObj->GetPosition(), { vecXDist(engine), vecYDist(engine), vecZDist(engine) }, {0,-0.1f,0}, 5.0f, 0.0f);//enemyObj->GetPosition()  
+				}
+			}
+
 			if (!enemyObj->GetIsActive() && enemyObj->GetHaveElement()) {
 				element.push_back(ElementObject::Create(elementModel.get(), enemyObj->GetPosition()));
 			}
@@ -223,7 +236,7 @@ void GameScene::Update() {
 		lightGroup->Update();
 	}
 	else if (isFadeOut) {
-		fadeColor.w += 0.02f;
+		fadeColor.w += 0.04f;
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w >= 1.0f) {
 			isFadeOut = false;
@@ -245,16 +258,6 @@ void GameScene::Update() {
 
 
 void GameScene::Draw() {
-
-	//ImGui::Begin("window");
-	//ImGui::SetWindowPos(ImVec2(0, 0));
-	//ImGui::SetWindowSize(ImVec2(500, 200));
-	//ImGui::InputFloat3("cubePos", object2Pos);
-	//ImGui::SliderFloat3("object2Pos", object2Pos,-1000,1000);
-	//ImGui::DragFloat3("object2Pos", object2Pos);
-	//ImGui::DragFloat3("cameraEye", cameraEye);
-	//ImGui::End();
-
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
 
@@ -281,6 +284,8 @@ void GameScene::Draw() {
 	skydomeObj->Draw();
 	Object3d::PostDraw();
 
+	particleMan->Draw(cmdList);
+
 	for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 		enemyObj->Draw(cmdList);
 	}
@@ -294,7 +299,7 @@ void GameScene::Draw() {
 	//lightGroup->Draw(cmdList, 3);
 
 	// パーティクルの描画
-	particleMan->Draw(cmdList);
+	//particleMan->Draw(cmdList);
 #pragma endregion
 
 #pragma region 前景スプライト描画

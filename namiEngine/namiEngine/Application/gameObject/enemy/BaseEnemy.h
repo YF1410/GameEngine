@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "Collision.h"
 #include <random>
+#include"ParticleManager.h"
+#include "SphereCollider.h"
 
 class Player;
 
@@ -57,7 +59,7 @@ protected:
 	Camera* camera;
 	float HP = 3;
 	XMFLOAT3 savePos;
-	XMFLOAT4 defaultColor = { 1,1,1,1 };
+	XMFLOAT4 defaultColor = { 0,1,1,1 };
 	bool isDamage = false;
 	bool isFirstDamage = false;
 	bool isActive = true;
@@ -70,9 +72,10 @@ protected:
 	float shakeObjectPos[3];
 	float moveX = 0;
 	float moveZ = 0;
-	float moveAmount = 0.1f;
+	float moveAmount = 0.2f;
 	XMFLOAT3 defaultPos = {0,-5.0f,20.0f};
 	Sphere collision;
+	SphereCollider sphereCollision;
 	std::unique_ptr<Model> colliderVisualizationModel;
 	std::unique_ptr<Object3d> colliderVisualizationObject;
 protected:

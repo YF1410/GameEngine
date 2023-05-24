@@ -67,7 +67,7 @@ void TitleScene::Update()
 	SpecifiedMove();
 
 	if (isFadeOut) {
-		fadeColor.w += 0.02f;
+		fadeColor.w += 0.04f;
 		fadeSprite->SetColor(fadeColor);
 		if (fadeColor.w >= 1.0f) {
 			isFadeOut = false;
@@ -121,12 +121,12 @@ void TitleScene::SpecifiedMove()
 	float eTime = (float)(specifiedMoveTimer / static_cast<double>(maxSpecifiedMoveTimer));
 
 	if (isUp) {
-		titleObjectPosition = Ease(In, ease::Quint, eTime, specifiedBouncePosUp, specifiedBouncePosDown);
-		startObjectPosition = Ease(In, ease::Quint, eTime, specifiedBounceStartPosUp, specifiedBounceStartPosDown);
+		titleObjectPosition = static_cast<float>(Ease(In, ease::Quint, eTime, specifiedBouncePosUp, specifiedBouncePosDown));
+		startObjectPosition = static_cast<float>(Ease(In, ease::Quint, eTime, specifiedBounceStartPosUp, specifiedBounceStartPosDown));
 	}
 	else if (!isUp) {
-		titleObjectPosition = Ease(Out, ease::Quint, eTime, specifiedBouncePosDown, specifiedBouncePosUp);
-		startObjectPosition = Ease(Out, ease::Quint, eTime, specifiedBounceStartPosDown, specifiedBounceStartPosUp);
+		titleObjectPosition = static_cast<float>(Ease(Out, ease::Quint, eTime, specifiedBouncePosDown, specifiedBouncePosUp));
+		startObjectPosition = static_cast<float>(Ease(Out, ease::Quint, eTime, specifiedBounceStartPosDown, specifiedBounceStartPosUp));
 	}
 
 	title[0]->SetPosition({ 0,titleObjectPosition });
