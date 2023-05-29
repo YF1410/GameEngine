@@ -1,18 +1,17 @@
 #include "GameOverScene.h"
 #include "SceneManager.h"
+#include "Easing.h"
+#include "AllLoadSprite.h"
 
 void GameOverScene::Initialize()
 {
-	if (!Sprite::LoadTexture(12, L"Resources/RetryFromGameOver.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(13, L"Resources/TitleFromGameOver.png")) {
-		assert(0);
-		return;
-	}
-	retryFromGameOverBG = Sprite::Create(12, { 0.0f,0.0f });
-	titleFromGameOverBG = Sprite::Create(13, { 0.0f,0.0f });
+	AllLoadSprite::AllLoadTexture();
+	baseBG = Sprite::Create(1, { 0.0f,0.0f });
+	gameover = Sprite::Create(16, { 0.0f,0.0f });
+	selectToRetry[0] = Sprite::Create(12, {0.0f,0.0f});
+	selectToRetry[1] = Sprite::Create(13, { 0.0f,0.0f });
+	selectToTitle[0] = Sprite::Create(14, { 0.0f,0.0f });
+	selectToTitle[1] = Sprite::Create(15, { 0.0f,0.0f });
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 
 	dieModel = FbxLoader::GetInstance()->LoadModelFromFile("Die");
@@ -56,6 +55,8 @@ void GameOverScene::Update()
 		isFadeOut = true;
 	}
 
+	SpecifiedMove();
+
 	if (isFadeOut) {
 		fadeColor.w += 0.04f;
 		fadeSprite->SetColor(fadeColor);
@@ -77,12 +78,17 @@ void GameOverScene::Draw()
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
+
+	baseBG->Draw();
+	gameover->Draw();
 	// 背景スプライト描画
 	if (isRetry) {
-		retryFromGameOverBG->Draw();
+		selectToRetry[0]->Draw();
+		selectToTitle[1]->Draw();
 	}
 	else if (!isRetry) {
-		titleFromGameOverBG->Draw();
+		selectToRetry[1]->Draw();
+		selectToTitle[0]->Draw();
 	}
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -95,4 +101,40 @@ void GameOverScene::Draw()
 	fadeSprite->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
+}
+
+void GameOverScene::SpecifiedMove()
+{
+	if (maxSpecifiedMoveTimer >= specifiedMoveTimer) {
+		specifiedMoveTimer++;
+		if (maxSpecifiedMoveTimer <= specifiedMoveTimer) {
+			specifiedMoveTimer = 0;
+			if (!isUp) {
+				isUp = true;
+			}
+			else if (isUp) {
+				isUp = false;
+			}
+		}
+	}
+
+	float eTime = (float)(specifiedMoveTimer / static_cast<double>(maxSpecifiedMoveTimer));
+
+	if (isUp) {
+		gameOverObjectPosition = static_cast<float>(Ease(In, ease::Quint, eTime, specifiedBouncePosUp, specifiedBouncePosDown));
+	}
+	else if (!isUp) {
+		gameOverObjectPosition = static_cast<float>(Ease(Out, ease::Quint, eTime, specifiedBouncePosDown, specifiedBouncePosUp));
+	}
+
+	if (isRetry) {
+		gameover->SetPosition({ 0,gameOverObjectPosition });
+		selectToRetry[0]->SetPosition({ 0,gameOverObjectPosition });
+		selectToTitle[1]->SetPosition({ 0,defaultObjectPosition });
+	}
+	else if (!isRetry) {
+		gameover->SetPosition({ 0,gameOverObjectPosition });
+		selectToRetry[1]->SetPosition({ 0,defaultObjectPosition });
+		selectToTitle[0]->SetPosition({ 0,gameOverObjectPosition });
+	}
 }

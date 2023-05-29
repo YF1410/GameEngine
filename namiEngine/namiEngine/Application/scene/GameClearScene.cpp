@@ -1,18 +1,17 @@
 #include "GameClearScene.h"
 #include "SceneManager.h"
+#include "easing.h"
+#include "AllLoadSprite.h"
 
 void GameClearScene::Initialize()
 {
-	if (!Sprite::LoadTexture(10, L"Resources/RetryFromGameClear.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(11, L"Resources/TitleFromGameClear.png")) {
-		assert(0);
-		return;
-	}
-	retryFromGameClearBG = Sprite::Create(10, { 0.0f,0.0f });
-	titleFromGameClearBG = Sprite::Create(11, { 0.0f,0.0f });
+	AllLoadSprite::AllLoadTexture();
+	baseBG = Sprite::Create(1, { 0.0f,0.0f });
+	gameclear = Sprite::Create(11, { 0.0f,0.0f });
+	selectToRetry[0] = Sprite::Create(12, { 0.0f,0.0f });
+	selectToRetry[1] = Sprite::Create(13, { 0.0f,0.0f });
+	selectToTitle[0] = Sprite::Create(14, { 0.0f,0.0f });
+	selectToTitle[1] = Sprite::Create(15, { 0.0f,0.0f });
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 
 	clapModel = FbxLoader::GetInstance()->LoadModelFromFile("Clap");
@@ -56,6 +55,8 @@ void GameClearScene::Update()
 		isFadeOut = true;
 	}
 
+	SpecifiedMove();
+
 	if (isFadeOut) {
 		fadeColor.w += 0.04f;
 		fadeSprite->SetColor(fadeColor);
@@ -78,12 +79,18 @@ void GameClearScene::Draw()
 	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCommandList();
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
+
+	baseBG->Draw();
+	gameclear->Draw();
+
 	// 背景スプライト描画
 	if (isRetry) {
-		retryFromGameClearBG->Draw();
+		selectToRetry[0]->Draw();
+		selectToTitle[1]->Draw();
 	}
 	else if (!isRetry) {
-		titleFromGameClearBG->Draw();
+		selectToRetry[1]->Draw();
+		selectToTitle[0]->Draw();
 	}
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -96,4 +103,40 @@ void GameClearScene::Draw()
 	fadeSprite->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
+}
+
+void GameClearScene::SpecifiedMove()
+{
+	if (maxSpecifiedMoveTimer >= specifiedMoveTimer) {
+		specifiedMoveTimer++;
+		if (maxSpecifiedMoveTimer <= specifiedMoveTimer) {
+			specifiedMoveTimer = 0;
+			if (!isUp) {
+				isUp = true;
+			}
+			else if (isUp) {
+				isUp = false;
+			}
+		}
+	}
+
+	float eTime = (float)(specifiedMoveTimer / static_cast<double>(maxSpecifiedMoveTimer));
+
+	if (isUp) {
+		gameClearObjectPosition = static_cast<float>(Ease(In, ease::Quint, eTime, specifiedBouncePosUp, specifiedBouncePosDown));
+	}
+	else if (!isUp) {
+		gameClearObjectPosition = static_cast<float>(Ease(Out, ease::Quint, eTime, specifiedBouncePosDown, specifiedBouncePosUp));
+	}
+
+	if (isRetry) {
+		gameclear->SetPosition({ 0,gameClearObjectPosition });
+		selectToRetry[0]->SetPosition({ 0,gameClearObjectPosition });
+		selectToTitle[1]->SetPosition({ 0,defaultObjectPosition });
+	}
+	else if (!isRetry) {
+		gameclear->SetPosition({ 0,gameClearObjectPosition });
+		selectToRetry[1]->SetPosition({ 0,defaultObjectPosition });
+		selectToTitle[0]->SetPosition({ 0,gameClearObjectPosition });
+	}
 }

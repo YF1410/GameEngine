@@ -115,6 +115,7 @@
     <ClCompile Include="Application\scene\SceneManager.cpp" />
     <ClCompile Include="Application\scene\TitleScene.cpp" />
     <ClCompile Include="Application\scene\TutorialScene.cpp" />
+    <ClCompile Include="Engine\2d\AllLoadSprite.cpp" />
     <ClCompile Include="Engine\2d\DebugText.cpp" />
     <ClCompile Include="Engine\2d\PostEffect.cpp" />
     <ClCompile Include="Engine\2d\Sprite.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Application\scene\SceneManager.h" />
     <ClInclude Include="Application\scene\TitleScene.h" />
     <ClInclude Include="Application\scene\TutorialScene.h" />
+    <ClInclude Include="Engine\2d\AllLoadSprite.h" />
     <ClInclude Include="Engine\2d\DebugText.h" />
     <ClInclude Include="Engine\2d\PostEffect.h" />
     <ClInclude Include="Engine\2d\Sprite.h" />

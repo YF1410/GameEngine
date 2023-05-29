@@ -2,7 +2,7 @@
 
 ElementEnemy::ElementEnemy()
 {
-	haveElement = true;
+	haveElement = false;
 	defaultColor = { 1,0,0,1 };
 	moveAmount = 0.4f;
 	SetColor(defaultColor);

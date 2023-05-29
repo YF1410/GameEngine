@@ -1,39 +1,17 @@
 #include "TitleScene.h"
 #include "SceneManager.h"
+#include "AllLoadSprite.h"
 
 void TitleScene::Initialize()
 {
-	if (!Sprite::LoadTexture(1, L"Resources/base.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(20, L"Resources/title.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(21, L"Resources/title2.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(2, L"Resources/fadeSprite.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(3, L"Resources/tutorial1.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(4, L"Resources/tutorial2.png")) {
-		assert(0);
-		return;
-	}
+	AllLoadSprite::AllLoadTexture();
 
 	titleBG = Sprite::Create(1, { 0.0f,0.0f });
-	title[0] = Sprite::Create(20, { 0.0f,0.0f });
-	title[1] = Sprite::Create(21, { 0.0f,0.0f });
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 	tutorial[0] = Sprite::Create(3, { 0.0f,0.0f });
 	tutorial[1] = Sprite::Create(4, { 0.0f,0.0f });
+	title[0] = Sprite::Create(5, { 0.0f,0.0f });
+	title[1] = Sprite::Create(6, { 0.0f,0.0f });
 }
 
 void TitleScene::Finalize()

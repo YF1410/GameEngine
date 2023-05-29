@@ -171,6 +171,9 @@
     <ClCompile Include="Engine\utility\FixFPS.cpp">
       <Filter>Engine\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\2d\AllLoadSprite.cpp">
+      <Filter>Engine\2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\NamiGame.h">
@@ -340,6 +343,9 @@
     </ClInclude>
     <ClInclude Include="Engine\utility\FixFPS.h">
       <Filter>Engine\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\2d\AllLoadSprite.h">
+      <Filter>Engine\2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
