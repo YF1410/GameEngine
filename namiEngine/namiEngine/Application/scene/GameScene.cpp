@@ -85,10 +85,10 @@ void GameScene::Initialize() {
 	skydomeObj = Object3d::Create(skydomeModel.get());
 	skydomeObj->SetScale(5.0f);
 
-	HP[0] = Sprite::Create(7, { 0.0f,0.0f });
-	HP[1] = Sprite::Create(8, { 0.0f,0.0f });
-	HP[2] = Sprite::Create(9, { 0.0f,0.0f });
-	HP[3] = Sprite::Create(10, { 0.0f,0.0f });
+	HP[0] = Sprite::Create(20, { 0.0f,0.0f });
+	HP[1] = Sprite::Create(21, { 0.0f,0.0f });
+	HP[2] = Sprite::Create(22, { 0.0f,0.0f });
+	HP[3] = Sprite::Create(23, { 0.0f,0.0f });
 
 	cameraObject->Update();
 	player->Update();

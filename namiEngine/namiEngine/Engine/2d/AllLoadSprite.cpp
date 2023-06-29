@@ -29,47 +29,47 @@ void AllLoadSprite::AllLoadTexture()
 	}
 
 	//ゲームシーン
-	if (!Sprite::LoadTexture(7, L"Resources/0.png")) {
+	if (!Sprite::LoadTexture(20, L"Resources/0.png")) {
 		assert(0);
 		return;
 	}
-	if (!Sprite::LoadTexture(8, L"Resources/1.png")) {
+	if (!Sprite::LoadTexture(21, L"Resources/1.png")) {
 		assert(0);
 		return;
 	}
-	if (!Sprite::LoadTexture(9, L"Resources/2.png")) {
+	if (!Sprite::LoadTexture(22, L"Resources/2.png")) {
 		assert(0);
 		return;
 	}
-	if (!Sprite::LoadTexture(10, L"Resources/3.png")) {
+	if (!Sprite::LoadTexture(23, L"Resources/3.png")) {
 		assert(0);
 		return;
 	}
 
 	//ゲームクリアシーン
-	if (!Sprite::LoadTexture(11, L"Resources/gameclear.png")) {
+	if (!Sprite::LoadTexture(41, L"Resources/gameclear.png")) {
 		assert(0);
 		return;
 	}
-	if (!Sprite::LoadTexture(12, L"Resources/selectRetry.png")) {
+	if (!Sprite::LoadTexture(42, L"Resources/selectRetry.png")) {
 		assert(0);
 		return;
 	}
-	if (!Sprite::LoadTexture(13, L"Resources/noSelectRetry.png")) {
+	if (!Sprite::LoadTexture(43, L"Resources/noSelectRetry.png")) {
 		assert(0);
 		return;
 	}
-	if (!Sprite::LoadTexture(14, L"Resources/selectTitle.png")) {
+	if (!Sprite::LoadTexture(44, L"Resources/selectTitle.png")) {
 		assert(0);
 		return;
 	}
-	if (!Sprite::LoadTexture(15, L"Resources/noSelectTitle.png")) {
+	if (!Sprite::LoadTexture(45, L"Resources/noSelectTitle.png")) {
 		assert(0);
 		return;
 	}
 
 	//ゲームオーバーシーン
-	if (!Sprite::LoadTexture(16, L"Resources/gameover.png")) {
+	if (!Sprite::LoadTexture(46, L"Resources/gameover.png")) {
 		assert(0);
 		return;
 	}

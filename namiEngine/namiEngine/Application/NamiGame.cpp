@@ -3,6 +3,7 @@
 #include "GameOverScene.h"
 #include "TitleScene.h"
 #include "TutorialScene.h"
+#include "AllLoadSprite.h"
 
 void NamiGame::Initialize() {
 	Framework::Initialize();
@@ -12,6 +13,7 @@ void NamiGame::Initialize() {
 	if (!Sprite::StaticInitialize(WinApp::window_width, WinApp::window_height)) {
 		assert(0);
 	}
+	AllLoadSprite::AllLoadTexture();
 
 	// 3Dオブジェクト静的初期化
 	Object3d::StaticInitialize();
@@ -27,7 +29,7 @@ void NamiGame::Initialize() {
 #pragma endregion 汎用機能初期化
 
 	// ゲームシーンの初期化
-	scene_->Initialize(new TitleScene);
+	scene_->Initialize(new GameOverScene);
 
 	//ポストエフェクト用のテクスチャの読み込み
 	//Sprite::LoadTexture(100, L"Resources/white1x1.png");

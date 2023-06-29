@@ -7,11 +7,11 @@ void GameClearScene::Initialize()
 {
 	AllLoadSprite::AllLoadTexture();
 	baseBG = Sprite::Create(1, { 0.0f,0.0f });
-	gameclear = Sprite::Create(11, { 0.0f,0.0f });
-	selectToRetry[0] = Sprite::Create(12, { 0.0f,0.0f });
-	selectToRetry[1] = Sprite::Create(13, { 0.0f,0.0f });
-	selectToTitle[0] = Sprite::Create(14, { 0.0f,0.0f });
-	selectToTitle[1] = Sprite::Create(15, { 0.0f,0.0f });
+	gameclear = Sprite::Create(21, { 0.0f,0.0f });
+	selectToRetry[0] = Sprite::Create(22, { 0.0f,0.0f });
+	selectToRetry[1] = Sprite::Create(23, { 0.0f,0.0f });
+	selectToTitle[0] = Sprite::Create(24, { 0.0f,0.0f });
+	selectToTitle[1] = Sprite::Create(25, { 0.0f,0.0f });
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 
 	clapModel = FbxLoader::GetInstance()->LoadModelFromFile("Clap");

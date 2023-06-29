@@ -72,24 +72,6 @@ void TutorialScene::Initialize() {
 	skydomeCollider.center = { 0,0,0 };
 	skydomeCollider.radius = 400.0f;
 
-
-	if (!Sprite::LoadTexture(5, L"Resources/0.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(6, L"Resources/1.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(7, L"Resources/2.png")) {
-		assert(0);
-		return;
-	}
-	if (!Sprite::LoadTexture(8, L"Resources/3.png")) {
-		assert(0);
-		return;
-	}
-
 	HP[0] = Sprite::Create(5, { 0.0f,0.0f });
 	HP[1] = Sprite::Create(6, { 0.0f,0.0f });
 	HP[2] = Sprite::Create(7, { 0.0f,0.0f });
@@ -162,7 +144,7 @@ void TutorialScene::Update() {
 				enemyObj->Move();
 				enemyObj->Damage();
 			}
-			if (enemy.empty() && !player->GetIsAttack()) {
+			if (enemy.empty() && !player->GetIsLightAttack() && !player->GetIsHardAttack()) {
 				num++;
 				enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
 			}

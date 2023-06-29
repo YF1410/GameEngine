@@ -37,7 +37,7 @@ void Player::Initialize(std::list<std::unique_ptr<BaseEnemy>>* enemy) {
 	inflictDamageColliderVisualizationObject->SetColor({ 0,1,0,0.1f });
 
 	//プレイヤーのモデル割り当て
-	attackModel = FbxLoader::GetInstance()->LoadModelFromFile("HurricaneKick");
+	attackModel = FbxLoader::GetInstance()->LoadModelFromFile("JumpAttack");
 	moveModel = FbxLoader::GetInstance()->LoadModelFromFile("Running");
 	rollModel = FbxLoader::GetInstance()->LoadModelFromFile("Rolling");
 	idleModel = FbxLoader::GetInstance()->LoadModelFromFile("Idling");
@@ -98,10 +98,11 @@ void Player::CollisionUpdate()
 
 void Player::Combo()
 {
-	if (isAttack) {
+	if (isLightAttack || isHardAttack) {
 		attackTimer--;
 		if (attackTimer <= 0) {
-			isAttack = false;
+			isLightAttack = false;
+			isHardAttack = false;
 			isRigor = true;
 			StopAnimation();
 		}
@@ -129,7 +130,8 @@ void Player::ChangeMotion()
 {
 	//行動に応じてモーションの変化
 	if (!isPlay) {
-		isAttack = false;
+		isLightAttack = false;
+		isHardAttack = false;
 		inflictDamageCollision.radius = 15.0f;
 		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
 			enemyObj->SetIsFirstDamage(false);
@@ -176,7 +178,7 @@ void Player::Attack()
 			if (comboCount == 2) {
 				attackPowor = 2;
 			}
-			isAttack = true;
+			isLightAttack = true;
 			isRigor = false;
 			isNowCombo = false;
 			attackCount++;
@@ -194,7 +196,8 @@ void Player::Attack()
 			if (comboCount == 2) {
 				attackPowor = 3;
 			}
-			isAttack = true;
+
+			isHardAttack = true;
 			attackCount++;
 			attackTimer = 30;
 			rigorTimer = 60;
@@ -215,64 +218,67 @@ void Player::Move(Vector3 vec) {
 		moveAmount = dashMoveAmount;
 	}
 
-	if (!isNowCameraShake) {
-		if (input->PushKey(DIK_W)) {
-			playerPos.x += moveVec.x * moveAmount;
-			playerPos.z += moveVec.z * moveAmount;
-			rotation.y = -roteteY + 90.0f;
-			isIdle = false;
-			isMove = true;
-			if (input->PushKey(DIK_A)) {
+	if (!isHardAttack) {
+		if (!isNowCameraShake) {
+			if (input->PushKey(DIK_W)) {
+				playerPos.x += moveVec.x * moveAmount;
+				playerPos.z += moveVec.z * moveAmount;
+				rotation.y = -roteteY + 90.0f;
+				isIdle = false;
+				isMove = true;
+				if (input->PushKey(DIK_A)) {
+					playerPos.x -= moveVec.z * moveAmount;
+					playerPos.z += moveVec.x * moveAmount;
+					rotation.y = -roteteY + 45.0f;
+				}
+				else if (input->PushKey(DIK_D)) {
+					playerPos.x += moveVec.z * moveAmount;
+					playerPos.z -= moveVec.x * moveAmount;
+					rotation.y = -roteteY + 135.0f;
+				}
+			}
+			else if (input->PushKey(DIK_S)) {
+				playerPos.x -= moveVec.x * moveAmount;
+				playerPos.z -= moveVec.z * moveAmount;
+				rotation.y = -roteteY - 90.0f;
+				isIdle = false;
+				isMove = true;
+				if (input->PushKey(DIK_A)) {
+					playerPos.x -= moveVec.z * moveAmount;
+					playerPos.z += moveVec.x * moveAmount;
+					rotation.y = -roteteY - 45.0f;
+				}
+				if (input->PushKey(DIK_D)) {
+					playerPos.x += moveVec.z * moveAmount;
+					playerPos.z -= moveVec.x * moveAmount;
+					rotation.y = -roteteY - 135.0f;
+				}
+			}
+			else if (input->PushKey(DIK_A)) {
 				playerPos.x -= moveVec.z * moveAmount;
 				playerPos.z += moveVec.x * moveAmount;
-				rotation.y = -roteteY + 45.0f;
+				rotation.y = -roteteY;
+				isIdle = false;
+				isMove = true;
 			}
 			else if (input->PushKey(DIK_D)) {
 				playerPos.x += moveVec.z * moveAmount;
 				playerPos.z -= moveVec.x * moveAmount;
-				rotation.y = -roteteY + 135.0f;
+				rotation.y = -roteteY + 180.0f;
+				isIdle = false;
+				isMove = true;
 			}
 		}
-		else if (input->PushKey(DIK_S)) {
-			playerPos.x -= moveVec.x * moveAmount;
-			playerPos.z -= moveVec.z * moveAmount;
-			rotation.y = -roteteY - 90.0f;
-			isIdle = false;
-			isMove = true;
-			if (input->PushKey(DIK_A)) {
-				playerPos.x -= moveVec.z * moveAmount;
-				playerPos.z += moveVec.x * moveAmount;
-				rotation.y = -roteteY - 45.0f;
-			}
-			if (input->PushKey(DIK_D)) {
-				playerPos.x += moveVec.z * moveAmount;
-				playerPos.z -= moveVec.x * moveAmount;
-				rotation.y = -roteteY - 135.0f;
-			}
-		}
-		else if (input->PushKey(DIK_A)) {
-			playerPos.x -= moveVec.z * moveAmount;
-			playerPos.z += moveVec.x * moveAmount;
-			rotation.y = -roteteY;
-			isIdle = false;
-			isMove = true;
-		}
-		else if (input->PushKey(DIK_D)) {
-			playerPos.x += moveVec.z * moveAmount;
-			playerPos.z -= moveVec.x * moveAmount;
-			rotation.y = -roteteY + 180.0f;
-			isIdle = false;
-			isMove = true;
-		}
-	}
 
-	if (input->TriggerKey(DIK_SPACE) && (input->PushKey(DIK_W) || input->PushKey(DIK_A) || input->PushKey(DIK_S) || input->PushKey(DIK_D)) && !isDash) {
-		isDash = true;
-		isAttack = false;
-		dashCount++;
-		SetModel(rollModel.get());
-		PlayAnimation(true);
-	}
+		if (input->TriggerKey(DIK_SPACE) && (input->PushKey(DIK_W) || input->PushKey(DIK_A) || input->PushKey(DIK_S) || input->PushKey(DIK_D)) && !isDash) {
+			isDash = true;
+			isLightAttack = false;
+			isHardAttack = false;
+			dashCount++;
+			SetModel(rollModel.get());
+			PlayAnimation(true);
+		}
 
-	SetPosition(playerPos);
+		SetPosition(playerPos);
+	}
 }

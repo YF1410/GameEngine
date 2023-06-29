@@ -4,8 +4,6 @@
 
 void TitleScene::Initialize()
 {
-	AllLoadSprite::AllLoadTexture();
-
 	titleBG = Sprite::Create(1, { 0.0f,0.0f });
 	fadeSprite = Sprite::Create(2, { 0.0f,0.0f }, fadeColor);
 	tutorial[0] = Sprite::Create(3, { 0.0f,0.0f });
