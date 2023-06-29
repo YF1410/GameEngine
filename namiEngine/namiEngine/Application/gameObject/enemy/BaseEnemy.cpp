@@ -110,7 +110,7 @@ void BaseEnemy::Damage() {
 void BaseEnemy::CheckCollisionToPlayer()
 {
 	if (Collision::CheckSphere2Sphere(player->GetInflictDamageCollision(), collision) && isActive && 
-		(player->GetIsLightAttack() || player->GetIsHardAttack())) {
+		player->GetIsAttack()) {
 		if (!isFirstDamage) {
 			SetColor({ 1,0,0,1 });
 			isDamage = true;
@@ -118,7 +118,7 @@ void BaseEnemy::CheckCollisionToPlayer()
 		}
 	}
 	else if (Collision::CheckSphere2Sphere(player->GetReceiveDamageCollision(), collision) && isActive &&
-		(!player->GetIsLightAttack() || !player->GetIsHardAttack()) && !player->GetIsReceivedDamage() && !player->GetIsDash()) {
+		!player->GetIsAttack() && !player->GetIsReceivedDamage() && !player->GetIsDash()) {
 		player->Damage(1);
 		camera->SetShakeFlag(true, 6);
 		player->SetIsReceivedDamage(true);

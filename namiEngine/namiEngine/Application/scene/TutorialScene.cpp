@@ -144,7 +144,7 @@ void TutorialScene::Update() {
 				enemyObj->Move();
 				enemyObj->Damage();
 			}
-			if (enemy.empty() && !player->GetIsLightAttack() && !player->GetIsHardAttack()) {
+			if (enemy.empty() && !player->GetIsAttack() && !player->GetIsHardAttack()) {
 				num++;
 				enemy.push_back(ElementEnemy::Create(player.get(), cameraObject.get()));
 			}

@@ -148,7 +148,7 @@ void GameScene::Update() {
 		enemy.remove_if([](std::unique_ptr<BaseEnemy>& enemyObj) {return !enemyObj->GetIsActive(); });
 		element.remove_if([](std::unique_ptr<ElementObject>& elementObj) {return !elementObj->GetIsActive(); });
 
-		player->Attack();
+		//player->Attack();
 
 		for (std::unique_ptr<BaseEnemy>& enemyObj : enemy) {
 			enemyObj->CheckCollisionToPlayer();

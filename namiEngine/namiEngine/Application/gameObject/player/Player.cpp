@@ -48,6 +48,7 @@ void Player::Update() {
 
 	Combo();
 	ChangeMotion();
+	Attack();
 
 	//ダッシュ状態の時
 	if (isDash) {
@@ -98,11 +99,10 @@ void Player::CollisionUpdate()
 
 void Player::Combo()
 {
-	if (isLightAttack || isHardAttack) {
+	if (isAttack) {
 		attackTimer--;
 		if (attackTimer <= 0) {
-			isLightAttack = false;
-			isHardAttack = false;
+			isAttack = false;
 			isRigor = true;
 			StopAnimation();
 		}
@@ -130,8 +130,7 @@ void Player::ChangeMotion()
 {
 	//行動に応じてモーションの変化
 	if (!isPlay) {
-		isLightAttack = false;
-		isHardAttack = false;
+		isAttack = false;
 		inflictDamageCollision.radius = 15.0f;
 		for (std::unique_ptr<BaseEnemy>& enemyObj : *enemy) {
 			enemyObj->SetIsFirstDamage(false);
@@ -178,7 +177,7 @@ void Player::Attack()
 			if (comboCount == 2) {
 				attackPowor = 2;
 			}
-			isLightAttack = true;
+			isAttack = true;
 			isRigor = false;
 			isNowCombo = false;
 			attackCount++;
@@ -191,19 +190,23 @@ void Player::Attack()
 
 		//強攻撃
 		if ((input->TriggerKey(DIK_2) || input->TriggerMouse(MouseButton::RightButton)) && !isPlay) {
-			inflictDamageCollision.radius = 20.0f;
-			attackPowor = 2;
-			if (comboCount == 2) {
-				attackPowor = 3;
-			}
-
 			isHardAttack = true;
 			attackCount++;
-			attackTimer = 30;
-			rigorTimer = 60;
-			comboTimer = 120;
 			SetModel(attackModel.get());
 			PlayAnimation(true);
+		}
+
+		if (isHardAttack && !isPlay) {
+			inflictDamageCollision.radius = 20.0f;
+			attackTimer = 5;
+			rigorTimer = 60;
+			comboTimer = 120;
+			attackPowor = 3;
+			if (comboCount == 2) {
+				attackPowor = 5;
+			}
+			isHardAttack = false;
+			isAttack = true;
 		}
 	}
 }
@@ -272,7 +275,7 @@ void Player::Move(Vector3 vec) {
 
 		if (input->TriggerKey(DIK_SPACE) && (input->PushKey(DIK_W) || input->PushKey(DIK_A) || input->PushKey(DIK_S) || input->PushKey(DIK_D)) && !isDash) {
 			isDash = true;
-			isLightAttack = false;
+			isAttack = false;
 			isHardAttack = false;
 			dashCount++;
 			SetModel(rollModel.get());

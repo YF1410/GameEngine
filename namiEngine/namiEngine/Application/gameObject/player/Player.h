@@ -72,7 +72,7 @@ public:
 	XMFLOAT3 GetPlayerPos() { return playerPos; }
 	Sphere GetReceiveDamageCollision() { return receiveDamageCollision; }
 	Sphere GetInflictDamageCollision() { return inflictDamageCollision; }
-	bool GetIsLightAttack() { return isLightAttack; }
+	bool GetIsAttack() { return isAttack; }
 	bool GetIsHardAttack() { return isHardAttack; }
 	bool GetIsDash() { return isDash; }
 	bool GetIsReceivedDamage() { return isReceivedDamage; }
@@ -116,7 +116,7 @@ private:
 	bool isActive = true;						//生きているかどうか
 	bool isHaveElement = false;					//属性を持っているかどうか
 	bool isDash = false;						//ダッシュしているかどうか
-	bool isLightAttack = false;					//弱攻撃しているかどうか
+	bool isAttack = false;					//弱攻撃しているかどうか
 	bool isHardAttack = false;					//強攻撃しているかどうか
 	bool isReceivedDamage = false;				//攻撃を受けているかどうか
 	bool isNowCameraShake = false;				//カメラシェイクをしているかどうか
